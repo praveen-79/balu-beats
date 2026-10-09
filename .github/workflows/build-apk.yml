@@ -1,0 +1,237 @@
+name: Build & Publish Balu Beats Android APK
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Signed Native Android APK (Balu_Beats.apk)
+        run: |
+          set -e
+          BUILD_TOOLS_DIR=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -n 1)
+          PLATFORM_JAR=$(ls $ANDROID_HOME/platforms/android-*/android.jar | sort -V | tail -n 1)
+          echo "Using build-tools: $BUILD_TOOLS_DIR"
+          echo "Using platform jar: $PLATFORM_JAR"
+
+          mkdir -p build/gen build/obj build/apk/assets build/res/drawable build/res/values
+          cp index.html build/apk/assets/index.html
+
+          # Generate a sleek green/dark launcher icon PNG using Python
+          python3 - << 'EOF'
+          import zlib, struct
+          def make_png(w, h):
+              raw = bytearray()
+              for y in range(h):
+                  raw.append(0)
+                  for x in range(w):
+                      dx, dy = x - w/2, y - h/2
+                      dist = (dx*dx + dy*dy) ** 0.5
+                      if dist < w*0.38:
+                          raw.extend((30, 215, 96, 255))
+                      else:
+                          raw.extend((9, 10, 15, 255))
+              def chunk(tag, data):
+                  return struct.pack("!I", len(data)) + tag + data + struct.pack("!I", zlib.crc32(tag + data) & 0xffffffff)
+              ihdr = struct.pack("!IIBBBBB", w, h, 8, 6, 0, 0, 0)
+              return b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", ihdr) + chunk(b"IDAT", zlib.compress(bytes(raw))) + chunk(b"IEND", b"")
+          with open("build/res/drawable/ic_launcher.png", "wb") as f:
+              f.write(make_png(192, 192))
+          EOF
+
+          cat << 'EOF' > build/res/values/strings.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <string name="app_name">Balu Beats</string>
+          </resources>
+          EOF
+
+          cat << 'EOF' > build/AndroidManifest.xml
+          <?xml version="1.0" encoding="utf-8"?>
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+              package="com.balubeats.music"
+              android:versionCode="2"
+              android:versionName="2.0.0">
+
+              <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="33" />
+              <uses-permission android:name="android.permission.INTERNET" />
+              <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+              <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+              <application
+                  android:label="@string/app_name"
+                  android:icon="@drawable/ic_launcher"
+                  android:usesCleartextTraffic="true"
+                  android:hardwareAccelerated="true"
+                  android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
+                  <activity
+                      android:name="com.balubeats.music.MainActivity"
+                      android:exported="true"
+                      android:configChanges="orientation|screenSize|keyboardHidden">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          mkdir -p build/src/com/balubeats/music
+          cat << 'EOF' > build/src/com/balubeats/music/MainActivity.java
+          package com.balubeats.music;
+
+          import android.app.Activity;
+          import android.content.Intent;
+          import android.graphics.Color;
+          import android.net.Uri;
+          import android.os.Build;
+          import android.os.Bundle;
+          import android.view.Window;
+          import android.webkit.JavascriptInterface;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebSettings;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import java.io.BufferedReader;
+          import java.io.InputStreamReader;
+          import java.net.HttpURLConnection;
+          import java.net.URL;
+
+          public class MainActivity extends Activity {
+              private WebView webView;
+
+              public class WebAppInterface {
+                  @JavascriptInterface
+                  public String httpGet(String urlStr) {
+                      try {
+                          URL url = new URL(urlStr);
+                          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                          conn.setRequestMethod("GET");
+                          conn.setConnectTimeout(7000);
+                          conn.setReadTimeout(7000);
+                          conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/120.0.0.0 Mobile Safari/537.36");
+                          BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                          StringBuilder sb = new StringBuilder();
+                          String line;
+                          while ((line = in.readLine()) != null) {
+                              sb.append(line);
+                          }
+                          in.close();
+                          return sb.toString();
+                      } catch (Exception e) {
+                          return "";
+                      }
+                  }
+              }
+
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  requestWindowFeature(Window.FEATURE_NO_TITLE);
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                      getWindow().setStatusBarColor(Color.parseColor("#07080D"));
+                      getWindow().setNavigationBarColor(Color.parseColor("#07080D"));
+                  }
+
+                  webView = new WebView(this);
+                  webView.setBackgroundColor(Color.parseColor("#07080D"));
+                  WebSettings settings = webView.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  settings.setDatabaseEnabled(true);
+                  settings.setMediaPlaybackRequiresUserGesture(false);
+                  settings.setAllowFileAccess(true);
+                  settings.setAllowContentAccess(true);
+                  settings.setAllowFileAccessFromFileURLs(true);
+                  settings.setAllowUniversalAccessFromFileURLs(true);
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                      settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+                  }
+
+                  webView.addJavascriptInterface(new WebAppInterface(), "AndroidBridge");
+                  webView.setWebChromeClient(new WebChromeClient());
+                  webView.setWebViewClient(new WebViewClient() {
+                      @Override
+                      public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                          if (url == null) return false;
+                          if (url.startsWith("file://") || url.contains("praveen-79.github.io")) {
+                              return false;
+                          }
+                          try {
+                              Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                              startActivity(intent);
+                          } catch (Exception ignored) {}
+                          return true;
+                      }
+                  });
+
+                  setContentView(webView);
+                  webView.loadUrl("file:///android_asset/index.html");
+              }
+
+              @Override
+              public void onBackPressed() {
+                  if (webView != null && webView.canGoBack()) {
+                      webView.goBack();
+                  } else {
+                      super.onBackPressed();
+                  }
+              }
+          }
+          EOF
+
+          # 1. Compile resources with aapt2
+          $BUILD_TOOLS_DIR/aapt2 compile --dir build/res -o build/resources.zip
+          $BUILD_TOOLS_DIR/aapt2 link -o build/unsigned.apk \
+            -I "$PLATFORM_JAR" \
+            --manifest build/AndroidManifest.xml \
+            --java build/gen \
+            -A build/apk/assets \
+            build/resources.zip
+
+          # 2. Compile Java sources
+          javac -source 11 -target 11 -cp "$PLATFORM_JAR" -d build/obj \
+            build/gen/com/balubeats/music/R.java \
+            build/src/com/balubeats/music/MainActivity.java
+
+          # 3. Convert .class files to classes.dex with d8
+          $BUILD_TOOLS_DIR/d8 --lib "$PLATFORM_JAR" --output build/apk/ build/obj/com/balubeats/music/*.class
+
+          # 4. Add classes.dex to unsigned.apk
+          cd build/apk && zip -uj ../unsigned.apk classes.dex && cd ../..
+
+          # 5. Align and Sign APK
+          $BUILD_TOOLS_DIR/zipalign -f -p 4 build/unsigned.apk build/aligned.apk
+          keytool -genkeypair -v -keystore build/release.keystore -alias balubeats \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass balubeats123 -keypass balubeats123 \
+            -dname "CN=Balu Beats, OU=Music, O=Praveen, L=Hyderabad, ST=TS, C=IN"
+          $BUILD_TOOLS_DIR/apksigner sign --ks build/release.keystore \
+            --ks-pass pass:balubeats123 --key-pass pass:balubeats123 \
+            --out Balu_Beats.apk build/aligned.apk
+
+          ls -lh Balu_Beats.apk
+
+      - name: Attach Balu_Beats.apk to GitHub Release v1.0.0
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cp index.html Balu_Beats_App.html
+          gh release upload v1.0.0 Balu_Beats.apk Balu_Beats_App.html --clobber

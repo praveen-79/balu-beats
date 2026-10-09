@@ -11,6 +11,7 @@
   <title>Balu Beats — Official Music Player by @being_rebel__7</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%231db954'/%3E%3Cstop offset='100%25' stop-color='%2300d4ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='%23090a0f'/%3E%3Ccircle cx='50' cy='50' r='36' fill='url(%23g)' opacity='0.18'/%3E%3Cpath d='M36 66V34l34 16-34 16z' fill='url(%23g)'/%3E%3C/svg%3E" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
   <style>
     :root {
       --bg-deep: #07080d;
@@ -1476,9 +1477,9 @@
         <button class="util-btn" onclick="toggleViewportMode()" id="viewportToggleBtn" title="Switch between Phone Frame and Wide View">
           📱 Phone View / 🖥️ Wide View
         </button>
-        <button class="util-btn primary" onclick="downloadShareableAppFile()">
-          ⬇ Download Balu Beats (.html)
-        </button>
+        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;">
+          📲 Download Android App (.APK)
+        </a>
       </div>
     </div>
 
@@ -1510,15 +1511,12 @@
           </div>
         </div>
         <div class="header-actions">
-          <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="spotify-pill-btn" style="text-decoration:none;background:linear-gradient(135deg,rgba(236,72,153,0.2),rgba(139,92,246,0.2));border-color:rgba(236,72,153,0.45);color:#f9a8d4;" title="Follow @being_rebel__7 on Instagram">
-            📸 @being_rebel__7
-          </a>
-          <button class="icon-btn" onclick="openShareModal()" title="Share or Install App">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-            </svg>
+          <button onclick="openShareModal()" class="spotify-pill-btn" style="background:linear-gradient(135deg,#1ed760,#10b981);color:#041208;border:none;font-weight:800;" title="Download & Install Balu Beats App">
+            📲 Get App
           </button>
+          <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="spotify-pill-btn" style="text-decoration:none;background:linear-gradient(135deg,rgba(236,72,153,0.2),rgba(139,92,246,0.2));border-color:rgba(236,72,153,0.45);color:#f9a8d4;" title="Follow @being_rebel__7 on Instagram">
+            📸 IG
+          </a>
         </div>
       </header>
 
@@ -1526,32 +1524,48 @@
       <main class="main-view" id="mainScroll">
         <!-- ================= TAB 1: HOME ================= -->
         <section id="tab-home" class="tab-pane active">
+          <!-- Install Native App Banner -->
+          <div id="installAppBanner" style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,rgba(30,215,96,0.16),rgba(0,210,255,0.12));border:1px solid rgba(30,215,96,0.4);border-radius:14px;padding:10px 12px;margin-bottom:10px;">
+            <div style="min-width:0;flex:1;">
+              <div style="font-size:12px;font-weight:800;color:#fff;">📲 Install Balu Beats Mobile App</div>
+              <div style="font-size:10.5px;color:var(--text-secondary);">100% Full-Length 320kbps Songs • Android APK & Web App</div>
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0;">
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" class="util-btn primary" style="padding:6px 10px;font-size:11px;text-decoration:none;">
+                ⬇ .APK
+              </a>
+              <button class="util-btn" style="padding:6px 10px;font-size:11px;" onclick="triggerInstallPWA()">
+                📱 Install
+              </button>
+            </div>
+          </div>
+
           <!-- Source Filter Chips -->
           <div class="chips-scroll">
-            <button class="chip active" onclick="loadQuickCategory('top hits 2025', this)">🔥 All Trending</button>
-            <button class="chip" onclick="loadQuickCategory('english pop hits', this)">🌎 Global Pop</button>
-            <button class="chip" onclick="loadQuickCategory('bollywood hits', this)">🇮🇳 Bollywood Full</button>
-            <button class="chip" onclick="loadQuickCategory('hip hop rap', this)">🎤 Hip-Hop</button>
+            <button class="chip active" onclick="loadQuickCategory('ALL_CURATED', this)">🔥 All Full Songs</button>
+            <button class="chip" onclick="loadQuickCategory('the weeknd ed sheeran dua lipa', this)">🌎 English Full</button>
+            <button class="chip" onclick="loadQuickCategory('devara pushpa 2 thandel telugu', this)">🎬 Telugu Hits</button>
+            <button class="chip" onclick="loadQuickCategory('arijit singh bollywood hits', this)">🇮🇳 Bollywood Full</button>
+            <button class="chip" onclick="loadQuickCategory('hip hop rap phonk', this)">🎤 Hip-Hop</button>
             <button class="chip" onclick="loadQuickCategory('lofi chill beats', this)">☕ Lo-Fi Chill</button>
-            <button class="chip" onclick="loadQuickCategory('phonk gym workout', this)">⚡ Phonk / Gym</button>
           </div>
 
           <!-- Featured Hero Card -->
           <div class="hero-card" id="heroCard">
             <div class="hero-info">
-              <div class="hero-tag">👑 Balu Beats • @being_rebel__7</div>
-              <div class="hero-title" id="heroTitle">Blinding Lights & Top Hits</div>
-              <div class="hero-sub" id="heroSub">Stream full 320kbps songs & global charts on Balu Beats</div>
+              <div class="hero-tag">👑 Balu Beats • 100% Full Songs</div>
+              <div class="hero-title" id="heroTitle">Starboy & Full 320kbps Hits</div>
+              <div class="hero-sub" id="heroSub">Stream complete 3–6 min 320kbps HD songs on Balu Beats</div>
               <div class="hero-btns">
                 <button class="btn-play-hero" onclick="playHeroTrack()">
-                  ▶ Play Now
+                  ▶ Play Full Song
                 </button>
                 <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn-secondary-hero" style="text-decoration:none;border-color:rgba(236,72,153,0.45);color:#f9a8d4;">
                   📸 @being_rebel__7 ↗
                 </a>
               </div>
             </div>
-            <img id="heroArt" class="hero-art" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/pulsehero/300/300'" alt="Featured" />
+            <img id="heroArt" class="hero-art" src="https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg" onerror="this.src='https://picsum.photos/seed/pulsehero/300/300'" alt="Featured" />
           </div>
 
           <!-- Quick Mood Grid -->
@@ -1560,40 +1574,40 @@
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);">🌙</div>
               <div class="quick-card-title">The Weeknd</div>
             </div>
+            <div class="quick-card" onclick="searchAndGo('Telugu Blockbusters 2024')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #f59e0b, #78350f);">🔥</div>
+              <div class="quick-card-title">Telugu Hits</div>
+            </div>
             <div class="quick-card" onclick="searchAndGo('Arijit Singh')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #ec4899, #831843);">💖</div>
               <div class="quick-card-title">Arijit Singh</div>
             </div>
-            <div class="quick-card" onclick="searchAndGo('Taylor Swift')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">✨</div>
-              <div class="quick-card-title">Taylor Swift</div>
+            <div class="quick-card" onclick="searchAndGo('Anirudh Ravichander')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">⚡</div>
+              <div class="quick-card-title">Anirudh Hits</div>
             </div>
-            <div class="quick-card" onclick="searchAndGo('Alan Walker')">
+            <div class="quick-card" onclick="searchAndGo('Ed Sheeran Dua Lipa')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #00d2ff, #0369a1);">🎧</div>
-              <div class="quick-card-title">Alan Walker</div>
+              <div class="quick-card-title">Global Pop</div>
             </div>
-            <div class="quick-card" onclick="searchAndGo('Coldplay')">
+            <div class="quick-card" onclick="searchAndGo('Imagine Dragons Coldplay')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #10b981, #065f46);">🪐</div>
-              <div class="quick-card-title">Coldplay</div>
-            </div>
-            <div class="quick-card" onclick="searchAndGo('AP Dhillon')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #f59e0b, #78350f);">🔥</div>
-              <div class="quick-card-title">AP Dhillon</div>
+              <div class="quick-card-title">Rock & Anthems</div>
             </div>
           </div>
 
           <!-- Full-Length Songs Carousel (320kbps) -->
           <div class="section-header">
-            <h2 class="section-title">⚡ Full-Length Songs (320kbps)</h2>
-            <button class="section-link" onclick="switchTab('search')">See All</button>
+            <h2 class="section-title">⚡ Featured Full Songs (320kbps HD)</h2>
+            <button class="section-link" onclick="switchTab('search')">Search All</button>
           </div>
           <div class="horiz-scroll" id="homeFullSongsCarousel">
             <!-- Populated dynamically -->
           </div>
 
-          <!-- Global Official Hits List -->
+          <!-- Full-Length Trending Chart List -->
           <div class="section-header">
-            <h2 class="section-title">🌍 Global Charts (Apple / Spotify Hits)</h2>
+            <h2 class="section-title">🎵 Complete Full-Length Tracks (3–6 Mins)</h2>
             <button class="section-link" onclick="loadHomeFeeds()">Refresh</button>
           </div>
           <div class="track-list" id="homeGlobalList">
@@ -1608,7 +1622,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--text-secondary)">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              <input type="text" id="searchInput" placeholder="Search songs, artists, albums, or paste Spotify link..." autocomplete="off" />
+              <input type="text" id="searchInput" placeholder="Search any full song, artist, movie, or paste Spotify link..." autocomplete="off" />
               <button class="row-icon-btn" onclick="startVoiceSearch()" title="Voice Search">
                 🎤
               </button>
@@ -1619,10 +1633,10 @@
 
             <!-- API Engine Selector -->
             <div class="chips-scroll" style="padding: 10px 0 4px;">
-              <button class="chip active" data-engine="hybrid" onclick="setSearchEngine('hybrid', this)">🚀 All Sources (Hybrid)</button>
-              <button class="chip" data-engine="saavn" onclick="setSearchEngine('saavn', this)">🎵 Full Songs (320kbps)</button>
-              <button class="chip" data-engine="itunes" onclick="setSearchEngine('itunes', this)">🍎 Global Official Catalog</button>
-              <button class="chip" data-engine="audius" onclick="setSearchEngine('audius', this)">💜 Audius Indie/EDM</button>
+              <button class="chip active" data-engine="hybrid" onclick="setSearchEngine('hybrid', this)">🚀 Full 320kbps Songs (All)</button>
+              <button class="chip" data-engine="saavn" onclick="setSearchEngine('saavn', this)">🎵 JioSaavn 320kbps HD</button>
+              <button class="chip" data-engine="audius" onclick="setSearchEngine('audius', this)">💜 Audius Full Indie/EDM</button>
+              <button class="chip" data-engine="itunes" onclick="setSearchEngine('itunes', this)">🍎 Global Catalog (Auto-Upgrades to Full)</button>
             </div>
           </div>
 
@@ -1961,34 +1975,46 @@
   <div class="modal-backdrop" id="shareModal" onclick="if(event.target===this)closeShareModal()">
     <div class="modal-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 style="font-size:17px;font-weight:800;">📲 Share & Install Balu Beats</h3>
+        <h3 style="font-size:17px;font-weight:800;">📲 Download & Install Balu Beats</h3>
         <button class="row-icon-btn" onclick="closeShareModal()">✕</button>
       </div>
-      <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.45;margin-bottom:14px;">
-        Others can use <strong>Balu Beats</strong> in <strong>2 easy ways</strong>:
+      <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.45;margin-bottom:12px;">
+        Install <strong>Balu Beats</strong> on your phone or PC to stream <strong>100% full-length 320kbps songs</strong>:
       </p>
-      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid var(--border-subtle);">
-        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent-green);">1. Share the Single-File App (.html)</div>
+
+      <div style="background:linear-gradient(135deg,rgba(30,215,96,0.16),rgba(0,210,255,0.12));padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid rgba(30,215,96,0.45);">
+        <div style="font-size:13px;font-weight:800;margin-bottom:4px;color:var(--accent-green);">1. 🤖 Download Android App (Balu_Beats.apk)</div>
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          Download <code>Balu_Beats_App.html</code> and send it on <strong>WhatsApp, Telegram, Email, or Google Drive</strong>. Anyone who opens the file on their phone or PC gets <strong>Balu Beats</strong> immediately!
+          Install the native Android application package (<code>Balu_Beats.apk</code>) directly on your phone!
         </p>
-        <button class="util-btn primary" style="width:100%;justify-content:center;" onclick="downloadShareableAppFile()">
-          ⬇ Download Balu_Beats_App.html
-        </button>
+        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;">
+          ⬇ Download Balu_Beats.apk (Android)
+        </a>
       </div>
-      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;margin-bottom:12px;border:1px solid var(--border-subtle);">
-        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent-cyan);">2. Install as Mobile App / Share Current Song</div>
+
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent-cyan);">2. 📱 Install to Phone Home Screen (Android & iOS)</div>
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          On Android Chrome or iOS Safari, tap <strong>Add to Home Screen</strong> to install <strong>Balu Beats</strong> as a fullscreen native app.
+          Tap below (or use your browser's <strong>Add to Home Screen</strong>) to install <strong>Balu Beats</strong> with its app icon.
         </p>
         <div style="display:flex;gap:8px;">
-          <button class="util-btn" style="flex:1;justify-content:center;" onclick="triggerInstallPWA()">
-            📱 Install App
+          <button class="util-btn" style="flex:1;justify-content:center;border-color:rgba(0,210,255,0.4);color:var(--accent-cyan);" onclick="triggerInstallPWA()">
+            📱 Install Web App
           </button>
           <button class="util-btn" style="flex:1;justify-content:center;" onclick="shareCurrentSongNative()">
-            🔗 Share Song
+            🔗 Share App Link
           </button>
         </div>
+      </div>
+
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:#f9a8d4;">3. 💻 Download Single-File App (.html)</div>
+        <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
+          Download <code>Balu_Beats_App.html</code> to share on WhatsApp/Telegram or run offline on any PC/phone.
+        </p>
+        <button class="util-btn" style="width:100%;justify-content:center;" onclick="downloadShareableAppFile()">
+          ⬇ Download Balu_Beats_App.html
+        </button>
       </div>
     </div>
   </div>
@@ -2063,9 +2089,229 @@
 
   <script>
     /*************************************************************************
-     * BALU BEATS — MULTI-API MOBILE MUSIC STREAMING ENGINE + SPOTIFY BRIDGE
+     * BALU BEATS — 100% FULL-LENGTH 320KBPS STREAMING ENGINE + SPOTIFY BRIDGE
      * Created by Balu / Praveen (@being_rebel__7)
      *************************************************************************/
+
+    // Curated Zero-Latency 100% Full-Length 320kbps Songs (3 to 6+ minutes each!)
+    const BALU_CURATED_FULL_SONGS = [
+      {
+        id: "saavn_TcDP-KUl",
+        title: "Starboy",
+        artist: "The Weeknd, Daft Punk",
+        album: "The Highlights",
+        artwork: "https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/396/b4e570050007b056c662f2a98c9f28ec_320.mp4",
+        duration: 230,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_pW-kkdqr",
+        title: "Blinding Lights",
+        artist: "The Weeknd",
+        album: "After Hours",
+        artwork: "https://c.saavncdn.com/820/Blinding-Lights-English-2020-20200912094411-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/820/5ddb9a79a5218f85ca9bef170f3a461d_320.mp4",
+        duration: 204,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_O94kBTtw",
+        title: "Chuttamalle (From Devara)",
+        artist: "Anirudh Ravichander, Shilpa Rao",
+        album: "Devara Part 1",
+        artwork: "https://c.saavncdn.com/313/Devara-Part-1-Telugu-Telugu-2024-20240926171010-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/313/e49e604945889f330e5b3536dd0ff524_320.mp4",
+        duration: 222,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_m0Yt29rq",
+        title: "Fear Song (From Devara)",
+        artist: "Anirudh Ravichander",
+        album: "Devara Part 1",
+        artwork: "https://c.saavncdn.com/313/Devara-Part-1-Telugu-Telugu-2024-20240926171010-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/313/1178c7b2a16c3fd32ec5cd002b5a1ce0_320.mp4",
+        duration: 195,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_icJam_5l",
+        title: "Shape of You",
+        artist: "Ed Sheeran",
+        album: "Divide",
+        artwork: "https://c.saavncdn.com/126/Shape-of-You-English-2017-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/126/da7cde34b008294e181842062530546d_320.mp4",
+        duration: 233,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn__w-V_N2t",
+        title: "Levitating",
+        artist: "Dua Lipa",
+        album: "Future Nostalgia",
+        artwork: "https://c.saavncdn.com/207/Dua-Lipa-Live-From-Mexico-English-2026-20260526161014-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/207/35add090eadc52dbd0205f0f4500176b_320.mp4",
+        duration: 203,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_fxuoxZ18",
+        title: "Peelings (Pushpa 2 The Rule)",
+        artist: "Devi Sri Prasad",
+        album: "Pushpa 2 The Rule",
+        artwork: "https://c.saavncdn.com/366/Pushpa-2-The-Rule-Telugu-Telugu-2024-20241205211012-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/366/2eb21d94241ba0d9e970d808a7dc015d_320.mp4",
+        duration: 247,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_iqh15kuU",
+        title: "Bujji Thalli (From Thandel)",
+        artist: "Devi Sri Prasad, Javed Ali",
+        album: "Thandel",
+        artwork: "https://c.saavncdn.com/925/Thandel-Telugu-2024-20250225125810-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/925/b13e3333489bd9a8fb086a4b9f1dd6b8_320.mp4",
+        duration: 248,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_BeXBcbVK",
+        title: "Believer",
+        artist: "Imagine Dragons",
+        album: "Evolve",
+        artwork: "https://c.saavncdn.com/248/Evolve-English-2018-20260605220036-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/248/46944eb7b4b31f5b0abf5eb2e1be2d2a_320.mp4",
+        duration: 204,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_QUNHFVVV",
+        title: "Closer",
+        artist: "The Chainsmokers",
+        album: "Closer",
+        artwork: "https://c.saavncdn.com/147/Closer-English-2016-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/147/88201a8381e13cd6a9399f4bbfc5b7e9_320.mp4",
+        duration: 249,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_rjkrTnma",
+        title: "Kesariya",
+        artist: "Pritam, Arijit Singh",
+        album: "Brahmastra",
+        artwork: "https://c.saavncdn.com/871/Brahmastra-Original-Motion-Picture-Soundtrack-Hindi-2022-20221006155213-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/871/c2febd353f3a076a406fa37510f31f9f_320.mp4",
+        duration: 268,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_faloMmjX",
+        title: "Chaleya (From Jawan)",
+        artist: "Anirudh Ravichander, Arijit Singh",
+        album: "Jawan",
+        artwork: "https://c.saavncdn.com/047/Jawan-Hindi-2023-20230921190854-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/047/d1366530468931703ac909e82a3ee788_320.mp4",
+        duration: 200,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_AN1zv7KP",
+        title: "Anuvanuvuu",
+        artist: "Sunny M.R., Arijit Singh",
+        album: "Om Bheem Bush",
+        artwork: "https://c.saavncdn.com/000/Om-Bheem-Bush-Telugu-2024-20240401231417-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/000/cb9d6e279ff308e6d35507b5a4c27299_320.mp4",
+        duration: 211,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_koWi7GRH",
+        title: "Apna Bana Le",
+        artist: "Sachin-Jigar, Arijit Singh",
+        album: "Bhediya",
+        artwork: "https://c.saavncdn.com/228/Sachin-Jigar-Bollywood-Hits-Hindi-2026-20260630213800-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/228/bed7fe5f8fe04ae6432bcb0717e2b74e_320.mp4",
+        duration: 261,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_ncBHw-c5",
+        title: "Suttamla Soosi",
+        artist: "Yuvan Shankar Raja, Anurag Kulkarni",
+        album: "Gangs Of Godavari",
+        artwork: "https://c.saavncdn.com/000/Gangs-Of-Godavari-Telugu-2024-20240530193901-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/000/c922662ca59e61d93c86b8aa20007bea_320.mp4",
+        duration: 202,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_Bt07_OpM",
+        title: "Tum Hi Ho",
+        artist: "Arijit Singh, Mithoon",
+        album: "Aashiqui 2",
+        artwork: "https://c.saavncdn.com/840/Best-Of-Arijit-Singh-Collection-Of-Romantic-Songs-Hindi-2025-20251203161112-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/840/c9e70fb62d66fa6e14f6b7cdbc56cc05_320.mp4",
+        duration: 261,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn__USBFrLJ",
+        title: "São Paulo",
+        artist: "The Weeknd, Anitta",
+        album: "Hurry Up Tomorrow",
+        artwork: "https://c.saavncdn.com/681/S-o-Paulo-English-2025-20250919103533-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/681/cfcac700d49e2422bcb3b95754192bab_320.mp4",
+        duration: 302,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      },
+      {
+        id: "saavn_YiVML4Zo",
+        title: "Gehra Hua",
+        artist: "Shashwat Sachdev, Arijit Singh",
+        album: "Dhurandhar",
+        artwork: "https://c.saavncdn.com/450/Gehra-Hua-From-Dhurandhar-Hindi-2025-20251205154217-500x500.jpg",
+        streamUrl: "https://aac.saavncdn.com/450/f467e05e2825cec2203546333e0d0550_320.mp4",
+        duration: 362,
+        source: "Full 320kbps",
+        sourceKey: "saavn",
+        isFullTrack: true
+      }
+    ];
 
     const state = {
       queue: [],
@@ -2126,50 +2372,162 @@
     updateClockAndGreeting();
 
     // =========================================================================
-    // 1. MULTI-SOURCE MUSIC API ADAPTERS
+    // 1. MULTI-SOURCE 100% FULL-LENGTH 320KBPS MUSIC API ADAPTERS
     // =========================================================================
 
-    // Engine A: JioSaavn Public API (Full-Length 320kbps AAC/MP4 tracks!)
-    async function searchSaavnTracks(query, limit = 16) {
+    // Client-side DES-ECB decryptor for JioSaavn's encrypted_media_url -> 320kbps AAC/MP4
+    function decryptSaavnMediaUrls(encryptedBase64) {
+      if (!encryptedBase64 || typeof CryptoJS === 'undefined') return null;
       try {
-        const url = `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Saavn status ' + res.status);
-        const json = await res.json();
-        const items = json?.data?.results || [];
-        return items.map(item => {
-          const images = item.image || [];
-          const artwork = (images[images.length - 1]?.url || images[0]?.url || '').replace('http://', 'https://');
-          const dls = item.downloadUrl || [];
-          const urlsByQuality = {};
-          dls.forEach(d => { urlsByQuality[d.quality] = d.url.replace('http://', 'https://'); });
-          const streamUrl = urlsByQuality[state.quality] || urlsByQuality['320kbps'] || urlsByQuality['160kbps'] || (dls[dls.length - 1]?.url || '');
-          const primaryArtists = item.artists?.primary?.map(a => a.name).join(', ') || item.primaryArtists || 'Unknown Artist';
-          return {
-            id: 'saavn_' + item.id,
-            title: decodeEntities(item.name || item.title),
-            artist: decodeEntities(primaryArtists),
-            album: decodeEntities(item.album?.name || ''),
-            artwork: artwork || 'https://picsum.photos/seed/' + item.id + '/500/500',
-            streamUrl,
-            urlsByQuality,
-            duration: Number(item.duration) || 0,
-            source: 'Full 320kbps',
-            sourceKey: 'saavn',
-            isFullTrack: true
-          };
-        }).filter(t => t.streamUrl);
+        const key = CryptoJS.enc.Utf8.parse('38346591');
+        const decrypted = CryptoJS.DES.decrypt(
+          { ciphertext: CryptoJS.enc.Base64.parse(encryptedBase64.trim()) },
+          key,
+          { mode: CryptoJS.mode.ECB, padding: CryptoJS.pad.Pkcs7 }
+        );
+        let url = decrypted.toString(CryptoJS.enc.Utf8);
+        if (!url || !url.includes('saavncdn.com')) return null;
+        url = url.replace('http://', 'https://');
+        return {
+          '320kbps': url.replace(/_96\.mp4|_160\.mp4|_320\.mp4/, '_320.mp4'),
+          '160kbps': url.replace(/_96\.mp4|_160\.mp4|_320\.mp4/, '_160.mp4'),
+          '96kbps': url.replace(/_96\.mp4|_160\.mp4|_320\.mp4/, '_96.mp4')
+        };
       } catch (e) {
-        console.warn('Saavn API fallback:', e);
-        return [];
+        return null;
       }
     }
 
-    // Engine B: Apple iTunes Search API (Works via fetch AND JSONP for file:// origins!)
+    function deduplicateTracks(tracks) {
+      const seen = new Set();
+      return tracks.filter(t => {
+        if (!t || !t.streamUrl) return false;
+        const normKey = (t.title.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 14)) + '_' +
+                        (t.artist.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8));
+        if (seen.has(normKey)) return false;
+        seen.add(normKey);
+        return true;
+      });
+    }
+
+    function parseSaavnDirectJson(json) {
+      const items = json?.results || [];
+      return items.map(item => {
+        const enc = item.more_info?.encrypted_media_url;
+        const urlsByQuality = decryptSaavnMediaUrls(enc);
+        if (!urlsByQuality) return null;
+        const streamUrl = urlsByQuality[state.quality] || urlsByQuality['320kbps'];
+        const artwork = (item.image || '').replace('http://', 'https://').replace('150x150', '500x500');
+        const artists = item.more_info?.artistMap?.primary_artists?.map(a => a.name).join(', ') || item.subtitle || 'Artist';
+        return {
+          id: 'saavn_' + item.id,
+          title: decodeEntities(item.title || item.song),
+          artist: decodeEntities(artists),
+          album: decodeEntities(item.more_info?.album || ''),
+          artwork: artwork || 'https://picsum.photos/seed/' + item.id + '/500/500',
+          streamUrl,
+          urlsByQuality,
+          duration: Number(item.more_info?.duration) || 210,
+          source: 'Full 320kbps',
+          sourceKey: 'saavn',
+          isFullTrack: true
+        };
+      }).filter(Boolean);
+    }
+
+    function parseSaavnMirrorJson(json) {
+      const items = json?.data?.results || json?.results || [];
+      return items.map(item => {
+        const images = item.image || [];
+        const artwork = (images[images.length - 1]?.url || images[images.length - 1]?.link || images[0]?.url || '').replace('http://', 'https://');
+        const dls = item.downloadUrl || [];
+        const urlsByQuality = {};
+        dls.forEach(d => {
+          const u = (d.url || d.link || '').replace('http://', 'https://');
+          if (u) urlsByQuality[d.quality] = u;
+        });
+        const streamUrl = urlsByQuality[state.quality] || urlsByQuality['320kbps'] || urlsByQuality['160kbps'] || (dls[dls.length - 1]?.url || dls[dls.length - 1]?.link || '').replace('http://', 'https://');
+        const primaryArtists = item.artists?.primary?.map(a => a.name).join(', ') || item.primaryArtists || 'Unknown Artist';
+        return {
+          id: 'saavn_' + item.id,
+          title: decodeEntities(item.name || item.title),
+          artist: decodeEntities(primaryArtists),
+          album: decodeEntities(item.album?.name || ''),
+          artwork: artwork || 'https://picsum.photos/seed/' + item.id + '/500/500',
+          streamUrl,
+          urlsByQuality,
+          duration: Number(item.duration) || 210,
+          source: 'Full 320kbps',
+          sourceKey: 'saavn',
+          isFullTrack: true
+        };
+      }).filter(t => t.streamUrl);
+    }
+
+    // Engine A: Multi-Mirror 320kbps Full-Length Song Search
+    async function searchSaavnTracks(query, limit = 18) {
+      // 1. If running inside Android APK with native bridge, fetch directly with 0ms CORS!
+      if (window.AndroidBridge && typeof window.AndroidBridge.httpGet === 'function') {
+        try {
+          const directUrl = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&_marker=0&api_version=4&ctx=web6dot0&n=${limit}&p=1&q=${encodeURIComponent(query)}`;
+          const raw = window.AndroidBridge.httpGet(directUrl);
+          if (raw) {
+            const parsed = deduplicateTracks(parseSaavnDirectJson(JSON.parse(raw)));
+            if (parsed.length) return parsed;
+          }
+        } catch (e) {
+          console.warn('AndroidBridge direct fetch fallback:', e);
+        }
+      }
+
+      // 2. If running on local Python server (localhost / LAN), try /api/saavn direct proxy
+      if (location.protocol.startsWith('http') && !location.hostname.includes('github.io')) {
+        try {
+          const localRes = await fetch(`/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`);
+          if (localRes.ok) {
+            const json = await localRes.json();
+            const parsed = deduplicateTracks(parseSaavnDirectJson(json));
+            if (parsed.length) return parsed;
+          }
+        } catch (_) {}
+      }
+
+      // 3. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors!
+      const mirrors = [
+        `https://saavnx.vercel.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
+        `https://akdev-jiosaavnapi.netlify.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
+        `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`
+      ];
+
+      for (const url of mirrors) {
+        try {
+          const controller = new AbortController();
+          const timer = setTimeout(() => controller.abort(), 5500);
+          const res = await fetch(url, { signal: controller.signal });
+          clearTimeout(timer);
+          if (!res.ok) continue;
+          const json = await res.json();
+          const tracks = deduplicateTracks(parseSaavnMirrorJson(json));
+          if (tracks.length > 0) return tracks;
+        } catch (e) {
+          // Try next mirror
+        }
+      }
+
+      // 4. Fallback to matching curated full 320kbps tracks if offline
+      const qLow = query.toLowerCase();
+      const matched = BALU_CURATED_FULL_SONGS.filter(t =>
+        t.title.toLowerCase().includes(qLow) ||
+        t.artist.toLowerCase().includes(qLow) ||
+        t.album.toLowerCase().includes(qLow)
+      );
+      return matched.length ? matched : BALU_CURATED_FULL_SONGS;
+    }
+
+    // Engine B: Apple iTunes Search API (Catalog lookup; auto-upgraded to full 320kbps on play!)
     function searchItunesTracks(query, limit = 16) {
       return new Promise(async (resolve) => {
         const endpoint = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=${limit}`;
-        // Try standard fetch first if not file://
         if (location.protocol !== 'file:') {
           try {
             const res = await fetch(endpoint);
@@ -2179,7 +2537,6 @@
             }
           } catch (_) {}
         }
-        // Fallback to JSONP (works 100% from file:// when sharing the .html file!)
         const cbName = '__itunes_cb_' + Math.random().toString(36).slice(2);
         const script = document.createElement('script');
         const timer = setTimeout(() => {
@@ -2211,20 +2568,20 @@
         album: r.collectionName || '',
         artwork: (r.artworkUrl100 || '').replace('100x100bb', '600x600bb'),
         streamUrl: r.previewUrl,
-        duration: Math.round((r.trackTimeMillis || 30000) / 1000),
-        source: 'Global Official',
+        duration: Math.round((r.trackTimeMillis || 210000) / 1000),
+        source: 'Auto-Full 320kbps',
         sourceKey: 'itunes',
         isFullTrack: false,
         externalUrl: r.trackViewUrl
       }));
     }
 
-    // Engine C: Audius Decentralized Music Network (Full-Length Indie & EDM Streams)
+    // Engine C: Audius Decentralized Music Network (100% Full-Length Indie & EDM Streams)
     async function searchAudiusTracks(query, limit = 15) {
       try {
         const url = query
-          ? `https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&limit=${limit}&app_name=PulseBeats`
-          : `https://discoveryprovider.audius.co/v1/tracks/trending?limit=${limit}&app_name=PulseBeats`;
+          ? `https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&limit=${limit}&app_name=BaluBeats`
+          : `https://discoveryprovider.audius.co/v1/tracks/trending?limit=${limit}&app_name=BaluBeats`;
         const res = await fetch(url);
         if (!res.ok) throw new Error('Audius status ' + res.status);
         const json = await res.json();
@@ -2234,7 +2591,7 @@
           artist: t.user?.name || 'Audius Artist',
           album: t.genre || 'Audius Stream',
           artwork: t.artwork?.['480x480'] || t.artwork?.['150x150'] || ('https://picsum.photos/seed/' + t.id + '/500/500'),
-          streamUrl: `https://discoveryprovider.audius.co/v1/tracks/${t.id}/stream?app_name=PulseBeats`,
+          streamUrl: `https://discoveryprovider.audius.co/v1/tracks/${t.id}/stream?app_name=BaluBeats`,
           duration: Number(t.duration) || 180,
           source: 'Audius Full',
           sourceKey: 'audius',
@@ -2266,92 +2623,90 @@
           duration: Math.round((t.duration_ms || 180000) / 1000),
           source: 'Spotify API',
           sourceKey: 'spotify',
-          isFullTrack: Boolean(t.preview_url)
+          isFullTrack: false
         }));
       } catch (_) {
         return [];
       }
     }
 
-    // Smart Hybrid Search: Combines Full-Length 320kbps tracks + Global Official Hits
+    // Smart Search: Returns 100% Full-Length Songs (320kbps JioSaavn + Audius Full Streams)!
     async function smartSearch(query, engine = state.searchEngine) {
+      if (query === 'ALL_CURATED') {
+        return BALU_CURATED_FULL_SONGS;
+      }
       if (engine === 'saavn') {
-        const res = await searchSaavnTracks(query, 24);
-        return res.length ? res : await searchItunesTracks(query, 20);
+        return await searchSaavnTracks(query, 24);
+      }
+      if (engine === 'audius') {
+        const aud = await searchAudiusTracks(query, 20);
+        return aud.length ? aud : await searchSaavnTracks(query, 20);
       }
       if (engine === 'itunes') {
         return await searchItunesTracks(query, 24);
       }
-      if (engine === 'audius') {
-        return await searchAudiusTracks(query, 20);
-      }
-      // Hybrid Mode: Fetch both Full-Length 320kbps & Global Official in parallel and interleave!
-      const [saavnList, itunesList] = await Promise.all([
-        searchSaavnTracks(query, 14),
-        searchItunesTracks(query, 14)
+      // Default Hybrid Mode: 100% Full-Length Songs (JioSaavn 320kbps + Audius Full Tracks)
+      const [saavnList, audiusList] = await Promise.all([
+        searchSaavnTracks(query, 18),
+        searchAudiusTracks(query, 6)
       ]);
-      const combined = [];
-      const maxLen = Math.max(saavnList.length, itunesList.length);
-      for (let i = 0; i < maxLen; i++) {
-        if (saavnList[i]) combined.push(saavnList[i]);
-        if (itunesList[i]) combined.push(itunesList[i]);
-      }
-      return combined;
+      return deduplicateTracks([...saavnList, ...audiusList]);
     }
 
     // =========================================================================
-    // 2. HOME FEED, CAROUSELS, AND TRACK RENDERING
+    // 2. HOME FEED, CAROUSELS, AND TRACK RENDERING (100% FULL SONGS)
     // =========================================================================
+
+    function renderCarouselCards(carouselEl, tracks) {
+      carouselEl.innerHTML = '';
+      tracks.forEach((track, idx) => {
+        const card = document.createElement('div');
+        card.className = 'album-card';
+        card.onclick = () => playFromList(tracks, idx);
+        card.innerHTML = `
+          <div class="album-art-wrap">
+            <img src="${track.artwork}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${idx}/300/300'" alt="" />
+            <span class="source-badge">320kbps • ${formatTime(track.duration)}</span>
+            <div class="card-play-fab">▶</div>
+          </div>
+          <div class="album-name">${escapeHtml(track.title)}</div>
+          <div class="album-artist">${escapeHtml(track.artist)}</div>
+        `;
+        carouselEl.appendChild(card);
+      });
+    }
 
     async function loadHomeFeeds() {
       const carouselEl = document.getElementById('homeFullSongsCarousel');
       const globalEl = document.getElementById('homeGlobalList');
-      carouselEl.innerHTML = `<div style="padding:20px;color:var(--text-secondary);font-size:12px;">Loading 320kbps full tracks...</div>`;
-      globalEl.innerHTML = `<div style="padding:20px;color:var(--text-secondary);font-size:12px;">Loading global charts...</div>`;
 
-      const [fullTracks, globalHits] = await Promise.all([
-        searchSaavnTracks('top hits 2025', 14),
-        searchItunesTracks('the weeknd dua lipa coldplay', 14)
-      ]);
+      // 1. Render Curated 100% Full-Length 320kbps Songs IMMEDIATELY (0ms wait!)
+      const initialFull = BALU_CURATED_FULL_SONGS;
+      window.__heroTrack = initialFull[0];
+      document.getElementById('heroTitle').textContent = initialFull[0].title;
+      document.getElementById('heroSub').textContent = `${initialFull[0].artist} • Full Song (${formatTime(initialFull[0].duration)})`;
+      document.getElementById('heroArt').src = initialFull[0].artwork;
 
-      // Set Hero Track if available
-      const heroCandidate = fullTracks[0] || globalHits[0];
-      if (heroCandidate) {
-        window.__heroTrack = heroCandidate;
-        document.getElementById('heroTitle').textContent = heroCandidate.title;
-        document.getElementById('heroSub').textContent = `${heroCandidate.artist} • ${heroCandidate.source}`;
-        document.getElementById('heroArt').src = heroCandidate.artwork;
-      }
+      renderCarouselCards(carouselEl, initialFull.slice(0, 10));
+      renderTrackList(globalEl, initialFull);
 
-      // Render horizontal carousel
-      if (fullTracks.length) {
-        carouselEl.innerHTML = '';
-        fullTracks.forEach((track, idx) => {
-          const card = document.createElement('div');
-          card.className = 'album-card';
-          card.onclick = () => playFromList(fullTracks, idx);
-          card.innerHTML = `
-            <div class="album-art-wrap">
-              <img src="${track.artwork}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${ idx }/300/300'" alt="" />
-              <span class="source-badge">320kbps FULL</span>
-              <div class="card-play-fab">▶</div>
-            </div>
-            <div class="album-name">${escapeHtml(track.title)}</div>
-            <div class="album-artist">${escapeHtml(track.artist)}</div>
-          `;
-          carouselEl.appendChild(card);
-        });
-      } else {
-        carouselEl.innerHTML = `<div style="padding:12px;color:var(--text-secondary);font-size:12px;">Tap any category above to load tracks.</div>`;
-      }
-
-      // Render Global list (interleaved with full tracks so initial queue has plenty of songs)
-      const homeList = [...globalHits, ...fullTracks.slice(4)];
-      renderTrackList(globalEl, homeList);
-      if (state.queue.length === 0 && homeList.length > 0) {
-        state.queue = homeList;
+      if (state.queue.length === 0) {
+        state.queue = [...initialFull];
         updateQueueUI();
       }
+
+      // 2. Fetch fresh live 320kbps full tracks in background to enrich feed
+      try {
+        const freshTracks = await searchSaavnTracks('top hits 2025', 14);
+        if (freshTracks && freshTracks.length > 4) {
+          const merged = deduplicateTracks([...initialFull, ...freshTracks]);
+          renderTrackList(globalEl, merged);
+          if (state.currentIndex === -1) {
+            state.queue = merged;
+            updateQueueUI();
+          }
+        }
+      } catch (_) {}
     }
 
     async function loadQuickCategory(query, chipBtn) {
@@ -2359,14 +2714,19 @@
         chipBtn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         chipBtn.classList.add('active');
       }
-      showToast(`Loading "${query}"...`);
       const globalEl = document.getElementById('homeGlobalList');
-      const tracks = await smartSearch(query, 'hybrid');
+      if (query === 'ALL_CURATED') {
+        showToast('Loaded Featured 320kbps Full Songs!');
+        renderTrackList(globalEl, BALU_CURATED_FULL_SONGS);
+        return;
+      }
+      showToast(`Loading full songs for "${query}"...`);
+      const tracks = await smartSearch(query, 'saavn');
       renderTrackList(globalEl, tracks);
       if (tracks[0]) {
         window.__heroTrack = tracks[0];
         document.getElementById('heroTitle').textContent = tracks[0].title;
-        document.getElementById('heroSub').textContent = `${tracks[0].artist} • ${tracks[0].source}`;
+        document.getElementById('heroSub').textContent = `${tracks[0].artist} • Full Song (${formatTime(tracks[0].duration)})`;
         document.getElementById('heroArt').src = tracks[0].artwork;
       }
     }
@@ -2400,8 +2760,11 @@
         row.className = 'track-row' + (isCurrent ? ' playing' : '');
         row.onclick = () => playFromList(tracks, idx);
 
+        const durText = track.duration > 0 ? ` • ${formatTime(track.duration)}` : '';
         const badgeClass = track.isFullTrack ? 'quality-tag' : 'quality-tag preview';
-        const badgeText = track.sourceKey === 'radio' ? 'LIVE RADIO' : (track.isFullTrack ? '320kbps FULL' : 'AAC HIT');
+        const badgeText = track.sourceKey === 'radio'
+          ? 'LIVE RADIO'
+          : (track.isFullTrack ? `320kbps FULL${durText}` : `AUTO-FULL${durText}`);
 
         row.innerHTML = `
           <div class="track-thumb-wrap">
@@ -2434,7 +2797,7 @@
     }
 
     // =========================================================================
-    // 3. AUDIO PLAYBACK, LOCK-SCREEN MEDIA SESSION & SYNCED LYRICS
+    // 3. AUDIO PLAYBACK, AUTO FULL-SONG UPGRADER & SYNCED LYRICS
     // =========================================================================
 
     function playFromList(list, index) {
@@ -2450,8 +2813,24 @@
     }
 
     async function playCurrentIndex() {
-      const track = state.queue[state.currentIndex];
+      let track = state.queue[state.currentIndex];
       if (!track) return;
+
+      // Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
+      if (!track.isFullTrack && track.sourceKey !== 'radio') {
+        showToast(`Upgrading "${track.title}" to Full 320kbps Song...`);
+        try {
+          const fullMatches = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
+          if (fullMatches && fullMatches[0] && fullMatches[0].streamUrl) {
+            track.streamUrl = fullMatches[0].streamUrl;
+            track.urlsByQuality = fullMatches[0].urlsByQuality;
+            track.duration = fullMatches[0].duration || track.duration;
+            track.isFullTrack = true;
+            track.source = 'Full 320kbps';
+          }
+        } catch (_) {}
+      }
+
       state.currentTrack = track;
 
       // Update UI immediately
@@ -2462,7 +2841,7 @@
       document.getElementById('npTitle').textContent = track.title;
       document.getElementById('npArtist').textContent = track.artist;
       document.getElementById('npArt').src = track.artwork;
-      document.getElementById('npSourceBadge').textContent = `${track.source} Stream`;
+      document.getElementById('npSourceBadge').textContent = `${track.source} (${formatTime(track.duration)})`;
 
       updateLikeButtons();
       updateDynamicAmbientGlow(track.sourceKey);
@@ -2481,11 +2860,12 @@
         await audio.play();
         state.isPlaying = true;
       } catch (err) {
-        console.warn('Playback error, trying fallback stream:', err);
-        showToast('Switching to backup stream...');
-        const backup = await searchItunesTracks(`${track.title} ${track.artist}`, 1);
-        if (backup[0] && backup[0].streamUrl !== url) {
-          audio.src = backup[0].streamUrl;
+        console.warn('Playback error, trying alternate full stream:', err);
+        showToast('Loading alternate 320kbps stream...');
+        const backup = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
+        const alt = backup.find(b => b.streamUrl && b.streamUrl !== url) || backup[0];
+        if (alt && alt.streamUrl) {
+          audio.src = alt.streamUrl;
           await audio.play().catch(() => {});
           state.isPlaying = !audio.paused;
         }
@@ -3226,6 +3606,10 @@
 
     // Initialize App on Load
     window.addEventListener('DOMContentLoaded', () => {
+      if (window.AndroidBridge || window.matchMedia?.('(display-mode: standalone)')?.matches) {
+        const banner = document.getElementById('installAppBanner');
+        if (banner) banner.style.display = 'none';
+      }
       applyCreatorBranding();
       updateLikeButtons();
       loadHomeFeeds();
