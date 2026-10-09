@@ -95,8 +95,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="3"
-              android:versionName="2.1.0">
+              android:versionCode="4"
+              android:versionName="2.2.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
               <uses-permission android:name="android.permission.INTERNET" />
@@ -134,22 +134,62 @@ jobs:
           import android.app.NotificationChannel;
           import android.app.NotificationManager;
           import android.app.PendingIntent;
+          import android.content.BroadcastReceiver;
           import android.content.Context;
           import android.content.Intent;
+          import android.content.IntentFilter;
           import android.content.pm.PackageManager;
+          import android.graphics.Bitmap;
+          import android.graphics.BitmapFactory;
           import android.graphics.Color;
+          import android.media.MediaMetadata;
+          import android.media.session.MediaSession;
+          import android.media.session.PlaybackState;
           import android.net.Uri;
           import android.os.Build;
           import android.os.Bundle;
           import android.view.Window;
+          import android.webkit.ConsoleMessage;
           import android.webkit.WebChromeClient;
           import android.webkit.WebSettings;
           import android.webkit.WebView;
           import android.webkit.WebViewClient;
+          import java.io.InputStream;
+          import java.net.HttpURLConnection;
+          import java.net.URL;
+          import org.json.JSONObject;
 
           public class MainActivity extends Activity {
               private WebView webView;
+              private MediaSession mediaSession;
               private static final String CHANNEL_ID = "balu_beats_media_channel";
+              private static final String ACTION_PREV = "com.balubeats.music.ACTION_PREV";
+              private static final String ACTION_PLAY_PAUSE = "com.balubeats.music.ACTION_PLAY_PAUSE";
+              private static final String ACTION_NEXT = "com.balubeats.music.ACTION_NEXT";
+
+              private String currentTitle = "Fear Song (From \"Devara\")";
+              private String currentArtist = "Anirudh Ravichander, NTR";
+              private String currentAlbum = "Balu Beats • 320kbps HD";
+              private String currentArtworkUrl = "";
+              private Bitmap cachedArtworkBitmap = null;
+              private boolean isPlaying = false;
+              private long currentPosition = 0L;
+              private long currentDuration = 214000L;
+
+              private final BroadcastReceiver mediaReceiver = new BroadcastReceiver() {
+                  @Override
+                  public void onReceive(Context context, Intent intent) {
+                      if (intent == null || intent.getAction() == null || webView == null) return;
+                      String action = intent.getAction();
+                      if (ACTION_PREV.equals(action)) {
+                          webView.evaluateJavascript("if(typeof playPrev==='function')playPrev();", null);
+                      } else if (ACTION_PLAY_PAUSE.equals(action)) {
+                          webView.evaluateJavascript("if(typeof togglePlay==='function')togglePlay();", null);
+                      } else if (ACTION_NEXT.equals(action)) {
+                          webView.evaluateJavascript("if(typeof playNext==='function')playNext();", null);
+                      }
+                  }
+              };
 
               @Override
               protected void onCreate(Bundle savedInstanceState) {
@@ -160,7 +200,18 @@ jobs:
                       getWindow().setNavigationBarColor(Color.parseColor("#07080D"));
                   }
 
+                  setupMediaSession();
                   setupNotificationChannelAndPermission();
+
+                  IntentFilter filter = new IntentFilter();
+                  filter.addAction(ACTION_PREV);
+                  filter.addAction(ACTION_PLAY_PAUSE);
+                  filter.addAction(ACTION_NEXT);
+                  if (Build.VERSION.SDK_INT >= 33) {
+                      registerReceiver(mediaReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+                  } else {
+                      registerReceiver(mediaReceiver, filter);
+                  }
 
                   webView = new WebView(this);
                   webView.setBackgroundColor(Color.parseColor("#07080D"));
@@ -170,7 +221,17 @@ jobs:
                   settings.setDatabaseEnabled(true);
                   settings.setMediaPlaybackRequiresUserGesture(false);
 
-                  webView.setWebChromeClient(new WebChromeClient());
+                  webView.setWebChromeClient(new WebChromeClient() {
+                      @Override
+                      public boolean onConsoleMessage(ConsoleMessage cm) {
+                          if (cm != null && cm.message() != null && cm.message().startsWith("BALU_MEDIA:")) {
+                              handleMediaSyncMessage(cm.message().substring(11));
+                              return true;
+                          }
+                          return super.onConsoleMessage(cm);
+                      }
+                  });
+
                   webView.setWebViewClient(new WebViewClient() {
                       @Override
                       public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
@@ -198,28 +259,114 @@ jobs:
                   webView.loadUrl("https://balu-beats.vercel.app/");
               }
 
+              private void setupMediaSession() {
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                      mediaSession = new MediaSession(this, "BaluBeatsMediaSession");
+                      mediaSession.setCallback(new MediaSession.Callback() {
+                          @Override
+                          public void onPlay() {
+                              if (webView != null) {
+                                  webView.post(() -> webView.evaluateJavascript("if(typeof audio!=='undefined'&&audio.paused)togglePlay();", null));
+                              }
+                          }
+
+                          @Override
+                          public void onPause() {
+                              if (webView != null) {
+                                  webView.post(() -> webView.evaluateJavascript("if(typeof audio!=='undefined'&&!audio.paused)togglePlay();", null));
+                              }
+                          }
+
+                          @Override
+                          public void onSkipToNext() {
+                              if (webView != null) {
+                                  webView.post(() -> webView.evaluateJavascript("if(typeof playNext==='function')playNext();", null));
+                              }
+                          }
+
+                          @Override
+                          public void onSkipToPrevious() {
+                              if (webView != null) {
+                                  webView.post(() -> webView.evaluateJavascript("if(typeof playPrev==='function')playPrev();", null));
+                              }
+                          }
+
+                          @Override
+                          public void onSeekTo(long pos) {
+                              currentPosition = pos;
+                              if (webView != null) {
+                                  final double sec = pos / 1000.0;
+                                  webView.post(() -> webView.evaluateJavascript("if(typeof audio!=='undefined'){audio.currentTime=" + sec + ";if(typeof syncNativeMediaNotification==='function')syncNativeMediaNotification();}", null));
+                              }
+                              updateMediaNotification();
+                          }
+                      });
+                      mediaSession.setActive(true);
+                  }
+              }
+
+              private void handleMediaSyncMessage(String jsonStr) {
+                  try {
+                      JSONObject obj = new JSONObject(jsonStr);
+                      currentTitle = obj.optString("title", currentTitle);
+                      currentArtist = obj.optString("artist", currentArtist);
+                      currentAlbum = obj.optString("album", "Balu Beats • 320kbps HD");
+                      isPlaying = obj.optBoolean("playing", false);
+                      currentPosition = obj.optLong("pos", 0L);
+                      long dur = obj.optLong("dur", 0L);
+                      if (dur > 0) currentDuration = dur;
+
+                      String newArt = obj.optString("artwork", "");
+                      if (!newArt.isEmpty() && !newArt.equals(currentArtworkUrl)) {
+                          currentArtworkUrl = newArt;
+                          fetchArtworkAsync(newArt);
+                      }
+                      updateMediaNotification();
+                  } catch (Exception ignored) {}
+              }
+
+              private void fetchArtworkAsync(final String urlStr) {
+                  new Thread(() -> {
+                      try {
+                          URL url = new URL(urlStr);
+                          HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                          conn.setConnectTimeout(5000);
+                          conn.setReadTimeout(5000);
+                          conn.setDoInput(true);
+                          conn.connect();
+                          InputStream is = conn.getInputStream();
+                          Bitmap bmp = BitmapFactory.decodeStream(is);
+                          is.close();
+                          if (bmp != null && urlStr.equals(currentArtworkUrl)) {
+                              cachedArtworkBitmap = bmp;
+                              runOnUiThread(this::updateMediaNotification);
+                          }
+                      } catch (Exception ignored) {}
+                  }).start();
+              }
+
               private void setupNotificationChannelAndPermission() {
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                       NotificationChannel channel = new NotificationChannel(
                           CHANNEL_ID,
-                          "Balu Beats Music Playback",
-                          NotificationManager.IMPORTANCE_DEFAULT
+                          "Balu Beats Music Player",
+                          NotificationManager.IMPORTANCE_LOW
                       );
-                      channel.setDescription("Shows currently playing music and controls for Balu Beats");
+                      channel.setDescription("Media playback controls, song name, and progress slider");
+                      channel.setShowBadge(false);
                       NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                       if (nm != null) {
                           nm.createNotificationChannel(channel);
                       }
                   }
-                  // Request Android 13+ (API 33+) runtime notification permission so Notifications toggle is unlocked!
                   if (Build.VERSION.SDK_INT >= 33) {
                       if (checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
                           requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 1001);
                       } else {
-                          showReadyNotification();
+                          updateMediaNotification();
                       }
                   } else {
-                      showReadyNotification();
+                      updateMediaNotification();
                   }
               }
 
@@ -227,27 +374,111 @@ jobs:
               public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
                   super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                   if (requestCode == 1001 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                      showReadyNotification();
+                      updateMediaNotification();
                   }
               }
 
-              private void showReadyNotification() {
+              private PendingIntent buildMediaActionIntent(String action, int reqCode) {
+                  Intent intent = new Intent(action);
+                  intent.setPackage(getPackageName());
+                  int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                      flags |= PendingIntent.FLAG_IMMUTABLE;
+                  }
+                  return PendingIntent.getBroadcast(this, reqCode, intent, flags);
+              }
+
+              private void updateMediaNotification() {
                   try {
+                      if (Build.VERSION.SDK_INT >= 33 && checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
+                          return;
+                      }
                       NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                       if (nm == null) return;
-                      Intent intent = new Intent(this, MainActivity.class);
-                      int flags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0;
-                      PendingIntent pi = PendingIntent.getActivity(this, 0, intent, flags);
+
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mediaSession != null) {
+                          MediaMetadata.Builder metaBuilder = new MediaMetadata.Builder()
+                              .putString(MediaMetadata.METADATA_KEY_TITLE, currentTitle)
+                              .putString(MediaMetadata.METADATA_KEY_ARTIST, currentArtist)
+                              .putString(MediaMetadata.METADATA_KEY_ALBUM, currentAlbum)
+                              .putLong(MediaMetadata.METADATA_KEY_DURATION, currentDuration);
+                          if (cachedArtworkBitmap != null) {
+                              metaBuilder.putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, cachedArtworkBitmap);
+                              metaBuilder.putBitmap(MediaMetadata.METADATA_KEY_DISPLAY_ICON, cachedArtworkBitmap);
+                          }
+                          mediaSession.setMetadata(metaBuilder.build());
+
+                          long actions = PlaybackState.ACTION_PLAY
+                              | PlaybackState.ACTION_PAUSE
+                              | PlaybackState.ACTION_PLAY_PAUSE
+                              | PlaybackState.ACTION_SKIP_TO_PREVIOUS
+                              | PlaybackState.ACTION_SKIP_TO_NEXT
+                              | PlaybackState.ACTION_SEEK_TO;
+
+                          PlaybackState state = new PlaybackState.Builder()
+                              .setActions(actions)
+                              .setState(
+                                  isPlaying ? PlaybackState.STATE_PLAYING : PlaybackState.STATE_PAUSED,
+                                  currentPosition,
+                                  isPlaying ? 1.0f : 0.0f
+                              )
+                              .build();
+                          mediaSession.setPlaybackState(state);
+                      }
+
+                      Intent openIntent = new Intent(this, MainActivity.class);
+                      int openFlags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0;
+                      PendingIntent contentPi = PendingIntent.getActivity(this, 0, openIntent, openFlags);
+
                       Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
                           ? new Notification.Builder(this, CHANNEL_ID)
                           : new Notification.Builder(this);
-                      builder.setContentTitle("Balu Beats • 320kbps HD")
-                             .setContentText("Tap to control music playback (@being_rebel__7)")
+
+                      builder.setContentTitle(currentTitle)
+                             .setContentText(currentArtist)
+                             .setSubText(currentAlbum)
                              .setSmallIcon(R.drawable.ic_launcher)
-                             .setContentIntent(pi)
-                             .setAutoCancel(true);
+                             .setContentIntent(contentPi)
+                             .setVisibility(Notification.VISIBILITY_PUBLIC)
+                             .setOngoing(isPlaying);
+
+                      if (cachedArtworkBitmap != null) {
+                          builder.setLargeIcon(cachedArtworkBitmap);
+                      }
+
+                      PendingIntent prevPi = buildMediaActionIntent(ACTION_PREV, 101);
+                      PendingIntent playPausePi = buildMediaActionIntent(ACTION_PLAY_PAUSE, 102);
+                      PendingIntent nextPi = buildMediaActionIntent(ACTION_NEXT, 103);
+
+                      int playPauseIcon = isPlaying ? android.R.drawable.ic_media_pause : android.R.drawable.ic_media_play;
+                      String playPauseLabel = isPlaying ? "Pause" : "Play";
+
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                          builder.addAction(new Notification.Action.Builder(android.R.drawable.ic_media_previous, "Previous", prevPi).build());
+                          builder.addAction(new Notification.Action.Builder(playPauseIcon, playPauseLabel, playPausePi).build());
+                          builder.addAction(new Notification.Action.Builder(android.R.drawable.ic_media_next, "Next", nextPi).build());
+                      }
+
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mediaSession != null) {
+                          Notification.MediaStyle style = new Notification.MediaStyle()
+                              .setMediaSession(mediaSession.getSessionToken())
+                              .setShowActionsInCompactView(0, 1, 2);
+                          builder.setStyle(style);
+                      }
+
                       nm.notify(1, builder.build());
                   } catch (Exception ignored) {}
+              }
+
+              @Override
+              protected void onDestroy() {
+                  try {
+                      unregisterReceiver(mediaReceiver);
+                  } catch (Exception ignored) {}
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mediaSession != null) {
+                      mediaSession.release();
+                  }
+                  super.onDestroy();
               }
 
               @Override
