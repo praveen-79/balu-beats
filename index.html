@@ -3223,14 +3223,16 @@
         }
       }
 
-      // 2. If running on local Python server (localhost / LAN), try /api/saavn direct proxy
+      // 2. If running on Vercel (*.vercel.app) or local server, use our fast /api/saavn serverless backend!
       if (location.protocol.startsWith('http') && !location.hostname.includes('github.io')) {
         try {
           const localRes = await fetch(`/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`);
           if (localRes.ok) {
             const json = await localRes.json();
-            const parsed = deduplicateTracks(parseSaavnDirectJson(json));
-            if (parsed.length) return parsed;
+            const parsedDirect = deduplicateTracks(parseSaavnDirectJson(json));
+            if (parsedDirect.length) return parsedDirect;
+            const parsedMirror = deduplicateTracks(parseSaavnMirrorJson(json));
+            if (parsedMirror.length) return parsedMirror;
           }
         } catch (_) {}
       }
