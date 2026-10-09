@@ -1,0 +1,3235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#090a0f" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Balu Beats" />
+  <meta name="description" content="Balu Beats — Official Free Full-Track Music Player by Balu (@being_rebel__7)" />
+  <title>Balu Beats — Official Music Player by @being_rebel__7</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%231db954'/%3E%3Cstop offset='100%25' stop-color='%2300d4ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='%23090a0f'/%3E%3Ccircle cx='50' cy='50' r='36' fill='url(%23g)' opacity='0.18'/%3E%3Cpath d='M36 66V34l34 16-34 16z' fill='url(%23g)'/%3E%3C/svg%3E" />
+  <style>
+    :root {
+      --bg-deep: #07080d;
+      --bg-surface: #11131c;
+      --bg-elevated: #191c29;
+      --bg-glass: rgba(20, 23, 34, 0.82);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(255, 255, 255, 0.16);
+      --text-primary: #f7f8fc;
+      --text-secondary: #9ca3bd;
+      --text-muted: #636b85;
+      --accent-green: #1ed760;
+      --accent-green-dark: #159e45;
+      --accent-cyan: #00d2ff;
+      --accent-purple: #8b5cf6;
+      --accent-pink: #ec4899;
+      --accent-amber: #f59e0b;
+      --danger: #ef4444;
+      --dynamic-glow: rgba(30, 215, 96, 0.28);
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-full: 9999px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      overflow: hidden;
+      user-select: none;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Desktop Showcase Wrapper (allows toggling between Phone Frame and Full Screen) */
+    .workspace-shell {
+      width: 100vw;
+      height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle at 20% 20%, var(--dynamic-glow), transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.18), transparent 45%),
+        #05060a;
+      transition: background 0.6s ease;
+    }
+
+    /* Desktop Top Utility Bar */
+    .desktop-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1120px;
+      padding: 10px 20px;
+      gap: 12px;
+      z-index: 30;
+    }
+
+    .desktop-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+    }
+
+    .desktop-brand-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background: rgba(30, 215, 96, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(30, 215, 96, 0.3);
+      font-weight: 600;
+    }
+
+    .desktop-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .util-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.07);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 7px 13px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .util-btn:hover {
+      background: rgba(255, 255, 255, 0.13);
+      border-color: var(--border-highlight);
+      transform: translateY(-1px);
+    }
+
+    .util-btn.primary {
+      background: linear-gradient(135deg, var(--accent-green), #10b981);
+      color: #041208;
+      border-color: transparent;
+      font-weight: 700;
+    }
+
+    .util-btn.primary:hover {
+      filter: brightness(1.08);
+    }
+
+    /* Mobile App Device Container */
+    .phone-frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-deep);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* On larger screens, default to sleek mobile frame unless full-width mode is active */
+    @media (min-width: 768px) {
+      .workspace-shell.phone-mode .phone-frame {
+        width: 420px;
+        height: min(860px, calc(100dvh - 64px));
+        border-radius: 42px;
+        border: 8px solid #1e2233;
+        box-shadow:
+          0 25px 70px rgba(0, 0, 0, 0.75),
+          0 0 0 1px rgba(255, 255, 255, 0.08),
+          0 0 60px var(--dynamic-glow);
+      }
+
+      .workspace-shell.fullscreen-mode .phone-frame {
+        width: min(1160px, 96vw);
+        height: calc(100dvh - 64px);
+        border-radius: 24px;
+        border: 1px solid var(--border-subtle);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      }
+    }
+
+    @media (max-width: 767px) {
+      .desktop-bar {
+        display: none;
+      }
+      .phone-frame {
+        width: 100vw;
+        height: 100dvh;
+        border: none;
+        border-radius: 0;
+      }
+    }
+
+    /* Status Bar / Notch on Phone Frame */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px 6px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: linear-gradient(180deg, rgba(7, 8, 13, 0.9), transparent);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 3px 9px;
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      color: var(--accent-green);
+    }
+
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px var(--accent-green);
+      animation: pulseDot 1.8s infinite;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.85); }
+    }
+
+    /* App Top Header */
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 18px 12px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .app-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #051409;
+      font-weight: 900;
+      box-shadow: 0 4px 16px rgba(30, 215, 96, 0.35);
+    }
+
+    .brand-title {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+      background: linear-gradient(90deg, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      font-size: 10.5px;
+      color: var(--text-secondary);
+      display: block;
+      margin-top: -2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .icon-btn:hover, .icon-btn:active {
+      background: rgba(255, 255, 255, 0.14);
+      transform: scale(1.04);
+    }
+
+    .spotify-pill-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 11px;
+      border-radius: var(--radius-full);
+      background: rgba(30, 215, 96, 0.14);
+      border: 1px solid rgba(30, 215, 96, 0.35);
+      color: var(--accent-green);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .spotify-pill-btn:hover {
+      background: rgba(30, 215, 96, 0.25);
+    }
+
+    /* Main Scrollable Viewport */
+    .main-view {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding: 0 16px 150px;
+      scroll-behavior: smooth;
+    }
+
+    .main-view::-webkit-scrollbar {
+      width: 4px;
+    }
+    .main-view::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 4px;
+    }
+
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.22s ease;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Source Filter Chips */
+    .chips-scroll {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 4px 0 12px;
+      scrollbar-width: none;
+    }
+    .chips-scroll::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.18s;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .chip.active {
+      background: var(--accent-green);
+      color: #041208;
+      border-color: var(--accent-green);
+      font-weight: 700;
+    }
+
+    /* Hero Banner */
+    .hero-card {
+      position: relative;
+      border-radius: 20px;
+      padding: 18px;
+      background: linear-gradient(135deg, #162a22 0%, #111827 55%, #1e1b4b 100%);
+      border: 1px solid rgba(30, 215, 96, 0.25);
+      margin-bottom: 18px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .hero-card::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -10%;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(30, 215, 96, 0.32), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-info {
+      flex: 1;
+      z-index: 1;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 800;
+      color: var(--accent-green);
+      background: rgba(30, 215, 96, 0.14);
+      padding: 3px 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 5px;
+    }
+
+    .hero-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn-play-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-green);
+      color: #051409;
+      border: none;
+      padding: 8px 15px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .btn-play-hero:active {
+      transform: scale(0.96);
+    }
+
+    .btn-secondary-hero {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-primary);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 8px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .hero-art {
+      width: 84px;
+      height: 84px;
+      border-radius: 16px;
+      object-fit: cover;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    /* Quick Mood Grid (Spotify-style 2-col compact cards) */
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .workspace-shell.fullscreen-mode .quick-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .quick-card {
+      display: flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+      height: 52px;
+    }
+
+    .quick-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--border-highlight);
+    }
+
+    .quick-card-icon {
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .quick-card-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      padding: 0 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Section Headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 18px 0 10px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: -0.3px;
+    }
+
+    .section-link {
+      font-size: 12px;
+      color: var(--accent-green);
+      font-weight: 600;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+
+    /* Horizontal Carousel Cards */
+    .horiz-scroll {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+    .horiz-scroll::-webkit-scrollbar { display: none; }
+
+    .album-card {
+      width: 136px;
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .album-card:hover {
+      background: var(--bg-elevated);
+      transform: translateY(-2px);
+    }
+
+    .album-art-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      background: #1a1d2d;
+    }
+
+    .album-art-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-play-fab {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      color: #041208;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      opacity: 0.95;
+      transition: transform 0.15s;
+    }
+
+    .album-card:hover .card-play-fab {
+      transform: scale(1.08);
+    }
+
+    .source-badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: rgba(7, 8, 13, 0.82);
+      backdrop-filter: blur(4px);
+      color: var(--accent-green);
+      border: 1px solid rgba(30, 215, 96, 0.35);
+    }
+
+    .source-badge.global {
+      color: var(--accent-cyan);
+      border-color: rgba(0, 210, 255, 0.35);
+    }
+
+    .source-badge.audius {
+      color: #c084fc;
+      border-color: rgba(192, 132, 252, 0.35);
+    }
+
+    .album-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 2px;
+    }
+
+    .album-artist {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Track List Rows */
+    .track-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .track-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .track-row:hover {
+      background: var(--bg-elevated);
+      border-color: var(--border-subtle);
+    }
+
+    .track-row.playing {
+      background: rgba(30, 215, 96, 0.1);
+      border-color: rgba(30, 215, 96, 0.32);
+    }
+
+    .track-thumb-wrap {
+      position: relative;
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #1c2030;
+    }
+
+    .track-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .track-meta {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .track-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .track-row.playing .track-title {
+      color: var(--accent-green);
+    }
+
+    .track-sub {
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .quality-tag {
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 4px;
+      background: rgba(30, 215, 96, 0.15);
+      color: var(--accent-green);
+      flex-shrink: 0;
+    }
+
+    .quality-tag.preview {
+      background: rgba(0, 210, 255, 0.14);
+      color: var(--accent-cyan);
+    }
+
+    .track-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .row-icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .row-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-primary);
+    }
+
+    .row-icon-btn.liked {
+      color: var(--accent-pink);
+    }
+
+    /* Search Bar */
+    .search-box-wrap {
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      background: var(--bg-deep);
+      padding: 4px 0 10px;
+    }
+
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-highlight);
+      border-radius: 14px;
+      padding: 0 12px;
+      height: 46px;
+      gap: 8px;
+      transition: border-color 0.2s;
+    }
+
+    .search-bar:focus-within {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.15);
+    }
+
+    .search-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .search-bar input::placeholder {
+      color: var(--text-muted);
+    }
+
+    /* Genre Browse Cards */
+    .genre-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    @media (min-width: 768px) {
+      .workspace-shell.fullscreen-mode .genre-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .genre-card {
+      height: 82px;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.18s;
+    }
+
+    .genre-card:hover {
+      transform: scale(1.02);
+    }
+
+    .genre-card span.emoji {
+      position: absolute;
+      right: 10px;
+      bottom: 6px;
+      font-size: 32px;
+      transform: rotate(12deg);
+      opacity: 0.9;
+    }
+
+    /* Mini Player Docked Above Bottom Nav */
+    .mini-player {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 68px;
+      height: 62px;
+      background: rgba(22, 26, 40, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 10px;
+      z-index: 20;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .mini-progress-track {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .mini-progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+      transition: width 0.2s linear;
+    }
+
+    .mini-art {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: cover;
+      flex-shrink: 0;
+      background: #1e2235;
+    }
+
+    .mini-art.spinning {
+      animation: spinSlow 14s linear infinite;
+    }
+
+    @keyframes spinSlow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .mini-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .mini-title {
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-artist {
+      font-size: 11px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .mini-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .play-circle-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--text-primary);
+      color: var(--bg-deep);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .play-circle-btn:active {
+      transform: scale(0.92);
+    }
+
+    /* Bottom Navigation Bar */
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      background: rgba(10, 12, 18, 0.95);
+      backdrop-filter: blur(18px);
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      z-index: 20;
+    }
+
+    .nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      color: var(--text-muted);
+      background: none;
+      border: none;
+      font-size: 10.5px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px 0;
+      transition: color 0.18s;
+    }
+
+    .nav-item.active {
+      color: var(--accent-green);
+    }
+
+    .nav-item svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Full-Screen Now Playing Sheet */
+    .now-playing-sheet {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 18%, var(--dynamic-glow), transparent 55%),
+        linear-gradient(180deg, #131726 0%, #07080d 100%);
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      padding: 14px 20px 22px;
+      transform: translateY(105%);
+      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+      overflow-y: auto;
+    }
+
+    .now-playing-sheet.open {
+      transform: translateY(0%);
+    }
+
+    .np-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .np-source-label {
+      text-align: center;
+    }
+
+    .np-source-label small {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-secondary);
+      display: block;
+    }
+
+    .np-source-label strong {
+      font-size: 12px;
+      color: var(--accent-green);
+    }
+
+    /* Mode Switcher inside Now Playing (Artwork / Lyrics / Queue / Spotify Embed) */
+    .np-mode-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: var(--radius-full);
+      padding: 3px;
+      margin: 0 auto 14px;
+      width: fit-content;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .np-mode-btn {
+      padding: 5px 13px;
+      border-radius: var(--radius-full);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .np-mode-btn.active {
+      background: var(--accent-green);
+      color: #041208;
+    }
+
+    /* Artwork Stage */
+    .np-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    .np-art-container {
+      position: relative;
+      width: min(260px, 64vw);
+      height: min(260px, 64vw);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      transition: border-radius 0.4s;
+    }
+
+    .np-art-container.vinyl-mode {
+      border-radius: 50%;
+      animation: spinSlow 18s linear infinite;
+    }
+
+    .np-art-container.vinyl-mode.paused {
+      animation-play-state: paused;
+    }
+
+    .np-art-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Visualizer Canvas */
+    .visualizer-canvas {
+      width: 100%;
+      height: 44px;
+      margin-top: 12px;
+    }
+
+    /* Synced Lyrics View */
+    .np-lyrics-box {
+      display: none;
+      width: 100%;
+      height: 280px;
+      overflow-y: auto;
+      padding: 16px;
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      text-align: center;
+      scroll-behavior: smooth;
+    }
+
+    .lyric-line {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      padding: 8px 0;
+      transition: all 0.25s;
+      cursor: pointer;
+    }
+
+    .lyric-line.active {
+      font-size: 18px;
+      font-weight: 800;
+      color: #ffffff;
+      text-shadow: 0 0 18px var(--accent-green);
+      transform: scale(1.03);
+    }
+
+    /* Queue View inside Now Playing */
+    .np-queue-box {
+      display: none;
+      width: 100%;
+      height: 280px;
+      overflow-y: auto;
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid var(--border-subtle);
+      border-radius: 18px;
+      padding: 10px;
+    }
+
+    /* Track Info & Controls in Now Playing */
+    .np-track-info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .np-title {
+      font-size: 19px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .np-artist {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Seek Bar */
+    .np-seek-wrap {
+      margin-bottom: 12px;
+    }
+
+    .seek-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 5px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.16);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .seek-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 10px rgba(30, 215, 96, 0.8);
+      cursor: pointer;
+    }
+
+    .seek-times {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 5px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Main Transport Controls */
+    .np-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .np-play-main {
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      color: #041208;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(30, 215, 96, 0.4);
+      transition: transform 0.15s;
+    }
+
+    .np-play-main:active {
+      transform: scale(0.93);
+    }
+
+    .np-ctrl-btn {
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+    }
+
+    .np-ctrl-btn.active {
+      color: var(--accent-green);
+    }
+
+    /* Bottom Utility Strip in Now Playing */
+    .np-bottom-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
+    }
+
+    .strip-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      padding: 6px 11px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .strip-pill:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Connect & App Bridge Cards */
+    .connect-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+
+    .connect-card h3 {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .connect-card p {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.45;
+      margin-bottom: 12px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .text-input {
+      flex: 1;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-highlight);
+      border-radius: 10px;
+      padding: 9px 12px;
+      color: var(--text-primary);
+      font-size: 12.5px;
+      outline: none;
+    }
+
+    .text-input:focus {
+      border-color: var(--accent-green);
+    }
+
+    .app-bridge-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .bridge-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.18s;
+    }
+
+    .bridge-btn:hover {
+      border-color: var(--accent-green);
+      background: rgba(30, 215, 96, 0.1);
+    }
+
+    /* Modal / Action Sheet */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      backdrop-filter: blur(6px);
+      z-index: 60;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 400px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      border-radius: 22px;
+      padding: 20px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: #181c2a;
+      color: #fff;
+      border: 1px solid var(--accent-green);
+      padding: 9px 18px;
+      border-radius: var(--radius-full);
+      font-size: 12.5px;
+      font-weight: 700;
+      z-index: 100;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Equalizer Bars Indicator */
+    .eq-bars {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      height: 12px;
+    }
+    .eq-bars span {
+      width: 2.5px;
+      background: var(--accent-green);
+      border-radius: 2px;
+      animation: eqBounce 0.8s ease-in-out infinite alternate;
+    }
+    .eq-bars span:nth-child(2) { animation-delay: 0.2s; }
+    .eq-bars span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes eqBounce {
+      0% { height: 3px; }
+      100% { height: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast">Ready to play!</div>
+
+  <div id="workspaceShell" class="workspace-shell phone-mode">
+    <!-- Top Desktop Utility Bar -->
+    <div class="desktop-bar">
+      <div class="desktop-brand">
+        <span id="desktopBrandName">🎵 Balu Beats</span>
+        <span class="desktop-brand-badge" id="desktopCreatorBadge" onclick="openCreatorModal()" style="cursor:pointer;">👑 Created by Balu • @being_rebel__7 ✓</span>
+      </div>
+      <div class="desktop-actions">
+        <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="util-btn" style="border-color:rgba(236,72,153,0.5);color:#f472b6;text-decoration:none;">
+          📸 IG: @being_rebel__7
+        </a>
+        <button class="util-btn" onclick="openCreatorModal()" style="border-color:rgba(30,215,96,0.45);color:var(--accent-green);">
+          👑 Brand Studio
+        </button>
+        <button class="util-btn" onclick="toggleViewportMode()" id="viewportToggleBtn" title="Switch between Phone Frame and Wide View">
+          📱 Phone View / 🖥️ Wide View
+        </button>
+        <button class="util-btn primary" onclick="downloadShareableAppFile()">
+          ⬇ Download Balu Beats (.html)
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Phone App Frame -->
+    <div class="phone-frame">
+      <!-- Mobile Status Bar -->
+      <div class="status-bar">
+        <span id="statusClock">9:41</span>
+        <div class="status-pill" onclick="openCreatorModal()" style="cursor:pointer;" title="Tap to view Creator Profile">
+          <span class="live-dot"></span>
+          <span id="activeEngineBadge">👑 Balu Beats • @being_rebel__7</span>
+        </div>
+      </div>
+
+      <!-- App Header -->
+      <header class="app-header">
+        <div class="brand-row" onclick="openCreatorModal()" style="cursor:pointer;" title="Tap to view Creator Identity">
+          <div class="app-logo" id="appLogoBox">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+            </svg>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div class="brand-title" id="headerAppTitle">Balu Beats</div>
+              <span id="headerCreatorPill" style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(30,215,96,0.16);color:var(--accent-green);border:1px solid rgba(30,215,96,0.35);">by Balu ✓</span>
+            </div>
+            <span class="brand-subtitle" id="greetingText">IG: @being_rebel__7 • Praveen</span>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="spotify-pill-btn" style="text-decoration:none;background:linear-gradient(135deg,rgba(236,72,153,0.2),rgba(139,92,246,0.2));border-color:rgba(236,72,153,0.45);color:#f9a8d4;" title="Follow @being_rebel__7 on Instagram">
+            📸 @being_rebel__7
+          </a>
+          <button class="icon-btn" onclick="openShareModal()" title="Share or Install App">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Content Area -->
+      <main class="main-view" id="mainScroll">
+        <!-- ================= TAB 1: HOME ================= -->
+        <section id="tab-home" class="tab-pane active">
+          <!-- Source Filter Chips -->
+          <div class="chips-scroll">
+            <button class="chip active" onclick="loadQuickCategory('top hits 2025', this)">🔥 All Trending</button>
+            <button class="chip" onclick="loadQuickCategory('english pop hits', this)">🌎 Global Pop</button>
+            <button class="chip" onclick="loadQuickCategory('bollywood hits', this)">🇮🇳 Bollywood Full</button>
+            <button class="chip" onclick="loadQuickCategory('hip hop rap', this)">🎤 Hip-Hop</button>
+            <button class="chip" onclick="loadQuickCategory('lofi chill beats', this)">☕ Lo-Fi Chill</button>
+            <button class="chip" onclick="loadQuickCategory('phonk gym workout', this)">⚡ Phonk / Gym</button>
+          </div>
+
+          <!-- Featured Hero Card -->
+          <div class="hero-card" id="heroCard">
+            <div class="hero-info">
+              <div class="hero-tag">👑 Balu Beats • @being_rebel__7</div>
+              <div class="hero-title" id="heroTitle">Blinding Lights & Top Hits</div>
+              <div class="hero-sub" id="heroSub">Stream full 320kbps songs & global charts on Balu Beats</div>
+              <div class="hero-btns">
+                <button class="btn-play-hero" onclick="playHeroTrack()">
+                  ▶ Play Now
+                </button>
+                <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn-secondary-hero" style="text-decoration:none;border-color:rgba(236,72,153,0.45);color:#f9a8d4;">
+                  📸 @being_rebel__7 ↗
+                </a>
+              </div>
+            </div>
+            <img id="heroArt" class="hero-art" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/pulsehero/300/300'" alt="Featured" />
+          </div>
+
+          <!-- Quick Mood Grid -->
+          <div class="quick-grid">
+            <div class="quick-card" onclick="searchAndGo('The Weeknd')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);">🌙</div>
+              <div class="quick-card-title">The Weeknd</div>
+            </div>
+            <div class="quick-card" onclick="searchAndGo('Arijit Singh')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #ec4899, #831843);">💖</div>
+              <div class="quick-card-title">Arijit Singh</div>
+            </div>
+            <div class="quick-card" onclick="searchAndGo('Taylor Swift')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">✨</div>
+              <div class="quick-card-title">Taylor Swift</div>
+            </div>
+            <div class="quick-card" onclick="searchAndGo('Alan Walker')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #00d2ff, #0369a1);">🎧</div>
+              <div class="quick-card-title">Alan Walker</div>
+            </div>
+            <div class="quick-card" onclick="searchAndGo('Coldplay')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #10b981, #065f46);">🪐</div>
+              <div class="quick-card-title">Coldplay</div>
+            </div>
+            <div class="quick-card" onclick="searchAndGo('AP Dhillon')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #f59e0b, #78350f);">🔥</div>
+              <div class="quick-card-title">AP Dhillon</div>
+            </div>
+          </div>
+
+          <!-- Full-Length Songs Carousel (320kbps) -->
+          <div class="section-header">
+            <h2 class="section-title">⚡ Full-Length Songs (320kbps)</h2>
+            <button class="section-link" onclick="switchTab('search')">See All</button>
+          </div>
+          <div class="horiz-scroll" id="homeFullSongsCarousel">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Global Official Hits List -->
+          <div class="section-header">
+            <h2 class="section-title">🌍 Global Charts (Apple / Spotify Hits)</h2>
+            <button class="section-link" onclick="loadHomeFeeds()">Refresh</button>
+          </div>
+          <div class="track-list" id="homeGlobalList">
+            <!-- Populated dynamically -->
+          </div>
+        </section>
+
+        <!-- ================= TAB 2: SEARCH ================= -->
+        <section id="tab-search" class="tab-pane">
+          <div class="search-box-wrap">
+            <div class="search-bar">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--text-secondary)">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input type="text" id="searchInput" placeholder="Search songs, artists, albums, or paste Spotify link..." autocomplete="off" />
+              <button class="row-icon-btn" onclick="startVoiceSearch()" title="Voice Search">
+                🎤
+              </button>
+              <button class="row-icon-btn" onclick="clearSearch()" title="Clear">
+                ✕
+              </button>
+            </div>
+
+            <!-- API Engine Selector -->
+            <div class="chips-scroll" style="padding: 10px 0 4px;">
+              <button class="chip active" data-engine="hybrid" onclick="setSearchEngine('hybrid', this)">🚀 All Sources (Hybrid)</button>
+              <button class="chip" data-engine="saavn" onclick="setSearchEngine('saavn', this)">🎵 Full Songs (320kbps)</button>
+              <button class="chip" data-engine="itunes" onclick="setSearchEngine('itunes', this)">🍎 Global Official Catalog</button>
+              <button class="chip" data-engine="audius" onclick="setSearchEngine('audius', this)">💜 Audius Indie/EDM</button>
+            </div>
+          </div>
+
+          <div id="searchStatus" style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;"></div>
+          <div class="track-list" id="searchResultsList"></div>
+
+          <!-- Browse Categories -->
+          <div class="section-header" style="margin-top:22px;">
+            <h2 class="section-title">Browse Moods & Genres</h2>
+          </div>
+          <div class="genre-grid">
+            <div class="genre-card" style="background:linear-gradient(135deg,#e11d48,#881337)" onclick="searchAndGo('Top Pop Hits')">
+              <span>Pop Anthems</span><span class="emoji">🎤</span>
+            </div>
+            <div class="genre-card" style="background:linear-gradient(135deg,#7c3aed,#3b0764)" onclick="searchAndGo('Phonk Drift Gym')">
+              <span>Phonk & Gym</span><span class="emoji">🔥</span>
+            </div>
+            <div class="genre-card" style="background:linear-gradient(135deg,#0284c7,#0c4a6e)" onclick="searchAndGo('Lo-Fi Chill Study Beats')">
+              <span>Lo-Fi Study</span><span class="emoji">☕</span>
+            </div>
+            <div class="genre-card" style="background:linear-gradient(135deg,#059669,#064e3b)" onclick="searchAndGo('Bollywood Romantic Hits')">
+              <span>Bollywood</span><span class="emoji">🎬</span>
+            </div>
+            <div class="genre-card" style="background:linear-gradient(135deg,#d97706,#78350f)" onclick="searchAndGo('Hip Hop Rap Classics')">
+              <span>Hip-Hop</span><span class="emoji">🎧</span>
+            </div>
+            <div class="genre-card" style="background:linear-gradient(135deg,#4f46e5,#1e1b4b)" onclick="searchAndGo('EDM Festival Bass')">
+              <span>EDM & Electronic</span><span class="emoji">⚡</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 3: LIVE RADIO ================= -->
+        <section id="tab-radio" class="tab-pane">
+          <div class="section-header" style="margin-top:4px;">
+            <h2 class="section-title">📻 24/7 Live World Radio</h2>
+            <span style="font-size:11px;color:var(--accent-green);">● Live Streams</span>
+          </div>
+          <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;">
+            Non-stop live music broadcast from global stations. Tap any station to stream immediately.
+          </p>
+          <div class="chips-scroll">
+            <button class="chip active" onclick="loadRadioStations('pop', this)">Pop Hits</button>
+            <button class="chip" onclick="loadRadioStations('lofi', this)">Lo-Fi 24/7</button>
+            <button class="chip" onclick="loadRadioStations('hiphop', this)">Hip-Hop</button>
+            <button class="chip" onclick="loadRadioStations('electronic', this)">Dance / EDM</button>
+            <button class="chip" onclick="loadRadioStations('rock', this)">Classic Rock</button>
+            <button class="chip" onclick="loadRadioStations('bollywood', this)">Bollywood Radio</button>
+            <button class="chip" onclick="loadRadioStations('jazz', this)">Smooth Jazz</button>
+          </div>
+          <div class="track-list" id="radioStationsList"></div>
+        </section>
+
+        <!-- ================= TAB 4: LIBRARY ================= -->
+        <section id="tab-library" class="tab-pane">
+          <div class="section-header" style="margin-top:4px;">
+            <h2 class="section-title">❤️ Your Music Library</h2>
+            <div style="display:flex;gap:8px;">
+              <button class="section-link" onclick="document.getElementById('localAudioInput').click()">+ Local MP3</button>
+              <button class="section-link" onclick="exportLibraryData()">Export</button>
+            </div>
+          </div>
+
+          <input type="file" id="localAudioInput" accept="audio/*" multiple style="display:none" onchange="handleLocalFiles(event)" />
+
+          <div class="chips-scroll">
+            <button class="chip active" onclick="showLibraryView('liked', this)">❤️ Liked Songs (<span id="likedCount">0</span>)</button>
+            <button class="chip" onclick="showLibraryView('recent', this)">🕒 Recently Played</button>
+            <button class="chip" onclick="showLibraryView('local', this)">📂 Device Audio Files</button>
+          </div>
+
+          <div class="track-list" id="libraryTrackList"></div>
+        </section>
+
+        <!-- ================= TAB 5: SPOTIFY & APP BRIDGE ================= -->
+        <section id="tab-connect" class="tab-pane">
+          <div class="section-header" style="margin-top:4px;">
+            <h2 class="section-title">🔗 Connect to Spotify & Other Apps</h2>
+          </div>
+
+          <!-- Card 1: Instant Spotify Embed & Link Bridge -->
+          <div class="connect-card">
+            <h3>
+              <span style="color:var(--accent-green);">●</span>
+              Spotify Link / Playlist Player
+            </h3>
+            <p>
+              Paste any <strong>Spotify Track, Album, or Playlist URL / URI</strong> below to load the interactive Spotify player inside PulseBeats, or pick a curated Spotify playlist:
+            </p>
+            <div class="input-row">
+              <input type="text" id="spotifyUrlInput" class="text-input" placeholder="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M" />
+              <button class="util-btn primary" onclick="loadCustomSpotifyEmbed()">Load</button>
+            </div>
+            <div class="chips-scroll" style="padding-bottom:8px;">
+              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZF1DXcBWIGoYBM5M')">🔥 Today's Top Hits</button>
+              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZEVXbMDoHDwVN2tF')">🌎 Global Top 50</button>
+              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZF1DX0XUsuxWHRQd')">🎤 RapCaviar</button>
+              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZF1DWWQRwui0ExPn')">☕ Lo-Fi Beats</button>
+            </div>
+            <div id="spotifyEmbedContainer" style="margin-top:6px;border-radius:14px;overflow:hidden;min-height:152px;background:#0e1018;">
+              <iframe
+                id="spotifyIframe"
+                style="border-radius:12px"
+                src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"
+                width="100%"
+                height="152"
+                frameBorder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy">
+              </iframe>
+            </div>
+          </div>
+
+          <!-- Card 2: App-to-App Hand-off for Currently Playing Track -->
+          <div class="connect-card">
+            <h3>🚀 Open Current Song in External App</h3>
+            <p>
+              Jump directly from the currently playing song into your installed music apps with one tap:
+            </p>
+            <div class="app-bridge-grid">
+              <button class="bridge-btn" onclick="openCurrentInApp('spotify')">
+                <span>🟢</span> Open in Spotify
+              </button>
+              <button class="bridge-btn" onclick="openCurrentInApp('ytmusic')">
+                <span>🔴</span> YouTube Music
+              </button>
+              <button class="bridge-btn" onclick="openCurrentInApp('apple')">
+                <span>🍎</span> Apple Music
+              </button>
+              <button class="bridge-btn" onclick="openCurrentInApp('saavn')">
+                <span>⚡</span> JioSaavn
+              </button>
+            </div>
+          </div>
+
+          <!-- Card 3: Optional Spotify Web API Token / Client ID Integration -->
+          <div class="connect-card">
+            <h3>🔑 Optional: Connect Spotify Developer API</h3>
+            <p>
+              PulseBeats works out-of-the-box with zero keys! If you also have a Spotify Developer Client ID or Access Token, connect it here to fetch directly from <code>api.spotify.com/v1</code>:
+            </p>
+            <div class="input-row">
+              <input type="text" id="spotifyClientIdInput" class="text-input" placeholder="Spotify Client ID or Bearer Access Token..." />
+              <button class="util-btn" onclick="connectSpotifyApi()">Connect</button>
+            </div>
+            <div id="spotifyApiStatus" style="font-size:11.5px;color:var(--text-secondary);">
+              Status: Using built-in Free Full-Track & Global APIs (No key required)
+            </div>
+          </div>
+
+          <!-- Card 4: Share File with Friends -->
+          <div class="connect-card" style="border-color:rgba(30,215,96,0.35);">
+            <h3>📲 Share This App File With Friends</h3>
+            <p>
+              Want others to use this app? Download the standalone single-file app (<code>PulseBeats_Mobile_App.html</code>) and send it via <strong>WhatsApp, Telegram, Drive, or Email</strong> — it runs immediately on any phone or computer!
+            </p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button class="util-btn primary" onclick="downloadShareableAppFile()">
+                ⬇ Download Single-File App (.html)
+              </button>
+              <button class="util-btn" onclick="triggerInstallPWA()">
+                📱 Install to Home Screen
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- ================= MINI PLAYER ================= -->
+      <div class="mini-player" id="miniPlayer" onclick="openNowPlaying(event)">
+        <div class="mini-progress-track">
+          <div class="mini-progress-fill" id="miniProgressFill"></div>
+        </div>
+        <img id="miniArt" class="mini-art" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/mini/100/100'" alt="Art" />
+        <div class="mini-info">
+          <div class="mini-title" id="miniTitle">Tap any song to start streaming</div>
+          <div class="mini-artist" id="miniArtist">Balu Beats • @being_rebel__7</div>
+        </div>
+        <div class="mini-controls" onclick="event.stopPropagation()">
+          <button class="row-icon-btn" id="miniLikeBtn" onclick="toggleLikeCurrent()" title="Like">
+            ♡
+          </button>
+          <button class="play-circle-btn" id="miniPlayBtn" onclick="togglePlay()">
+            <svg id="miniPlayIcon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </button>
+          <button class="row-icon-btn" onclick="playNext()" title="Next">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- ================= BOTTOM NAVIGATION ================= -->
+      <nav class="bottom-nav">
+        <button class="nav-item active" data-tab="home" onclick="switchTab('home')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          <span>Home</span>
+        </button>
+        <button class="nav-item" data-tab="search" onclick="switchTab('search')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Search</span>
+        </button>
+        <button class="nav-item" data-tab="radio" onclick="switchTab('radio')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
+          <span>Live Radio</span>
+        </button>
+        <button class="nav-item" data-tab="library" onclick="switchTab('library')">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <span>Library</span>
+        </button>
+        <button class="nav-item" data-tab="connect" onclick="switchTab('connect')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <span>Connect</span>
+        </button>
+      </nav>
+
+      <!-- ================= FULL-SCREEN NOW PLAYING SHEET ================= -->
+      <div class="now-playing-sheet" id="nowPlayingSheet">
+        <div class="np-header">
+          <button class="icon-btn" onclick="closeNowPlaying()" title="Minimize">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </button>
+          <div class="np-source-label">
+            <small>BALU BEATS • @being_rebel__7</small>
+            <strong id="npSourceBadge">320kbps Full-Track Stream</strong>
+          </div>
+          <button class="icon-btn" onclick="openCurrentInApp('spotify')" title="Open in Spotify">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="#1ed760">
+              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mode Switcher: Cover / Synced Lyrics / Queue -->
+        <div class="np-mode-tabs">
+          <button class="np-mode-btn active" onclick="setNpView('art', this)">💿 Artwork</button>
+          <button class="np-mode-btn" onclick="setNpView('lyrics', this)">🎤 Synced Lyrics</button>
+          <button class="np-mode-btn" onclick="setNpView('queue', this)">📜 Queue (<span id="queueCountBadge">0</span>)</button>
+        </div>
+
+        <!-- Stage: Artwork + Visualizer / Lyrics / Queue -->
+        <div class="np-stage">
+          <div id="npArtView" style="display:flex;flex-direction:column;align-items:center;width:100%;">
+            <div class="np-art-container" id="npArtContainer" onclick="toggleVinylSpin()" title="Tap to toggle spinning vinyl">
+              <img id="npArt" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/np/500/500'" alt="Album Art" />
+            </div>
+            <canvas id="visualizerCanvas" class="visualizer-canvas" width="320" height="44"></canvas>
+          </div>
+
+          <div id="npLyricsView" class="np-lyrics-box">
+            <div class="lyric-line active">Select any song to load live time-synced lyrics...</div>
+          </div>
+
+          <div id="npQueueView" class="np-queue-box">
+            <div class="track-list" id="npQueueList"></div>
+          </div>
+        </div>
+
+        <!-- Track Title & Like -->
+        <div class="np-track-info">
+          <div style="min-width:0;flex:1;">
+            <div class="np-title" id="npTitle">Select a Track</div>
+            <div class="np-artist" id="npArtist">Balu Beats • @being_rebel__7</div>
+          </div>
+          <button class="icon-btn" id="npLikeBtn" onclick="toggleLikeCurrent()" title="Save to Liked Songs">
+            ♡
+          </button>
+        </div>
+
+        <!-- Seek Bar -->
+        <div class="np-seek-wrap">
+          <input type="range" id="seekSlider" class="seek-slider" min="0" max="100" value="0" step="0.1" oninput="onSeekInput(this.value)" onchange="onSeekCommit(this.value)" />
+          <div class="seek-times">
+            <span id="currentTimeLabel">0:00</span>
+            <span id="durationLabel">0:00</span>
+          </div>
+        </div>
+
+        <!-- Main Controls -->
+        <div class="np-controls">
+          <button class="np-ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="Shuffle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/>
+              <polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/>
+              <line x1="4" y1="4" x2="9" y2="9"/>
+            </svg>
+          </button>
+          <button class="np-ctrl-btn" onclick="playPrev()" title="Previous">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+            </svg>
+          </button>
+          <button class="np-play-main" onclick="togglePlay()">
+            <svg id="npPlayIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </button>
+          <button class="np-ctrl-btn" onclick="playNext()" title="Next">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+            </svg>
+          </button>
+          <button class="np-ctrl-btn" id="repeatBtn" onclick="toggleRepeat()" title="Repeat">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+              <polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Bottom Action Strip -->
+        <div class="np-bottom-strip">
+          <button class="strip-pill" onclick="cyclePlaybackSpeed()" id="speedBtn" title="Playback Speed / Slowed / Nightcore">
+            ⚡ 1.0x Speed
+          </button>
+          <button class="strip-pill" onclick="cycleAudioQuality()" id="qualityBtn" title="Stream Quality">
+            🎧 320kbps HD
+          </button>
+          <button class="strip-pill" onclick="cycleSleepTimer()" id="sleepTimerBtn" title="Sleep Timer">
+            🌙 Sleep: Off
+          </button>
+          <button class="strip-pill" onclick="downloadCurrentTrack()" title="Download Audio File">
+            ⬇ Save Audio
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SHARE / INSTALL MODAL ================= -->
+  <div class="modal-backdrop" id="shareModal" onclick="if(event.target===this)closeShareModal()">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <h3 style="font-size:17px;font-weight:800;">📲 Share & Install Balu Beats</h3>
+        <button class="row-icon-btn" onclick="closeShareModal()">✕</button>
+      </div>
+      <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.45;margin-bottom:14px;">
+        Others can use <strong>Balu Beats</strong> in <strong>2 easy ways</strong>:
+      </p>
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent-green);">1. Share the Single-File App (.html)</div>
+        <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
+          Download <code>Balu_Beats_App.html</code> and send it on <strong>WhatsApp, Telegram, Email, or Google Drive</strong>. Anyone who opens the file on their phone or PC gets <strong>Balu Beats</strong> immediately!
+        </p>
+        <button class="util-btn primary" style="width:100%;justify-content:center;" onclick="downloadShareableAppFile()">
+          ⬇ Download Balu_Beats_App.html
+        </button>
+      </div>
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;margin-bottom:12px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent-cyan);">2. Install as Mobile App / Share Current Song</div>
+        <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
+          On Android Chrome or iOS Safari, tap <strong>Add to Home Screen</strong> to install <strong>Balu Beats</strong> as a fullscreen native app.
+        </p>
+        <div style="display:flex;gap:8px;">
+          <button class="util-btn" style="flex:1;justify-content:center;" onclick="triggerInstallPWA()">
+            📱 Install App
+          </button>
+          <button class="util-btn" style="flex:1;justify-content:center;" onclick="shareCurrentSongNative()">
+            🔗 Share Song
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CREATOR IDENTITY & BRANDING STUDIO MODAL ================= -->
+  <div class="modal-backdrop" id="creatorModal" onclick="if(event.target===this)closeCreatorModal()">
+    <div class="modal-box" style="max-width:430px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <h3 style="font-size:17px;font-weight:800;display:flex;align-items:center;gap:6px;">
+          <span>👑</span> <span id="creatorModalTitle">Balu Beats — Official Creator</span>
+        </h3>
+        <button class="row-icon-btn" onclick="closeCreatorModal()">✕</button>
+      </div>
+
+      <!-- Public Creator Profile Card (Visible to everyone who opens your app) -->
+      <div style="background:linear-gradient(135deg, rgba(236,72,153,0.18), rgba(30,215,96,0.14));border:1px solid rgba(236,72,153,0.45);border-radius:16px;padding:14px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div id="creatorAvatarPreview" style="width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;font-weight:900;font-size:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            BB
+          </div>
+          <div style="min-width:0;flex:1;">
+            <div style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:#f9a8d4;">
+              ✓ Verified App Creator • 𝔓𝔯𝔞𝔳𝔢𝔢𝔫
+            </div>
+            <div id="creatorCardName" style="font-size:16px;font-weight:800;color:#fff;">Balu Beats • @being_rebel__7</div>
+            <div id="creatorCardBio" style="font-size:11.5px;color:var(--text-secondary);margin-top:2px;">
+              Official Balu Beats 320kbps Music Player • IG: @being_rebel__7
+            </div>
+          </div>
+        </div>
+        <div id="creatorSocialRow" style="margin-top:10px;display:block;">
+          <a id="creatorSocialLinkBtn" href="https://www.instagram.com/being_rebel__7/" target="_blank" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;">
+            📸 Follow @being_rebel__7 on Instagram ↗
+          </a>
+        </div>
+      </div>
+
+      <!-- Customize & Bake Into Shared File Form -->
+      <div style="font-size:12px;font-weight:700;color:var(--text-secondary);margin-bottom:8px;">
+        ✏️ Customize Your Identity (Bakes permanently into the shared .html file!):
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+        <input type="text" id="brandCreatorInput" class="text-input" placeholder="Your Name / Handle (e.g., Balu • @being_rebel__7)" />
+        <input type="text" id="brandAppNameInput" class="text-input" placeholder="Custom App Title (e.g., Balu Beats)" />
+        <input type="text" id="brandBioInput" class="text-input" placeholder="Tagline / Message shown to your users..." />
+        <input type="text" id="brandSocialInput" class="text-input" placeholder="Your Instagram URL" />
+      </div>
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="util-btn" style="flex:1;justify-content:center;" onclick="saveCreatorBranding(false)">
+          ✓ Apply Now
+        </button>
+        <button class="util-btn primary" style="flex:1.4;justify-content:center;" onclick="saveCreatorBranding(true)">
+          💾 Bake & Download Balu Beats (.html)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden HTML5 Audio Player (No crossorigin attribute so every CDN stream plays without CORS mute) -->
+  <audio id="audioPlayer" preload="auto"></audio>
+
+  <!-- Baked Creator Configuration (Automatically updated when you click "Bake & Download My App") -->
+  <script id="bakedCreatorConfig">
+    window.__BAKED_CREATOR__ = {
+      creatorName: "Balu (@being_rebel__7)",
+      appName: "Balu Beats",
+      bio: "Official Balu Beats 320kbps Music Player • Praveen (IG: @being_rebel__7)",
+      socialUrl: "https://www.instagram.com/being_rebel__7/"
+    };
+  </script>
+
+  <script>
+    /*************************************************************************
+     * BALU BEATS — MULTI-API MOBILE MUSIC STREAMING ENGINE + SPOTIFY BRIDGE
+     * Created by Balu / Praveen (@being_rebel__7)
+     *************************************************************************/
+
+    const state = {
+      queue: [],
+      currentIndex: -1,
+      currentTrack: null,
+      isPlaying: false,
+      shuffle: false,
+      repeat: 'off', // 'off' | 'all' | 'one'
+      speed: 1.0,
+      quality: '320kbps', // '320kbps' | '160kbps' | '96kbps'
+      searchEngine: 'hybrid', // 'hybrid' | 'saavn' | 'itunes' | 'audius'
+      likedTracks: JSON.parse(localStorage.getItem('pb_liked_tracks') || '[]'),
+      recentTracks: JSON.parse(localStorage.getItem('pb_recent_tracks') || '[]'),
+      localTracks: [],
+      libraryView: 'liked',
+      lyrics: [],
+      sleepMinutes: 0,
+      sleepTimeoutId: null,
+      spotifyToken: localStorage.getItem('pb_spotify_token') || '',
+      deferredInstallPrompt: null,
+      isSeeking: false
+    };
+
+    const audio = document.getElementById('audioPlayer');
+
+    // Utility: Decode HTML entities from API responses (e.g., &quot;)
+    function decodeEntities(str) {
+      if (!str) return '';
+      const txt = document.createElement('textarea');
+      txt.innerHTML = str;
+      return txt.value;
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+    }
+
+    function formatTime(sec) {
+      if (!sec || !isFinite(sec) || sec < 0) return '0:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return `${m}:${s < 10 ? '0' : ''}${s}`;
+    }
+
+    // Update greeting & status clock
+    function updateClockAndGreeting() {
+      const now = new Date();
+      const hrs = now.getHours();
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      document.getElementById('statusClock').textContent = `${hrs % 12 || 12}:${mins}`;
+      document.getElementById('greetingText').textContent = `IG: @being_rebel__7 • 𝔓𝔯𝔞𝔳𝔢𝔢𝔫`;
+    }
+    setInterval(updateClockAndGreeting, 15000);
+    updateClockAndGreeting();
+
+    // =========================================================================
+    // 1. MULTI-SOURCE MUSIC API ADAPTERS
+    // =========================================================================
+
+    // Engine A: JioSaavn Public API (Full-Length 320kbps AAC/MP4 tracks!)
+    async function searchSaavnTracks(query, limit = 16) {
+      try {
+        const url = `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Saavn status ' + res.status);
+        const json = await res.json();
+        const items = json?.data?.results || [];
+        return items.map(item => {
+          const images = item.image || [];
+          const artwork = (images[images.length - 1]?.url || images[0]?.url || '').replace('http://', 'https://');
+          const dls = item.downloadUrl || [];
+          const urlsByQuality = {};
+          dls.forEach(d => { urlsByQuality[d.quality] = d.url.replace('http://', 'https://'); });
+          const streamUrl = urlsByQuality[state.quality] || urlsByQuality['320kbps'] || urlsByQuality['160kbps'] || (dls[dls.length - 1]?.url || '');
+          const primaryArtists = item.artists?.primary?.map(a => a.name).join(', ') || item.primaryArtists || 'Unknown Artist';
+          return {
+            id: 'saavn_' + item.id,
+            title: decodeEntities(item.name || item.title),
+            artist: decodeEntities(primaryArtists),
+            album: decodeEntities(item.album?.name || ''),
+            artwork: artwork || 'https://picsum.photos/seed/' + item.id + '/500/500',
+            streamUrl,
+            urlsByQuality,
+            duration: Number(item.duration) || 0,
+            source: 'Full 320kbps',
+            sourceKey: 'saavn',
+            isFullTrack: true
+          };
+        }).filter(t => t.streamUrl);
+      } catch (e) {
+        console.warn('Saavn API fallback:', e);
+        return [];
+      }
+    }
+
+    // Engine B: Apple iTunes Search API (Works via fetch AND JSONP for file:// origins!)
+    function searchItunesTracks(query, limit = 16) {
+      return new Promise(async (resolve) => {
+        const endpoint = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&entity=song&limit=${limit}`;
+        // Try standard fetch first if not file://
+        if (location.protocol !== 'file:') {
+          try {
+            const res = await fetch(endpoint);
+            if (res.ok) {
+              const data = await res.json();
+              return resolve(mapItunesResults(data.results || []));
+            }
+          } catch (_) {}
+        }
+        // Fallback to JSONP (works 100% from file:// when sharing the .html file!)
+        const cbName = '__itunes_cb_' + Math.random().toString(36).slice(2);
+        const script = document.createElement('script');
+        const timer = setTimeout(() => {
+          cleanup();
+          resolve([]);
+        }, 6500);
+
+        function cleanup() {
+          clearTimeout(timer);
+          delete window[cbName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+        }
+
+        window[cbName] = (data) => {
+          cleanup();
+          resolve(mapItunesResults(data?.results || []));
+        };
+        script.onerror = () => { cleanup(); resolve([]); };
+        script.src = `${endpoint}&callback=${cbName}`;
+        document.body.appendChild(script);
+      });
+    }
+
+    function mapItunesResults(results) {
+      return results.filter(r => r.previewUrl).map(r => ({
+        id: 'itunes_' + r.trackId,
+        title: r.trackName || 'Unknown Title',
+        artist: r.artistName || 'Unknown Artist',
+        album: r.collectionName || '',
+        artwork: (r.artworkUrl100 || '').replace('100x100bb', '600x600bb'),
+        streamUrl: r.previewUrl,
+        duration: Math.round((r.trackTimeMillis || 30000) / 1000),
+        source: 'Global Official',
+        sourceKey: 'itunes',
+        isFullTrack: false,
+        externalUrl: r.trackViewUrl
+      }));
+    }
+
+    // Engine C: Audius Decentralized Music Network (Full-Length Indie & EDM Streams)
+    async function searchAudiusTracks(query, limit = 15) {
+      try {
+        const url = query
+          ? `https://discoveryprovider.audius.co/v1/tracks/search?query=${encodeURIComponent(query)}&limit=${limit}&app_name=PulseBeats`
+          : `https://discoveryprovider.audius.co/v1/tracks/trending?limit=${limit}&app_name=PulseBeats`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Audius status ' + res.status);
+        const json = await res.json();
+        return (json.data || []).map(t => ({
+          id: 'audius_' + t.id,
+          title: t.title || 'Untitled',
+          artist: t.user?.name || 'Audius Artist',
+          album: t.genre || 'Audius Stream',
+          artwork: t.artwork?.['480x480'] || t.artwork?.['150x150'] || ('https://picsum.photos/seed/' + t.id + '/500/500'),
+          streamUrl: `https://discoveryprovider.audius.co/v1/tracks/${t.id}/stream?app_name=PulseBeats`,
+          duration: Number(t.duration) || 180,
+          source: 'Audius Full',
+          sourceKey: 'audius',
+          isFullTrack: true
+        }));
+      } catch (e) {
+        console.warn('Audius fallback:', e);
+        return [];
+      }
+    }
+
+    // Engine D: Optional Spotify Web API (when user connects a Bearer token)
+    async function searchSpotifyDirect(query, limit = 12) {
+      if (!state.spotifyToken) return [];
+      try {
+        const res = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(query)}&type=track&limit=${limit}`, {
+          headers: { Authorization: `Bearer ${state.spotifyToken}` }
+        });
+        if (!res.ok) return [];
+        const data = await res.json();
+        return (data.tracks?.items || []).map(t => ({
+          id: 'spotify_' + t.id,
+          spotifyId: t.id,
+          title: t.name,
+          artist: (t.artists || []).map(a => a.name).join(', '),
+          album: t.album?.name || '',
+          artwork: t.album?.images?.[0]?.url || '',
+          streamUrl: t.preview_url || '',
+          duration: Math.round((t.duration_ms || 180000) / 1000),
+          source: 'Spotify API',
+          sourceKey: 'spotify',
+          isFullTrack: Boolean(t.preview_url)
+        }));
+      } catch (_) {
+        return [];
+      }
+    }
+
+    // Smart Hybrid Search: Combines Full-Length 320kbps tracks + Global Official Hits
+    async function smartSearch(query, engine = state.searchEngine) {
+      if (engine === 'saavn') {
+        const res = await searchSaavnTracks(query, 24);
+        return res.length ? res : await searchItunesTracks(query, 20);
+      }
+      if (engine === 'itunes') {
+        return await searchItunesTracks(query, 24);
+      }
+      if (engine === 'audius') {
+        return await searchAudiusTracks(query, 20);
+      }
+      // Hybrid Mode: Fetch both Full-Length 320kbps & Global Official in parallel and interleave!
+      const [saavnList, itunesList] = await Promise.all([
+        searchSaavnTracks(query, 14),
+        searchItunesTracks(query, 14)
+      ]);
+      const combined = [];
+      const maxLen = Math.max(saavnList.length, itunesList.length);
+      for (let i = 0; i < maxLen; i++) {
+        if (saavnList[i]) combined.push(saavnList[i]);
+        if (itunesList[i]) combined.push(itunesList[i]);
+      }
+      return combined;
+    }
+
+    // =========================================================================
+    // 2. HOME FEED, CAROUSELS, AND TRACK RENDERING
+    // =========================================================================
+
+    async function loadHomeFeeds() {
+      const carouselEl = document.getElementById('homeFullSongsCarousel');
+      const globalEl = document.getElementById('homeGlobalList');
+      carouselEl.innerHTML = `<div style="padding:20px;color:var(--text-secondary);font-size:12px;">Loading 320kbps full tracks...</div>`;
+      globalEl.innerHTML = `<div style="padding:20px;color:var(--text-secondary);font-size:12px;">Loading global charts...</div>`;
+
+      const [fullTracks, globalHits] = await Promise.all([
+        searchSaavnTracks('top hits 2025', 14),
+        searchItunesTracks('the weeknd dua lipa coldplay', 14)
+      ]);
+
+      // Set Hero Track if available
+      const heroCandidate = fullTracks[0] || globalHits[0];
+      if (heroCandidate) {
+        window.__heroTrack = heroCandidate;
+        document.getElementById('heroTitle').textContent = heroCandidate.title;
+        document.getElementById('heroSub').textContent = `${heroCandidate.artist} • ${heroCandidate.source}`;
+        document.getElementById('heroArt').src = heroCandidate.artwork;
+      }
+
+      // Render horizontal carousel
+      if (fullTracks.length) {
+        carouselEl.innerHTML = '';
+        fullTracks.forEach((track, idx) => {
+          const card = document.createElement('div');
+          card.className = 'album-card';
+          card.onclick = () => playFromList(fullTracks, idx);
+          card.innerHTML = `
+            <div class="album-art-wrap">
+              <img src="${track.artwork}" loading="lazy" onerror="this.src='https://picsum.photos/seed/${ idx }/300/300'" alt="" />
+              <span class="source-badge">320kbps FULL</span>
+              <div class="card-play-fab">▶</div>
+            </div>
+            <div class="album-name">${escapeHtml(track.title)}</div>
+            <div class="album-artist">${escapeHtml(track.artist)}</div>
+          `;
+          carouselEl.appendChild(card);
+        });
+      } else {
+        carouselEl.innerHTML = `<div style="padding:12px;color:var(--text-secondary);font-size:12px;">Tap any category above to load tracks.</div>`;
+      }
+
+      // Render Global list (interleaved with full tracks so initial queue has plenty of songs)
+      const homeList = [...globalHits, ...fullTracks.slice(4)];
+      renderTrackList(globalEl, homeList);
+      if (state.queue.length === 0 && homeList.length > 0) {
+        state.queue = homeList;
+        updateQueueUI();
+      }
+    }
+
+    async function loadQuickCategory(query, chipBtn) {
+      if (chipBtn) {
+        chipBtn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chipBtn.classList.add('active');
+      }
+      showToast(`Loading "${query}"...`);
+      const globalEl = document.getElementById('homeGlobalList');
+      const tracks = await smartSearch(query, 'hybrid');
+      renderTrackList(globalEl, tracks);
+      if (tracks[0]) {
+        window.__heroTrack = tracks[0];
+        document.getElementById('heroTitle').textContent = tracks[0].title;
+        document.getElementById('heroSub').textContent = `${tracks[0].artist} • ${tracks[0].source}`;
+        document.getElementById('heroArt').src = tracks[0].artwork;
+      }
+    }
+
+    function playHeroTrack() {
+      if (window.__heroTrack) {
+        playTrackImmediate(window.__heroTrack);
+      } else if (state.queue.length) {
+        playFromList(state.queue, 0);
+      }
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderTrackList(container, tracks) {
+      container.innerHTML = '';
+      if (!tracks || !tracks.length) {
+        container.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:13px;">No tracks found. Try another search or source tab!</div>`;
+        return;
+      }
+      tracks.forEach((track, idx) => {
+        const isCurrent = state.currentTrack && state.currentTrack.id === track.id;
+        const isLiked = state.likedTracks.some(t => t.id === track.id);
+        const row = document.createElement('div');
+        row.className = 'track-row' + (isCurrent ? ' playing' : '');
+        row.onclick = () => playFromList(tracks, idx);
+
+        const badgeClass = track.isFullTrack ? 'quality-tag' : 'quality-tag preview';
+        const badgeText = track.sourceKey === 'radio' ? 'LIVE RADIO' : (track.isFullTrack ? '320kbps FULL' : 'AAC HIT');
+
+        row.innerHTML = `
+          <div class="track-thumb-wrap">
+            <img src="${track.artwork}" loading="lazy" onerror="this.src='https://picsum.photos/seed/t${idx}/120/120'" alt="" />
+          </div>
+          <div class="track-meta">
+            <div class="track-title">
+              ${isCurrent && state.isPlaying ? `<span class="eq-bars"><span></span><span></span><span></span></span>` : ''}
+              <span>${escapeHtml(track.title)}</span>
+            </div>
+            <div class="track-sub">
+              <span class="${badgeClass}">${badgeText}</span>
+              <span>${escapeHtml(track.artist)}</span>
+            </div>
+          </div>
+          <div class="track-actions" onclick="event.stopPropagation()">
+            <button class="row-icon-btn ${isLiked ? 'liked' : ''}" title="Like" onclick="toggleLikeTrack(${idx}, this)">
+              ${isLiked ? '♥' : '♡'}
+            </button>
+            <button class="row-icon-btn" title="Open in Spotify" onclick="openTrackInSpotify('${escapeHtml(track.title)}', '${escapeHtml(track.artist)}')">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="#1ed760">
+                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+              </svg>
+            </button>
+          </div>
+        `;
+        row.__trackData = track;
+        container.appendChild(row);
+      });
+    }
+
+    // =========================================================================
+    // 3. AUDIO PLAYBACK, LOCK-SCREEN MEDIA SESSION & SYNCED LYRICS
+    // =========================================================================
+
+    function playFromList(list, index) {
+      state.queue = [...list];
+      state.currentIndex = index;
+      playCurrentIndex();
+    }
+
+    function playTrackImmediate(track) {
+      state.queue.unshift(track);
+      state.currentIndex = 0;
+      playCurrentIndex();
+    }
+
+    async function playCurrentIndex() {
+      const track = state.queue[state.currentIndex];
+      if (!track) return;
+      state.currentTrack = track;
+
+      // Update UI immediately
+      document.getElementById('miniTitle').textContent = track.title;
+      document.getElementById('miniArtist').textContent = `${track.artist} • ${track.source}`;
+      document.getElementById('miniArt').src = track.artwork;
+
+      document.getElementById('npTitle').textContent = track.title;
+      document.getElementById('npArtist').textContent = track.artist;
+      document.getElementById('npArt').src = track.artwork;
+      document.getElementById('npSourceBadge').textContent = `${track.source} Stream`;
+
+      updateLikeButtons();
+      updateDynamicAmbientGlow(track.sourceKey);
+      addToRecent(track);
+      updateQueueUI();
+
+      // Resolve stream URL for selected quality if available
+      let url = track.streamUrl;
+      if (track.urlsByQuality && track.urlsByQuality[state.quality]) {
+        url = track.urlsByQuality[state.quality];
+      }
+
+      audio.src = url;
+      audio.playbackRate = state.speed;
+      try {
+        await audio.play();
+        state.isPlaying = true;
+      } catch (err) {
+        console.warn('Playback error, trying fallback stream:', err);
+        showToast('Switching to backup stream...');
+        const backup = await searchItunesTracks(`${track.title} ${track.artist}`, 1);
+        if (backup[0] && backup[0].streamUrl !== url) {
+          audio.src = backup[0].streamUrl;
+          await audio.play().catch(() => {});
+          state.isPlaying = !audio.paused;
+        }
+      }
+      updatePlayIcons();
+      updateMediaSession(track);
+      fetchSyncedLyrics(track);
+    }
+
+    function togglePlay() {
+      if (!state.currentTrack) {
+        if (state.queue.length > 0) {
+          state.currentIndex = 0;
+          playCurrentIndex();
+        }
+        return;
+      }
+      if (audio.paused) {
+        audio.play().then(() => {
+          state.isPlaying = true;
+          updatePlayIcons();
+        }).catch(() => {});
+      } else {
+        audio.pause();
+        state.isPlaying = false;
+        updatePlayIcons();
+      }
+    }
+
+    function updatePlayIcons() {
+      const pauseSvg = `<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>`;
+      const playSvg = `<path d="M8 5v14l11-7z"/>`;
+      document.getElementById('miniPlayIcon').innerHTML = state.isPlaying ? pauseSvg : playSvg;
+      document.getElementById('npPlayIcon').innerHTML = state.isPlaying ? pauseSvg : playSvg;
+
+      const miniArt = document.getElementById('miniArt');
+      const npContainer = document.getElementById('npArtContainer');
+      if (state.isPlaying) {
+        miniArt.classList.add('spinning');
+        npContainer.classList.remove('paused');
+      } else {
+        miniArt.classList.remove('spinning');
+        npContainer.classList.add('paused');
+      }
+    }
+
+    function playNext() {
+      if (!state.queue.length) return;
+      if (state.shuffle) {
+        state.currentIndex = Math.floor(Math.random() * state.queue.length);
+      } else {
+        state.currentIndex = (state.currentIndex + 1) % state.queue.length;
+      }
+      playCurrentIndex();
+    }
+
+    function playPrev() {
+      if (!state.queue.length) return;
+      if (audio.currentTime > 4) {
+        audio.currentTime = 0;
+        return;
+      }
+      state.currentIndex = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
+      playCurrentIndex();
+    }
+
+    audio.addEventListener('timeupdate', () => {
+      if (state.isSeeking) return;
+      const cur = audio.currentTime || 0;
+      const dur = audio.duration || state.currentTrack?.duration || 0;
+      const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
+
+      document.getElementById('miniProgressFill').style.width = `${pct}%`;
+      document.getElementById('seekSlider').value = pct;
+      document.getElementById('currentTimeLabel').textContent = formatTime(cur);
+      document.getElementById('durationLabel').textContent = dur > 0 ? formatTime(dur) : 'LIVE';
+
+      syncLyricsScroll(cur);
+    });
+
+    audio.addEventListener('ended', () => {
+      if (state.repeat === 'one') {
+        audio.currentTime = 0;
+        audio.play();
+      } else {
+        playNext();
+      }
+    });
+
+    function onSeekInput(pct) {
+      state.isSeeking = true;
+      const dur = audio.duration || state.currentTrack?.duration || 0;
+      document.getElementById('currentTimeLabel').textContent = formatTime((pct / 100) * dur);
+    }
+
+    function onSeekCommit(pct) {
+      const dur = audio.duration || state.currentTrack?.duration || 0;
+      if (dur > 0 && isFinite(dur)) {
+        audio.currentTime = (pct / 100) * dur;
+      }
+      state.isSeeking = false;
+    }
+
+    // Native Phone Lock-Screen & Headphone MediaSession Controls
+    function updateMediaSession(track) {
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: track.title,
+          artist: track.artist,
+          album: track.album || 'PulseBeats',
+          artwork: [{ src: track.artwork, sizes: '512x512', type: 'image/jpeg' }]
+        });
+        navigator.mediaSession.setActionHandler('play', () => togglePlay());
+        navigator.mediaSession.setActionHandler('pause', () => togglePlay());
+        navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
+        navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
+      }
+    }
+
+    function updateDynamicAmbientGlow(sourceKey) {
+      const colors = {
+        saavn: 'rgba(30, 215, 96, 0.30)',
+        itunes: 'rgba(0, 210, 255, 0.28)',
+        audius: 'rgba(168, 85, 247, 0.30)',
+        radio: 'rgba(245, 158, 11, 0.28)'
+      };
+      document.documentElement.style.setProperty('--dynamic-glow', colors[sourceKey] || colors.saavn);
+    }
+
+    // =========================================================================
+    // 4. TIME-SYNCED KARAOKE LYRICS (LRCLIB API)
+    // =========================================================================
+
+    async function fetchSyncedLyrics(track) {
+      const box = document.getElementById('npLyricsView');
+      box.innerHTML = `<div class="lyric-line active">Searching synced lyrics for "${escapeHtml(track.title)}"...</div>`;
+      state.lyrics = [];
+
+      try {
+        const cleanTitle = track.title.replace(/\(.*?\)|\[.*?\]/g, '').trim();
+        const q = encodeURIComponent(`${cleanTitle} ${track.artist}`);
+        const res = await fetch(`https://lrclib.net/api/search?q=${q}`);
+        if (!res.ok) throw new Error('Lyrics fetch failed');
+        const items = await res.json();
+        const match = items.find(i => i.syncedLyrics) || items.find(i => i.plainLyrics);
+
+        if (match && match.syncedLyrics) {
+          const lines = match.syncedLyrics.split('\n');
+          const parsed = [];
+          const timeExp = /\[(\d{2}):(\d{2})(?:\.(\d{2,3}))?\](.*)/;
+          lines.forEach(line => {
+            const m = timeExp.exec(line);
+            if (m) {
+              const sec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + (parseInt(m[3] || '0', 10) / 1000);
+              const text = m[4].trim();
+              if (text) parsed.push({ time: sec, text });
+            }
+          });
+          state.lyrics = parsed;
+          box.innerHTML = parsed.map((l, idx) =>
+            `<div class="lyric-line" id="lyric-${idx}" onclick="audio.currentTime=${l.time}">${escapeHtml(l.text)}</div>`
+          ).join('');
+        } else if (match && match.plainLyrics) {
+          box.innerHTML = match.plainLyrics.split('\n').map(line =>
+            `<div class="lyric-line active" style="font-size:14px;opacity:0.9;">${escapeHtml(line || '♪')}</div>`
+          ).join('');
+        } else {
+          box.innerHTML = `<div class="lyric-line active">♪ Instrumental / Synced lyrics unavailable for this track ♪</div>`;
+        }
+      } catch (_) {
+        box.innerHTML = `<div class="lyric-line active">♪ Enjoy the music — "${escapeHtml(track.title)}" ♪</div>`;
+      }
+    }
+
+    function syncLyricsScroll(currentTime) {
+      if (!state.lyrics.length) return;
+      let activeIdx = 0;
+      for (let i = 0; i < state.lyrics.length; i++) {
+        if (currentTime >= state.lyrics[i].time) activeIdx = i;
+        else break;
+      }
+      const prevActive = document.querySelector('#npLyricsView .lyric-line.active');
+      const nextEl = document.getElementById(`lyric-${activeIdx}`);
+      if (nextEl && prevActive !== nextEl) {
+        if (prevActive) prevActive.classList.remove('active');
+        nextEl.classList.add('active');
+        nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    // =========================================================================
+    // 5. SEARCH, VOICE SEARCH & LIVE RADIO
+    // =========================================================================
+
+    let searchDebounce = null;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      clearTimeout(searchDebounce);
+      if (!val) return;
+      // Check if user pasted a Spotify URL directly into search!
+      if (val.includes('open.spotify.com/') || val.startsWith('spotify:')) {
+        document.getElementById('spotifyUrlInput').value = val;
+        loadCustomSpotifyEmbed();
+        switchTab('connect');
+        return;
+      }
+      searchDebounce = setTimeout(() => executeSearch(val), 380);
+    });
+
+    async function executeSearch(query) {
+      const statusEl = document.getElementById('searchStatus');
+      const listEl = document.getElementById('searchResultsList');
+      statusEl.textContent = `Searching "${query}" across ${state.searchEngine.toUpperCase()}...`;
+      const results = await smartSearch(query, state.searchEngine);
+      statusEl.textContent = `Found ${results.length} playable tracks for "${query}"`;
+      renderTrackList(listEl, results);
+    }
+
+    function setSearchEngine(engine, chipBtn) {
+      state.searchEngine = engine;
+      chipBtn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chipBtn.classList.add('active');
+      const q = document.getElementById('searchInput').value.trim() || 'top hits';
+      executeSearch(q);
+    }
+
+    function searchAndGo(query) {
+      switchTab('search');
+      document.getElementById('searchInput').value = query;
+      executeSearch(query);
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      document.getElementById('searchInput').focus();
+    }
+
+    function startVoiceSearch() {
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRec) {
+        showToast('Voice search not supported in this browser');
+        return;
+      }
+      const rec = new SpeechRec();
+      rec.lang = 'en-US';
+      showToast('🎤 Listening... Say a song or artist name');
+      rec.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        document.getElementById('searchInput').value = text;
+        executeSearch(text);
+      };
+      rec.start();
+    }
+
+    // Live Radio Browser API
+    async function loadRadioStations(tag = 'pop', chipBtn = null) {
+      if (chipBtn) {
+        chipBtn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chipBtn.classList.add('active');
+      }
+      const listEl = document.getElementById('radioStationsList');
+      listEl.innerHTML = `<div style="padding:20px;color:var(--text-secondary);font-size:12px;">Tuning live ${tag.toUpperCase()} stations...</div>`;
+      try {
+        const url = `https://de1.api.radio-browser.info/json/stations/bytag/${encodeURIComponent(tag)}?limit=20&order=votes&reverse=true&hidebroken=true`;
+        const res = await fetch(url);
+        const stations = await res.json();
+        const tracks = stations.filter(s => s.url_resolved).map(s => ({
+          id: 'radio_' + s.stationuuid,
+          title: s.name.trim() || 'Live Station',
+          artist: `${s.country || 'Global'} • ${s.bitrate || 128}kbps Live Radio`,
+          album: tag.toUpperCase() + ' LIVE',
+          artwork: s.favicon || `https://picsum.photos/seed/${s.stationuuid}/300/300`,
+          streamUrl: s.url_resolved,
+          duration: 0,
+          source: 'LIVE RADIO',
+          sourceKey: 'radio',
+          isFullTrack: true
+        }));
+        renderTrackList(listEl, tracks);
+      } catch (e) {
+        listEl.innerHTML = `<div style="padding:20px;color:var(--text-secondary);">Could not load radio stations right now.</div>`;
+      }
+    }
+
+    // =========================================================================
+    // 6. LIBRARY, LIKED SONGS, RECENTLY PLAYED & LOCAL DEVICE AUDIO
+    // =========================================================================
+
+    function toggleLikeCurrent() {
+      if (!state.currentTrack) return;
+      toggleLikeByTrack(state.currentTrack);
+    }
+
+    function toggleLikeTrack(idx, btnEl) {
+      const row = btnEl.closest('.track-row');
+      const track = row?.__trackData;
+      if (!track) return;
+      toggleLikeByTrack(track);
+      const isLiked = state.likedTracks.some(t => t.id === track.id);
+      btnEl.textContent = isLiked ? '♥' : '♡';
+      btnEl.classList.toggle('liked', isLiked);
+    }
+
+    function toggleLikeByTrack(track) {
+      const idx = state.likedTracks.findIndex(t => t.id === track.id);
+      if (idx >= 0) {
+        state.likedTracks.splice(idx, 1);
+        showToast('Removed from Liked Songs');
+      } else {
+        state.likedTracks.unshift(track);
+        showToast('❤️ Added to Liked Songs');
+      }
+      localStorage.setItem('pb_liked_tracks', JSON.stringify(state.likedTracks));
+      updateLikeButtons();
+      if (state.libraryView === 'liked') renderLibrary();
+    }
+
+    function updateLikeButtons() {
+      const isLiked = state.currentTrack && state.likedTracks.some(t => t.id === state.currentTrack.id);
+      document.getElementById('miniLikeBtn').textContent = isLiked ? '♥' : '♡';
+      document.getElementById('miniLikeBtn').style.color = isLiked ? 'var(--accent-pink)' : '';
+      document.getElementById('npLikeBtn').textContent = isLiked ? '♥' : '♡';
+      document.getElementById('npLikeBtn').style.color = isLiked ? 'var(--accent-pink)' : '';
+      document.getElementById('likedCount').textContent = state.likedTracks.length;
+    }
+
+    function addToRecent(track) {
+      state.recentTracks = [track, ...state.recentTracks.filter(t => t.id !== track.id)].slice(0, 35);
+      localStorage.setItem('pb_recent_tracks', JSON.stringify(state.recentTracks));
+    }
+
+    function showLibraryView(view, chipBtn) {
+      state.libraryView = view;
+      if (chipBtn) {
+        chipBtn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chipBtn.classList.add('active');
+      }
+      renderLibrary();
+    }
+
+    function renderLibrary() {
+      document.getElementById('likedCount').textContent = state.likedTracks.length;
+      const listEl = document.getElementById('libraryTrackList');
+      if (state.libraryView === 'liked') {
+        renderTrackList(listEl, state.likedTracks);
+      } else if (state.libraryView === 'recent') {
+        renderTrackList(listEl, state.recentTracks);
+      } else {
+        renderTrackList(listEl, state.localTracks);
+      }
+    }
+
+    function handleLocalFiles(event) {
+      const files = Array.from(event.target.files || []);
+      if (!files.length) return;
+      files.forEach((file, i) => {
+        const objUrl = URL.createObjectURL(file);
+        state.localTracks.push({
+          id: 'local_' + Date.now() + '_' + i,
+          title: file.name.replace(/\.[^/.]+$/, ''),
+          artist: 'Local Device Audio',
+          album: 'Phone Storage',
+          artwork: 'https://picsum.photos/seed/local' + i + '/400/400',
+          streamUrl: objUrl,
+          duration: 0,
+          source: 'Local File',
+          sourceKey: 'saavn',
+          isFullTrack: true
+        });
+      });
+      showToast(`Loaded ${files.length} local audio file(s)!`);
+      showLibraryView('local');
+      playFromList(state.localTracks, 0);
+    }
+
+    function exportLibraryData() {
+      const blob = new Blob([JSON.stringify({ liked: state.likedTracks, recent: state.recentTracks }, null, 2)], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'PulseBeats_Playlist_Backup.json';
+      a.click();
+      showToast('Exported your playlist backup!');
+    }
+
+    // =========================================================================
+    // 7. SPOTIFY BRIDGE & EXTERNAL APP CONNECTOR
+    // =========================================================================
+
+    function setSpotifyPreset(path) {
+      const iframe = document.getElementById('spotifyIframe');
+      iframe.src = `https://open.spotify.com/embed/${path}?utm_source=generator&theme=0`;
+      showToast('Loaded Spotify interactive player!');
+    }
+
+    function loadCustomSpotifyEmbed() {
+      const raw = document.getElementById('spotifyUrlInput').value.trim();
+      if (!raw) {
+        showToast('Paste a Spotify song or playlist link first');
+        return;
+      }
+      // Support https://open.spotify.com/track/ID or spotify:track:ID
+      let type = 'playlist';
+      let id = '37i9dQZF1DXcBWIGoYBM5M';
+      const urlMatch = raw.match(/open\.spotify\.com\/(track|album|playlist|artist)\/([a-zA-Z0-9]+)/);
+      const uriMatch = raw.match(/spotify:(track|album|playlist|artist):([a-zA-Z0-9]+)/);
+      if (urlMatch) {
+        type = urlMatch[1];
+        id = urlMatch[2];
+      } else if (uriMatch) {
+        type = uriMatch[1];
+        id = uriMatch[2];
+      }
+      audio.pause();
+      state.isPlaying = false;
+      updatePlayIcons();
+      document.getElementById('spotifyIframe').src = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+      showToast(`Connected Spotify ${type}!`);
+    }
+
+    function openTrackInSpotify(title, artist) {
+      const q = encodeURIComponent(`${title} ${artist}`);
+      window.open(`https://open.spotify.com/search/${q}`, '_blank');
+    }
+
+    function openCurrentInSpotify() {
+      const t = state.currentTrack || window.__heroTrack || { title: 'Blinding Lights', artist: 'The Weeknd' };
+      openTrackInSpotify(t.title, t.artist);
+    }
+
+    function openCurrentInApp(app) {
+      const t = state.currentTrack || window.__heroTrack || { title: 'Starboy', artist: 'The Weeknd' };
+      const q = encodeURIComponent(`${t.title} ${t.artist}`);
+      const urls = {
+        spotify: `https://open.spotify.com/search/${q}`,
+        ytmusic: `https://music.youtube.com/search?q=${q}`,
+        apple: `https://music.apple.com/us/search?term=${q}`,
+        saavn: `https://www.jiosaavn.com/search/song/${q}`
+      };
+      window.open(urls[app] || urls.spotify, '_blank');
+    }
+
+    function connectSpotifyApi() {
+      const val = document.getElementById('spotifyClientIdInput').value.trim();
+      if (!val) {
+        showToast('Enter a Spotify Token or Client ID');
+        return;
+      }
+      state.spotifyToken = val;
+      localStorage.setItem('pb_spotify_token', val);
+      document.getElementById('spotifyApiStatus').innerHTML = `<span style="color:var(--accent-green);">● Connected to Spotify API Bridge</span>`;
+      showToast('Spotify API credential saved!');
+    }
+
+    // =========================================================================
+    // 8. NOW PLAYING CONTROLS, VISUALIZER & SHAREABLE APP EXPORT
+    // =========================================================================
+
+    function openNowPlaying() {
+      document.getElementById('nowPlayingSheet').classList.add('open');
+    }
+
+    function closeNowPlaying() {
+      document.getElementById('nowPlayingSheet').classList.remove('open');
+    }
+
+    function setNpView(mode, btnEl) {
+      btnEl.parentElement.querySelectorAll('.np-mode-btn').forEach(b => b.classList.remove('active'));
+      btnEl.classList.add('active');
+      document.getElementById('npArtView').style.display = mode === 'art' ? 'flex' : 'none';
+      document.getElementById('npLyricsView').style.display = mode === 'lyrics' ? 'block' : 'none';
+      document.getElementById('npQueueView').style.display = mode === 'queue' ? 'block' : 'none';
+    }
+
+    function updateQueueUI() {
+      document.getElementById('queueCountBadge').textContent = state.queue.length;
+      const qEl = document.getElementById('npQueueList');
+      renderTrackList(qEl, state.queue);
+    }
+
+    function toggleVinylSpin() {
+      document.getElementById('npArtContainer').classList.toggle('vinyl-mode');
+    }
+
+    function toggleShuffle() {
+      state.shuffle = !state.shuffle;
+      document.getElementById('shuffleBtn').classList.toggle('active', state.shuffle);
+      showToast(state.shuffle ? '🔀 Shuffle On' : 'Shuffle Off');
+    }
+
+    function toggleRepeat() {
+      const modes = ['off', 'all', 'one'];
+      state.repeat = modes[(modes.indexOf(state.repeat) + 1) % modes.length];
+      document.getElementById('repeatBtn').classList.toggle('active', state.repeat !== 'off');
+      showToast(`🔁 Repeat: ${state.repeat.toUpperCase()}`);
+    }
+
+    function cyclePlaybackSpeed() {
+      const speeds = [1.0, 1.15, 1.25, 0.85];
+      const labels = { 1.0: '1.0x Normal', 1.15: '1.15x Upbeat', 1.25: '1.25x Nightcore', 0.85: '0.85x Slowed' };
+      state.speed = speeds[(speeds.indexOf(state.speed) + 1) % speeds.length];
+      audio.playbackRate = state.speed;
+      document.getElementById('speedBtn').textContent = `⚡ ${labels[state.speed]}`;
+      showToast(`Playback speed: ${labels[state.speed]}`);
+    }
+
+    function cycleAudioQuality() {
+      const levels = ['320kbps', '160kbps', '96kbps'];
+      state.quality = levels[(levels.indexOf(state.quality) + 1) % levels.length];
+      document.getElementById('qualityBtn').textContent = `🎧 ${state.quality} HD`;
+      showToast(`Audio stream quality set to ${state.quality}`);
+    }
+
+    function cycleSleepTimer() {
+      const options = [0, 15, 30, 60];
+      state.sleepMinutes = options[(options.indexOf(state.sleepMinutes) + 1) % options.length];
+      clearTimeout(state.sleepTimeoutId);
+      if (state.sleepMinutes > 0) {
+        state.sleepTimeoutId = setTimeout(() => {
+          audio.pause();
+          state.isPlaying = false;
+          updatePlayIcons();
+          showToast('🌙 Sleep timer paused playback');
+        }, state.sleepMinutes * 60 * 1000);
+        document.getElementById('sleepTimerBtn').textContent = `🌙 Sleep: ${state.sleepMinutes}m`;
+        showToast(`Sleep timer set for ${state.sleepMinutes} minutes`);
+      } else {
+        document.getElementById('sleepTimerBtn').textContent = `🌙 Sleep: Off`;
+        showToast('Sleep timer off');
+      }
+    }
+
+    function downloadCurrentTrack() {
+      if (!state.currentTrack?.streamUrl) {
+        showToast('Play a song first to download');
+        return;
+      }
+      window.open(state.currentTrack.streamUrl, '_blank');
+    }
+
+    // Beat-Synced Audio Spectrum Visualizer (Zero-CORS-mute safe)
+    const canvas = document.getElementById('visualizerCanvas');
+    const ctx = canvas.getContext('2d');
+    let visPhase = 0;
+    function drawVisualizer() {
+      requestAnimationFrame(drawVisualizer);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const bars = 32;
+      const barWidth = (canvas.width / bars) - 3;
+      visPhase += 0.12;
+      for (let i = 0; i < bars; i++) {
+        let h = 4;
+        if (state.isPlaying && !audio.paused) {
+          const wave1 = Math.sin(visPhase + i * 0.35) * 0.5 + 0.5;
+          const wave2 = Math.cos(visPhase * 1.7 - i * 0.2) * 0.5 + 0.5;
+          const centerBoost = 1 - Math.abs((i - bars / 2) / (bars / 2)) * 0.45;
+          h = Math.max(4, (wave1 * 0.6 + wave2 * 0.4) * 38 * centerBoost);
+        }
+        const grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+        grad.addColorStop(0, '#1ed760');
+        grad.addColorStop(1, '#00d2ff');
+        ctx.fillStyle = grad;
+        const x = i * (barWidth + 3);
+        const y = (canvas.height - h) / 2;
+        ctx.beginPath();
+        ctx.roundRect(x, y, barWidth, h, 3);
+        ctx.fill();
+      }
+    }
+    drawVisualizer();
+
+    // Navigation & Modals
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+      const pane = document.getElementById('tab-' + tabId);
+      if (pane) pane.classList.add('active');
+      const navBtn = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
+      if (navBtn) navBtn.classList.add('active');
+
+      if (tabId === 'radio' && !document.getElementById('radioStationsList').children.length) {
+        loadRadioStations('pop');
+      }
+      if (tabId === 'library') {
+        renderLibrary();
+      }
+      if (tabId === 'search' && !document.getElementById('searchResultsList').children.length) {
+        executeSearch('top hits 2025');
+      }
+    }
+
+    function toggleViewportMode() {
+      const shell = document.getElementById('workspaceShell');
+      shell.classList.toggle('phone-mode');
+      shell.classList.toggle('fullscreen-mode');
+    }
+
+    function openShareModal() {
+      document.getElementById('shareModal').classList.add('open');
+    }
+
+    function closeShareModal() {
+      document.getElementById('shareModal').classList.remove('open');
+    }
+
+    // =========================================================================
+    // 9. CREATOR IDENTITY & PERMANENT BRAND BAKING
+    // =========================================================================
+
+    function getCreatorConfig() {
+      const saved = JSON.parse(localStorage.getItem('balu_beats_brand_v2') || 'null');
+      const baked = window.__BAKED_CREATOR__ || {};
+      return {
+        creatorName: saved?.creatorName || baked.creatorName || 'Balu (@being_rebel__7)',
+        appName: saved?.appName || baked.appName || 'Balu Beats',
+        bio: saved?.bio || baked.bio || 'Official Balu Beats 320kbps Music Player • Praveen (IG: @being_rebel__7)',
+        socialUrl: saved?.socialUrl || baked.socialUrl || 'https://www.instagram.com/being_rebel__7/'
+      };
+    }
+
+    function applyCreatorBranding() {
+      const cfg = getCreatorConfig();
+      document.title = `${cfg.appName} — Created by ${cfg.creatorName}`;
+      document.getElementById('headerAppTitle').textContent = cfg.appName;
+      document.getElementById('headerCreatorPill').textContent = `by Balu ✓`;
+      document.getElementById('desktopBrandName').textContent = `🎵 ${cfg.appName}`;
+      document.getElementById('desktopCreatorBadge').textContent = `👑 Created by ${cfg.creatorName} ✓`;
+      document.getElementById('activeEngineBadge').textContent = `👑 ${cfg.appName} • @being_rebel__7`;
+
+      // Update Creator Modal Card
+      document.getElementById('creatorCardName').textContent = `${cfg.appName} • ${cfg.creatorName}`;
+      document.getElementById('creatorCardBio').textContent = cfg.bio;
+      document.getElementById('creatorAvatarPreview').textContent = 'BB';
+
+      const socialRow = document.getElementById('creatorSocialRow');
+      const socialBtn = document.getElementById('creatorSocialLinkBtn');
+      if (cfg.socialUrl && cfg.socialUrl.trim()) {
+        socialRow.style.display = 'block';
+        socialBtn.href = cfg.socialUrl.startsWith('http') ? cfg.socialUrl : `https://${cfg.socialUrl}`;
+        socialBtn.textContent = `📸 Follow @being_rebel__7 on Instagram ↗`;
+      } else {
+        socialRow.style.display = 'none';
+      }
+
+      // Populate form inputs
+      document.getElementById('brandCreatorInput').value = cfg.creatorName;
+      document.getElementById('brandAppNameInput').value = cfg.appName;
+      document.getElementById('brandBioInput').value = cfg.bio;
+      document.getElementById('brandSocialInput').value = cfg.socialUrl || 'https://www.instagram.com/being_rebel__7/';
+    }
+
+    function openCreatorModal() {
+      applyCreatorBranding();
+      document.getElementById('creatorModal').classList.add('open');
+    }
+
+    function closeCreatorModal() {
+      document.getElementById('creatorModal').classList.remove('open');
+    }
+
+    function saveCreatorBranding(andDownloadFile = false) {
+      const cfg = {
+        creatorName: document.getElementById('brandCreatorInput').value.trim() || 'Balu (@being_rebel__7)',
+        appName: document.getElementById('brandAppNameInput').value.trim() || 'Balu Beats',
+        bio: document.getElementById('brandBioInput').value.trim() || 'Official Balu Beats 320kbps Music Player • Praveen (IG: @being_rebel__7)',
+        socialUrl: document.getElementById('brandSocialInput').value.trim() || 'https://www.instagram.com/being_rebel__7/'
+      };
+      localStorage.setItem('balu_beats_brand_v2', JSON.stringify(cfg));
+      window.__BAKED_CREATOR__ = cfg;
+
+      // Bake directly into the #bakedCreatorConfig <script> tag so exported HTML files permanently carry your name!
+      const bakedScript = document.getElementById('bakedCreatorConfig');
+      if (bakedScript) {
+        bakedScript.textContent = `\n    window.__BAKED_CREATOR__ = ${JSON.stringify(cfg, null, 6)};\n  `;
+      }
+
+      applyCreatorBranding();
+      closeCreatorModal();
+      if (andDownloadFile) {
+        downloadShareableAppFile();
+      } else {
+        showToast(`👑 Branded as "${cfg.appName} by ${cfg.creatorName}"!`);
+      }
+    }
+
+    // Download self-contained single-file HTML app with Creator Branding permanently baked in!
+    function downloadShareableAppFile() {
+      const cfg = getCreatorConfig();
+      const bakedScript = document.getElementById('bakedCreatorConfig');
+      if (bakedScript) {
+        bakedScript.textContent = `\n    window.__BAKED_CREATOR__ = ${JSON.stringify(cfg, null, 6)};\n  `;
+      }
+      const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const a = document.createElement('a');
+      const safeName = (cfg.appName + '_by_' + cfg.creatorName).replace(/[^a-zA-Z0-9_-]/g, '_');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${safeName}_App.html`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast(`Downloaded ${safeName}_App.html with your branding!`);
+    }
+
+    async function shareCurrentSongNative() {
+      const cfg = getCreatorConfig();
+      const t = state.currentTrack || { title: cfg.appName, artist: 'Free Music Streaming' };
+      const shareData = {
+        title: `🎵 ${t.title} — ${t.artist} (via ${cfg.appName} by ${cfg.creatorName})`,
+        text: `🎵 Listening to "${t.title}" by ${t.artist} on ${cfg.appName} — Created by ${cfg.creatorName}!`,
+        url: location.href.startsWith('http') ? location.href : `https://open.spotify.com/search/${encodeURIComponent(t.title + ' ' + t.artist)}`
+      };
+      if (navigator.share) {
+        try { await navigator.share(shareData); } catch (_) {}
+      } else {
+        navigator.clipboard?.writeText(`${shareData.text} ${shareData.url}`);
+        showToast('Copied branded song share message!');
+      }
+    }
+
+    // PWA Install Prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      state.deferredInstallPrompt = e;
+    });
+
+    async function triggerInstallPWA() {
+      if (state.deferredInstallPrompt) {
+        state.deferredInstallPrompt.prompt();
+      } else {
+        showToast('Tip: Open browser menu (⋮ or Share) → "Add to Home Screen"!');
+      }
+    }
+
+    // Register Service Worker when running on http/https
+    if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    // Initialize App on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      applyCreatorBranding();
+      updateLikeButtons();
+      loadHomeFeeds();
+    });
+  </script>
+</body>
+</html>

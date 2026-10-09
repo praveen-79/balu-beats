@@ -1,0 +1,8 @@
+{
+  "version": 2,
+  "name": "pulsebeats-music-app",
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
