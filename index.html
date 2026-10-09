@@ -2168,6 +2168,13 @@
           </button>
         </div>
 
+        <!-- Steady Sound Volume Slider (No Auto-Ducking) -->
+        <div style="display:flex;align-items:center;gap:10px;padding:2px 6px 10px;">
+          <span style="font-size:13px;color:var(--text-secondary);" id="volIconLabel">🔊</span>
+          <input type="range" id="volumeSlider" class="seek-slider" min="0" max="100" value="100" step="1" oninput="onVolumeChange(this.value)" style="height:4px;flex:1;" />
+          <span id="volumePctLabel" style="font-size:11px;font-weight:800;color:var(--accent-green);min-width:34px;text-align:right;">100%</span>
+        </div>
+
         <!-- Bottom Action Strip -->
         <div class="np-bottom-strip">
           <button class="strip-pill" onclick="cyclePlaybackSpeed()" id="speedBtn" title="Playback Speed / Slowed / Nightcore">
@@ -5200,14 +5207,32 @@
         audio.play().then(() => {
           state.isPlaying = true;
           updatePlayIcons();
+          if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+            navigator.mediaSession.playbackState = 'playing';
+          }
+          updateMediaPositionState();
           syncNativeAndroidNotification();
         }).catch(() => {});
       } else {
         audio.pause();
         state.isPlaying = false;
         updatePlayIcons();
+        if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+          navigator.mediaSession.playbackState = 'paused';
+        }
+        updateMediaPositionState();
         syncNativeAndroidNotification();
       }
+    }
+
+    function onVolumeChange(val) {
+      const pct = Math.max(0, Math.min(100, Number(val)));
+      state.volume = pct / 100;
+      audio.volume = state.volume;
+      const lbl = document.getElementById('volumePctLabel');
+      const icon = document.getElementById('volIconLabel');
+      if (lbl) lbl.textContent = `${pct}%`;
+      if (icon) icon.textContent = pct === 0 ? '🔇' : (pct < 45 ? '🔉' : '🔊');
     }
 
     function updatePlayIcons() {
@@ -5241,13 +5266,18 @@
       if (!state.queue.length) return;
       if (audio.currentTime > 4) {
         audio.currentTime = 0;
+        updateMediaPositionState();
+        syncNativeAndroidNotification();
         return;
       }
       state.currentIndex = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
       playCurrentIndex();
     }
 
-    let lastNotifSyncSec = -10;
+    // Keep volume steady (100% by default, never auto-ducked)
+    audio.preload = 'auto';
+    audio.volume = 1.0;
+
     audio.addEventListener('timeupdate', () => {
       if (state.isSeeking) return;
       const cur = audio.currentTime || 0;
@@ -5260,16 +5290,48 @@
       document.getElementById('durationLabel').textContent = dur > 0 ? formatTime(dur) : 'LIVE';
 
       syncLyricsScroll(cur);
-
-      // Update Notification Seek Slider position every 2 seconds
-      if (Math.abs(cur - lastNotifSyncSec) >= 2) {
-        lastNotifSyncSec = cur;
-        updateMediaPositionState();
-        syncNativeAndroidNotification();
-      }
+      // NOTE: Do NOT call nm.notify() inside timeupdate!
+      // Android MediaSession & Web MediaSession calculate live slider position automatically
+      // from (position + elapsed * playbackRate) without re-posting notifications or ducking volume!
     });
 
     audio.addEventListener('loadedmetadata', () => {
+      updateMediaPositionState();
+      syncNativeAndroidNotification();
+    });
+
+    audio.addEventListener('durationchange', () => {
+      updateMediaPositionState();
+      syncNativeAndroidNotification();
+    });
+
+    audio.addEventListener('play', () => {
+      state.isPlaying = true;
+      updatePlayIcons();
+      if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = 'playing';
+      }
+      updateMediaPositionState();
+      syncNativeAndroidNotification();
+    });
+
+    audio.addEventListener('pause', () => {
+      // If background transition tried to pause while state.isPlaying is still true on mobile web, keep state synced
+      state.isPlaying = !audio.paused;
+      updatePlayIcons();
+      if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+        navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
+      }
+      updateMediaPositionState();
+      syncNativeAndroidNotification();
+    });
+
+    audio.addEventListener('seeked', () => {
+      updateMediaPositionState();
+      syncNativeAndroidNotification();
+    });
+
+    audio.addEventListener('ratechange', () => {
       updateMediaPositionState();
       syncNativeAndroidNotification();
     });
@@ -5300,6 +5362,7 @@
     }
 
     function updateMediaPositionState() {
+      if (location.protocol === 'file:') return; // Native APK uses BaluMediaService MediaSession directly
       if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
         const dur = audio.duration || state.currentTrack?.duration || 0;
         const cur = audio.currentTime || 0;
@@ -5307,7 +5370,7 @@
           try {
             navigator.mediaSession.setPositionState({
               duration: dur,
-              playbackRate: state.speed || 1.0,
+              playbackRate: audio.paused ? 0 : (state.speed || 1.0),
               position: Math.min(cur, dur)
             });
           } catch (_) {}
@@ -5315,7 +5378,7 @@
       }
     }
 
-    // Sync rich song state to Native Android APK Notification (via WebChromeClient console channel — 100% Play-Protect safe!)
+    // Sync rich song state to Native Android APK Foreground Media Service (100% Play-Protect safe!)
     function syncNativeAndroidNotification() {
       const t = state.currentTrack;
       if (!t) return;
@@ -5328,13 +5391,20 @@
         artwork: t.artwork || '',
         playing: Boolean(state.isPlaying && !audio.paused),
         pos: curMs,
-        dur: durMs
+        dur: durMs,
+        speed: Number(state.speed || 1.0)
       };
       console.log('BALU_MEDIA:' + JSON.stringify(payload));
     }
 
     // Native Phone Lock-Screen, Notification Shade & Headphone MediaSession Controls + Seek Slider
     function updateMediaSession(track) {
+      // Always sync to Native Android APK Service
+      syncNativeAndroidNotification();
+      // When running inside the Native Android APK (file://), let BaluMediaService own the single MediaSession
+      // so Chromium WebView doesn't create a competing MediaSession that ducks audio!
+      if (location.protocol === 'file:') return;
+
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.title,
