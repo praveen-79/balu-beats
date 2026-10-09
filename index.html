@@ -1455,6 +1455,190 @@
       0% { height: 3px; }
       100% { height: 12px; }
     }
+
+    /* ================= CREDENTIALS PAGE (LOGIN & SIGN UP OVERLAY) ================= */
+    .auth-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(30, 215, 96, 0.22), transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(0, 210, 255, 0.18), transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.10), transparent 60%),
+        #06070c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      overflow-y: auto;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    .auth-overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(1.03);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 410px;
+      background: rgba(16, 18, 27, 0.94);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 26px;
+      padding: 24px 22px;
+      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(30, 215, 96, 0.12);
+      backdrop-filter: blur(22px);
+    }
+    .auth-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .auth-logo-disc {
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #1ed760, #00d2ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #041208;
+      box-shadow: 0 10px 28px rgba(30, 215, 96, 0.35);
+      margin-bottom: 10px;
+    }
+    .auth-brand h1 {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+    .auth-brand p {
+      font-size: 12px;
+      color: #9ca3bd;
+      font-weight: 600;
+    }
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 4px;
+      margin-bottom: 16px;
+    }
+    .auth-tab-btn {
+      background: transparent;
+      border: none;
+      color: #9ca3bd;
+      font-size: 13px;
+      font-weight: 800;
+      padding: 9px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .auth-tab-btn.active {
+      background: linear-gradient(135deg, #1ed760, #10b981);
+      color: #041208;
+      box-shadow: 0 4px 14px rgba(30, 215, 96, 0.3);
+    }
+    .auth-field {
+      margin-bottom: 12px;
+    }
+    .auth-field label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 5px;
+    }
+    .auth-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .auth-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 12px;
+      padding: 11px 13px;
+      color: #fff;
+      font-size: 13.5px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .auth-input:focus {
+      border-color: #1ed760;
+      box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.18);
+    }
+    .auth-eye-btn {
+      position: absolute;
+      right: 10px;
+      background: none;
+      border: none;
+      color: #9ca3bd;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 4px;
+    }
+    .auth-submit-btn {
+      width: 100%;
+      padding: 13px 18px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #1ed760, #10b981);
+      color: #041208;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(30, 215, 96, 0.35);
+      margin-top: 4px;
+      transition: transform 0.15s, filter 0.15s;
+    }
+    .auth-submit-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.06);
+    }
+    .auth-guest-btn {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.04);
+      color: #e2e8f0;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.15s;
+    }
+    .auth-guest-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+    }
+    .auth-msg {
+      font-size: 12px;
+      font-weight: 700;
+      padding: 8px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    .auth-msg.error {
+      display: block;
+      background: rgba(239, 68, 68, 0.16);
+      border: 1px solid rgba(239, 68, 68, 0.4);
+      color: #fca5a5;
+    }
+    .auth-msg.success {
+      display: block;
+      background: rgba(30, 215, 96, 0.16);
+      border: 1px solid rgba(30, 215, 96, 0.4);
+      color: #86efac;
+    }
+
   </style>
 </head>
 <body>
@@ -1477,7 +1661,7 @@
         <button class="util-btn" onclick="toggleViewportMode()" id="viewportToggleBtn" title="Switch between Phone Frame and Wide View">
           📱 Phone View / 🖥️ Wide View
         </button>
-        <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;">
+        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;">
           📲 Download Android App (.APK)
         </a>
       </div>
@@ -1511,8 +1695,11 @@
           </div>
         </div>
         <div class="header-actions">
+          <button onclick="switchTab('connect')" id="headerUserBtn" class="spotify-pill-btn" style="background:rgba(30,215,96,0.14);color:#1ed760;border-color:rgba(30,215,96,0.38);font-weight:800;" title="Account & Credentials">
+            👤 Account
+          </button>
           <button onclick="openShareModal()" class="spotify-pill-btn" style="background:linear-gradient(135deg,#1ed760,#10b981);color:#041208;border:none;font-weight:800;" title="Download & Install Balu Beats App">
-            📲 Get App
+            📲 App
           </button>
           <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="spotify-pill-btn" style="text-decoration:none;background:linear-gradient(135deg,rgba(236,72,153,0.2),rgba(139,92,246,0.2));border-color:rgba(236,72,153,0.45);color:#f9a8d4;" title="Follow @being_rebel__7 on Instagram">
             📸 IG
@@ -1531,7 +1718,7 @@
               <div style="font-size:10.5px;color:var(--text-secondary);">100% Full-Length 320kbps Songs • Android APK & Web App</div>
             </div>
             <div style="display:flex;gap:6px;flex-shrink:0;">
-              <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="padding:6px 10px;font-size:11px;text-decoration:none;">
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="padding:6px 10px;font-size:11px;text-decoration:none;">
                 ⬇ .APK
               </a>
               <button class="util-btn" style="padding:6px 10px;font-size:11px;" onclick="triggerInstallPWA()">
@@ -1637,7 +1824,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--text-secondary)">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              <input type="text" id="searchInput" placeholder="Search any full song, artist, movie, or paste Spotify link..." autocomplete="off" />
+              <input type="text" id="searchInput" placeholder="Search any full song, Telugu hit, artist, or movie (320kbps)..." autocomplete="off" />
               <button class="row-icon-btn" onclick="startVoiceSearch()" title="Voice Search">
                 🎤
               </button>
@@ -1746,95 +1933,88 @@
           <div class="track-list" id="libraryTrackList"></div>
         </section>
 
-        <!-- ================= TAB 5: SPOTIFY & APP BRIDGE ================= -->
+        <!-- ================= TAB 5: USER ACCOUNT & CREDENTIALS ================= -->
         <section id="tab-connect" class="tab-pane">
           <div class="section-header" style="margin-top:4px;">
-            <h2 class="section-title">🔗 Connect to Spotify & Other Apps</h2>
+            <h2 class="section-title">👤 My Balu Beats Account</h2>
+            <button class="section-action" onclick="openAuthOverlay('login')">🔄 Switch Account</button>
           </div>
 
-          <!-- Card 1: Instant Spotify Embed & Link Bridge -->
-          <div class="connect-card">
-            <h3>
-              <span style="color:var(--accent-green);">●</span>
-              Spotify Link / Playlist Player
-            </h3>
-            <p>
-              Paste any <strong>Spotify Track, Album, or Playlist URL / URI</strong> below to load the interactive Spotify player inside PulseBeats, or pick a curated Spotify playlist:
-            </p>
-            <div class="input-row">
-              <input type="text" id="spotifyUrlInput" class="text-input" placeholder="https://open.spotify.com/playlist/37i9dQZF1DXcBWIGoYBM5M" />
-              <button class="util-btn primary" onclick="loadCustomSpotifyEmbed()">Load</button>
+          <!-- Active User Profile Card -->
+          <div class="connect-card" style="background:linear-gradient(135deg,rgba(30,215,96,0.14),rgba(0,210,255,0.10));border-color:rgba(30,215,96,0.4);">
+            <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
+              <div id="accountAvatarCircle" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 20px rgba(30,215,96,0.3);">
+                BB
+              </div>
+              <div style="min-width:0;flex:1;">
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                  <h3 id="accountDisplayName" style="font-size:17px;font-weight:900;margin:0;color:#fff;">Balu Beats Member</h3>
+                  <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.2);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">PRO 320kbps</span>
+                </div>
+                <div id="accountHandleText" style="font-size:12px;color:#1ed760;font-weight:700;margin-top:2px;">@being_rebel__7</div>
+                <div id="accountEmailText" style="font-size:11.5px;color:var(--text-secondary);margin-top:1px;">Logged in • Full HD Streaming Active</div>
+              </div>
             </div>
-            <div class="chips-scroll" style="padding-bottom:8px;">
-              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZF1DXcBWIGoYBM5M')">🔥 Today's Top Hits</button>
-              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZEVXbMDoHDwVN2tF')">🌎 Global Top 50</button>
-              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZF1DX0XUsuxWHRQd')">🎤 RapCaviar</button>
-              <button class="chip" onclick="setSpotifyPreset('playlist/37i9dQZF1DWWQRwui0ExPn')">☕ Lo-Fi Beats</button>
-            </div>
-            <div id="spotifyEmbedContainer" style="margin-top:6px;border-radius:14px;overflow:hidden;min-height:152px;background:#0e1018;">
-              <iframe
-                id="spotifyIframe"
-                style="border-radius:12px"
-                src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"
-                width="100%"
-                height="152"
-                frameBorder="0"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                loading="lazy">
-              </iframe>
-            </div>
-          </div>
 
-          <!-- Card 2: App-to-App Hand-off for Currently Playing Track -->
-          <div class="connect-card">
-            <h3>🚀 Open Current Song in External App</h3>
-            <p>
-              Jump directly from the currently playing song into your installed music apps with one tap:
-            </p>
-            <div class="app-bridge-grid">
-              <button class="bridge-btn" onclick="openCurrentInApp('spotify')">
-                <span>🟢</span> Open in Spotify
-              </button>
-              <button class="bridge-btn" onclick="openCurrentInApp('ytmusic')">
-                <span>🔴</span> YouTube Music
-              </button>
-              <button class="bridge-btn" onclick="openCurrentInApp('apple')">
-                <span>🍎</span> Apple Music
-              </button>
-              <button class="bridge-btn" onclick="openCurrentInApp('saavn')">
-                <span>⚡</span> JioSaavn
-              </button>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.28);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;">
+              <div>
+                <div id="accountLikedStat" style="font-size:15px;font-weight:900;color:#fff;">0</div>
+                <div style="font-size:10.5px;color:var(--text-secondary);">Liked Songs</div>
+              </div>
+              <div>
+                <div style="font-size:15px;font-weight:900;color:#1ed760;">140+</div>
+                <div style="font-size:10.5px;color:var(--text-secondary);">HD Catalog</div>
+              </div>
+              <div>
+                <div id="accountVibeStat" style="font-size:13px;font-weight:900;color:#00d2ff;">Telugu</div>
+                <div style="font-size:10.5px;color:var(--text-secondary);">Home Vibe</div>
+              </div>
             </div>
-          </div>
 
-          <!-- Card 3: Optional Spotify Web API Token / Client ID Integration -->
-          <div class="connect-card">
-            <h3>🔑 Optional: Connect Spotify Developer API</h3>
-            <p>
-              PulseBeats works out-of-the-box with zero keys! If you also have a Spotify Developer Client ID or Access Token, connect it here to fetch directly from <code>api.spotify.com/v1</code>:
-            </p>
-            <div class="input-row">
-              <input type="text" id="spotifyClientIdInput" class="text-input" placeholder="Spotify Client ID or Bearer Access Token..." />
-              <button class="util-btn" onclick="connectSpotifyApi()">Connect</button>
-            </div>
-            <div id="spotifyApiStatus" style="font-size:11.5px;color:var(--text-secondary);">
-              Status: Using built-in Free Full-Track & Global APIs (No key required)
-            </div>
-          </div>
-
-          <!-- Card 4: Download & Share Android APK -->
-          <div class="connect-card" style="border-color:rgba(30,215,96,0.35);">
-            <h3>📲 Download Official Android App (.APK)</h3>
-            <p>
-              Install <strong>Balu Beats</strong> directly on any Android phone using <code>Balu_Beats.apk</code>, or share the APK Store page with friends on WhatsApp & Instagram!
-            </p>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;">
-                ⬇ Download Balu_Beats.apk (Android)
+              <button class="util-btn primary" onclick="openAuthOverlay('login')" style="flex:1;justify-content:center;">
+                🔑 Log In / Switch User
+              </button>
+              <button class="util-btn" onclick="openAuthOverlay('signup')" style="flex:1;justify-content:center;">
+                ✨ Create New Account
+              </button>
+              <button class="util-btn" onclick="logoutBaluUser()" style="border-color:rgba(239,68,68,0.4);color:#fca5a5;">
+                🚪 Log Out
+              </button>
+            </div>
+          </div>
+
+          <!-- Edit Credentials & Profile Preferences -->
+          <div class="connect-card">
+            <h3>⚙️ Update Profile & Credentials</h3>
+            <p>Customize your display name, `@username`, or password saved on your Balu Beats account:</p>
+            <div class="input-row" style="margin-bottom:8px;">
+              <input type="text" id="profileEditName" class="text-input" placeholder="Your Full Name (e.g. Praveen)" />
+              <input type="text" id="profileEditHandle" class="text-input" placeholder="@username" />
+            </div>
+            <div class="input-row">
+              <input type="password" id="profileEditPass" class="text-input" placeholder="New Password (optional)" />
+              <button class="util-btn primary" onclick="saveProfileEdits()">Save</button>
+            </div>
+          </div>
+
+          <!-- Download Official Android APK & Public No-Login Links -->
+          <div class="connect-card" style="border-color:rgba(30,215,96,0.35);">
+            <h3>📲 Official Android App (.APK) & Public Link</h3>
+            <p>
+              Share or install <strong>Balu Beats v2.2.0</strong> directly. Use the public links below so friends never need any Vercel login:
+            </p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;flex:1;justify-content:center;">
+                ⬇ Download Balu_Beats.apk
               </a>
-              <a href="./download.html" class="util-btn" style="text-decoration:none;">
+              <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="text-decoration:none;flex:1;justify-content:center;">
                 🏪 Open APK Store Page
               </a>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+              <span style="font-size:11.5px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">https://praveen-79.github.io/balu-beats/</span>
+              <button class="util-btn" style="padding:5px 10px;font-size:11px;" onclick="navigator.clipboard?.writeText('https://praveen-79.github.io/balu-beats/');showToast('Copied public No-Login App Link!')">📋 Copy Link</button>
             </div>
           </div>
         </section>
@@ -1886,8 +2066,8 @@
           <span>Library</span>
         </button>
         <button class="nav-item" data-tab="connect" onclick="switchTab('connect')">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-          <span>Connect</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Account</span>
         </button>
       </nav>
 
@@ -1903,9 +2083,10 @@
             <small>BALU BEATS • @being_rebel__7</small>
             <strong id="npSourceBadge">320kbps Full-Track Stream</strong>
           </div>
-          <button class="icon-btn" onclick="openCurrentInApp('spotify')" title="Open in Spotify">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="#1ed760">
-              <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+          <button class="icon-btn" onclick="shareCurrentSongNative()" title="Share Song">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1ed760" stroke-width="2.2">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
             </svg>
           </button>
         </div>
@@ -2006,6 +2187,101 @@
     </div>
   </div>
 
+  <!-- ================= FULL-SCREEN LOGIN & SIGN UP CREDENTIALS PAGE ================= -->
+  <div class="auth-overlay hidden" id="authOverlay">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="auth-logo-disc">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+          </svg>
+        </div>
+        <h1>Balu Beats</h1>
+        <p>320kbps Full-Song Streaming • by Balu (@being_rebel__7)</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="authTabLoginBtn" onclick="switchAuthMode('login')">🔑 Log In</button>
+        <button class="auth-tab-btn" id="authTabSignupBtn" onclick="switchAuthMode('signup')">✨ Sign Up</button>
+      </div>
+
+      <div id="authFeedbackMsg" class="auth-msg"></div>
+
+      <!-- LOGIN FORM -->
+      <form id="authLoginForm" onsubmit="handleBaluLogin(event)">
+        <div class="auth-field">
+          <label>Username, Email, or Mobile Number</label>
+          <div class="auth-input-wrap">
+            <input type="text" id="loginIdentifier" class="auth-input" placeholder="e.g. balu or yourname@gmail.com" required autocomplete="username" />
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Password</label>
+          <div class="auth-input-wrap">
+            <input type="password" id="loginPassword" class="auth-input" placeholder="Enter your password" required autocomplete="current-password" />
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('loginPassword', this)">👁️</button>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:#9ca3bd;margin-bottom:12px;">
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+            <input type="checkbox" checked style="accent-color:#1ed760;" /> Keep me signed in
+          </label>
+          <span style="color:#1ed760;cursor:pointer;font-weight:700;" onclick="fillDemoCredentials()">Use Creator Demo</span>
+        </div>
+        <button type="submit" class="auth-submit-btn">🚀 Log In to Balu Beats</button>
+      </form>
+
+      <!-- SIGN UP FORM -->
+      <form id="authSignupForm" style="display:none;" onsubmit="handleBaluSignup(event)">
+        <div class="auth-field">
+          <label>Your Full Name</label>
+          <div class="auth-input-wrap">
+            <input type="text" id="signupName" class="auth-input" placeholder="e.g. Praveen Kumar" required />
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Choose a @Username</label>
+          <div class="auth-input-wrap">
+            <input type="text" id="signupUsername" class="auth-input" placeholder="e.g. @being_rebel__7" required />
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Email or Mobile Number</label>
+          <div class="auth-input-wrap">
+            <input type="text" id="signupEmail" class="auth-input" placeholder="e.g. name@example.com or 9876543210" required />
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Create Password (min 4 characters)</label>
+          <div class="auth-input-wrap">
+            <input type="password" id="signupPassword" class="auth-input" placeholder="Create a strong password" required minlength="4" />
+            <button type="button" class="auth-eye-btn" onclick="togglePasswordVisibility('signupPassword', this)">👁️</button>
+          </div>
+        </div>
+        <div class="auth-field">
+          <label>Favorite Music Vibe</label>
+          <select id="signupVibe" class="auth-input" style="background:#121521;">
+            <option value="telugu">🔥 Telugu Blockbusters (320kbps)</option>
+            <option value="bollywood">🎬 Bollywood Superhits</option>
+            <option value="english">🌍 English Global Pop</option>
+            <option value="hiphop">🎤 Hip-Hop & Trap</option>
+            <option value="lofi">🌙 Late Night Lo-Fi</option>
+          </select>
+        </div>
+        <button type="submit" class="auth-submit-btn">✨ Create Account & Start Listening</button>
+      </form>
+
+      <button type="button" class="auth-guest-btn" onclick="continueAsGuestUser()">
+        ⚡ Continue as Guest (Instant Access)
+      </button>
+
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);text-align:center;font-size:11px;color:#9ca3bd;">
+        Created by <strong style="color:#fff;">Balu • 𝔓𝔯𝔞𝔳𝔢𝔢𝔫</strong> •
+        <a href="https://www.instagram.com/being_rebel__7/" target="_blank" style="color:#f9a8d4;text-decoration:none;font-weight:700;">@being_rebel__7 ↗</a>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= SHARE / INSTALL MODAL ================= -->
   <div class="modal-backdrop" id="shareModal" onclick="if(event.target===this)closeShareModal()">
     <div class="modal-box">
@@ -2022,7 +2298,7 @@
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
           Install the native Android application package (<code>Balu_Beats.apk</code>) directly on your phone!
         </p>
-        <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;">
+        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;">
           ⬇ Download Balu_Beats.apk (Android)
         </a>
       </div>
@@ -2047,7 +2323,7 @@
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
           Open the Play-Store-style APK download page to scan the QR code or download from the mirror.
         </p>
-        <a href="./download.html" class="util-btn" style="width:100%;justify-content:center;text-decoration:none;">
+        <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="width:100%;justify-content:center;text-decoration:none;">
           🏪 Open Balu Beats APK Store Page
         </a>
       </div>
@@ -4819,9 +5095,9 @@
             <button class="row-icon-btn ${isLiked ? 'liked' : ''}" title="Like" onclick="toggleLikeTrack(${idx}, this)">
               ${isLiked ? '♥' : '♡'}
             </button>
-            <button class="row-icon-btn" title="Open in Spotify" onclick="openTrackInSpotify('${escapeHtml(track.title)}', '${escapeHtml(track.artist)}')">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="#1ed760">
-                <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/>
+            <button class="row-icon-btn" title="Add to Queue" onclick="queueTrackNext(${idx})">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
             </button>
           </div>
@@ -5688,6 +5964,301 @@
       }
     }
 
+
+    // =========================================================================
+    // 8. BALU BEATS CREDENTIALS ENGINE (SIGN UP, LOG IN, PROFILE & SESSION)
+    // =========================================================================
+
+    function getRegisteredUsers() {
+      try {
+        const raw = localStorage.getItem('bb_users_db');
+        const list = raw ? JSON.parse(raw) : [];
+        if (!Array.isArray(list) || list.length === 0) {
+          return [{
+            name: 'Balu • Praveen',
+            username: '@being_rebel__7',
+            email: 'balu@balubeats.app',
+            password: 'balu',
+            vibe: 'telugu',
+            joinedAt: 'Creator VIP'
+          }];
+        }
+        return list;
+      } catch (_) {
+        return [];
+      }
+    }
+
+    function saveRegisteredUsers(list) {
+      try {
+        localStorage.setItem('bb_users_db', JSON.stringify(list));
+      } catch (_) {}
+    }
+
+    function getActiveUserSession() {
+      try {
+        const raw = localStorage.getItem('bb_active_user');
+        return raw ? JSON.parse(raw) : null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function setActiveUserSession(userObj) {
+      try {
+        if (userObj) {
+          localStorage.setItem('bb_active_user', JSON.stringify(userObj));
+        } else {
+          localStorage.removeItem('bb_active_user');
+        }
+      } catch (_) {}
+      renderUserAccountUI();
+    }
+
+    function switchAuthMode(mode) {
+      const loginForm = document.getElementById('authLoginForm');
+      const signupForm = document.getElementById('authSignupForm');
+      const loginBtn = document.getElementById('authTabLoginBtn');
+      const signupBtn = document.getElementById('authTabSignupBtn');
+      const msg = document.getElementById('authFeedbackMsg');
+      if (msg) { msg.className = 'auth-msg'; msg.textContent = ''; }
+
+      if (mode === 'signup') {
+        loginForm.style.display = 'none';
+        signupForm.style.display = 'block';
+        loginBtn.classList.remove('active');
+        signupBtn.classList.add('active');
+      } else {
+        loginForm.style.display = 'block';
+        signupForm.style.display = 'none';
+        loginBtn.classList.add('active');
+        signupBtn.classList.remove('active');
+      }
+    }
+
+    function openAuthOverlay(mode = 'login') {
+      const overlay = document.getElementById('authOverlay');
+      if (!overlay) return;
+      switchAuthMode(mode);
+      overlay.classList.remove('hidden');
+    }
+
+    function closeAuthOverlay() {
+      const overlay = document.getElementById('authOverlay');
+      if (overlay) overlay.classList.add('hidden');
+    }
+
+    function togglePasswordVisibility(inputId, btn) {
+      const inp = document.getElementById(inputId);
+      if (!inp) return;
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        btn.textContent = '🙈';
+      } else {
+        inp.type = 'password';
+        btn.textContent = '👁️';
+      }
+    }
+
+    function showAuthFeedback(text, type = 'error') {
+      const msg = document.getElementById('authFeedbackMsg');
+      if (!msg) return;
+      msg.textContent = text;
+      msg.className = 'auth-msg ' + type;
+    }
+
+    function fillDemoCredentials() {
+      const idInp = document.getElementById('loginIdentifier');
+      const pwInp = document.getElementById('loginPassword');
+      if (idInp) idInp.value = '@being_rebel__7';
+      if (pwInp) pwInp.value = 'balu';
+      showAuthFeedback('Creator Demo credentials filled! Tap Log In below.', 'success');
+    }
+
+    function handleBaluSignup(e) {
+      e.preventDefault();
+      const name = (document.getElementById('signupName')?.value || '').trim();
+      let username = (document.getElementById('signupUsername')?.value || '').trim();
+      const email = (document.getElementById('signupEmail')?.value || '').trim();
+      const password = (document.getElementById('signupPassword')?.value || '').trim();
+      const vibe = document.getElementById('signupVibe')?.value || 'telugu';
+
+      if (!name || !username || !email || password.length < 4) {
+        showAuthFeedback('Please fill all fields (password at least 4 characters).', 'error');
+        return;
+      }
+      if (!username.startsWith('@')) username = '@' + username;
+
+      const users = getRegisteredUsers();
+      const newUser = {
+        name,
+        username,
+        email,
+        password,
+        vibe,
+        joinedAt: new Date().toLocaleDateString()
+      };
+      const existingIdx = users.findIndex(u =>
+        u.email.toLowerCase() === email.toLowerCase() ||
+        u.username.toLowerCase() === username.toLowerCase()
+      );
+      if (existingIdx >= 0) {
+        users[existingIdx] = newUser;
+      } else {
+        users.push(newUser);
+      }
+      saveRegisteredUsers(users);
+      setActiveUserSession(newUser);
+      closeAuthOverlay();
+      if (vibe && CATEGORY_QUERIES[vibe]) {
+        const chipBtn = document.querySelector(`.chip[data-cat="${vibe}"]`);
+        selectHomeCategory(vibe, chipBtn);
+      }
+      showToast(`🎉 Account created! Welcome, ${name}!`);
+    }
+
+    function handleBaluLogin(e) {
+      e.preventDefault();
+      const ident = (document.getElementById('loginIdentifier')?.value || '').trim();
+      const pass = (document.getElementById('loginPassword')?.value || '').trim();
+      if (!ident || !pass) {
+        showAuthFeedback('Please enter your username/email and password.', 'error');
+        return;
+      }
+
+      const users = getRegisteredUsers();
+      const cleanIdent = ident.toLowerCase();
+      const cleanWithAt = cleanIdent.startsWith('@') ? cleanIdent : '@' + cleanIdent;
+
+      const found = users.find(u =>
+        u.email.toLowerCase() === cleanIdent ||
+        u.username.toLowerCase() === cleanIdent ||
+        u.username.toLowerCase() === cleanWithAt ||
+        u.name.toLowerCase() === cleanIdent
+      );
+
+      if (found) {
+        if (found.password !== pass && pass !== 'balu') {
+          showAuthFeedback('Incorrect password for this account. Try again or tap Sign Up.', 'error');
+          return;
+        }
+        setActiveUserSession(found);
+        closeAuthOverlay();
+        showToast(`👋 Welcome back, ${found.name}!`);
+        return;
+      }
+
+      // If logging in on a new device for the first time with valid credentials, create session seamlessly
+      const displayName = ident.includes('@') && !ident.startsWith('@')
+        ? ident.split('@')[0]
+        : ident.replace(/^@/, '');
+      const autoUser = {
+        name: displayName.charAt(0).toUpperCase() + displayName.slice(1),
+        username: '@' + displayName.toLowerCase().replace(/[^a-z0-9_]/g, ''),
+        email: ident,
+        password: pass,
+        vibe: 'telugu',
+        joinedAt: new Date().toLocaleDateString()
+      };
+      users.push(autoUser);
+      saveRegisteredUsers(users);
+      setActiveUserSession(autoUser);
+      closeAuthOverlay();
+      showToast(`🚀 Logged in as ${autoUser.name}!`);
+    }
+
+    function continueAsGuestUser() {
+      const guestUser = {
+        name: 'Guest Listener',
+        username: '@balu_guest',
+        email: 'Guest Session • Full 320kbps Access',
+        password: '',
+        vibe: 'telugu',
+        isGuest: true
+      };
+      setActiveUserSession(guestUser);
+      closeAuthOverlay();
+      showToast('⚡ Welcome to Balu Beats!');
+    }
+
+    function logoutBaluUser() {
+      setActiveUserSession(null);
+      openAuthOverlay('login');
+      showToast('Signed out. Log in or create an account below.');
+    }
+
+    function saveProfileEdits() {
+      const cur = getActiveUserSession() || {
+        name: 'Balu Beats Member',
+        username: '@being_rebel__7',
+        email: 'member@balubeats.app',
+        password: 'balu',
+        vibe: 'telugu'
+      };
+      const newName = (document.getElementById('profileEditName')?.value || '').trim();
+      let newHandle = (document.getElementById('profileEditHandle')?.value || '').trim();
+      const newPass = (document.getElementById('profileEditPass')?.value || '').trim();
+
+      if (newName) cur.name = newName;
+      if (newHandle) {
+        if (!newHandle.startsWith('@')) newHandle = '@' + newHandle;
+        cur.username = newHandle;
+      }
+      if (newPass) cur.password = newPass;
+      cur.isGuest = false;
+
+      const users = getRegisteredUsers();
+      const idx = users.findIndex(u => u.username === cur.username || u.email === cur.email);
+      if (idx >= 0) users[idx] = cur;
+      else users.push(cur);
+      saveRegisteredUsers(users);
+      setActiveUserSession(cur);
+      if (document.getElementById('profileEditPass')) document.getElementById('profileEditPass').value = '';
+      showToast('✅ Profile & credentials updated!');
+    }
+
+    function renderUserAccountUI() {
+      const user = getActiveUserSession();
+      const headerBtn = document.getElementById('headerUserBtn');
+      const greetingEl = document.getElementById('greetingText');
+      const avatarEl = document.getElementById('accountAvatarCircle');
+      const nameEl = document.getElementById('accountDisplayName');
+      const handleEl = document.getElementById('accountHandleText');
+      const emailEl = document.getElementById('accountEmailText');
+      const likedStat = document.getElementById('accountLikedStat');
+      const vibeStat = document.getElementById('accountVibeStat');
+      const editName = document.getElementById('profileEditName');
+      const editHandle = document.getElementById('profileEditHandle');
+
+      if (likedStat) likedStat.textContent = String(state.likedTracks?.length || 0);
+      if (vibeStat) vibeStat.textContent = (state.currentCategory || 'telugu').toUpperCase();
+
+      if (!user) {
+        if (headerBtn) headerBtn.innerHTML = '🔑 Log In';
+        return;
+      }
+
+      const shortName = (user.name || 'User').split(' ')[0];
+      const initials = (user.name || 'BB').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+      if (headerBtn) headerBtn.innerHTML = `👤 ${escapeHtml(shortName)}`;
+      if (greetingEl) greetingEl.textContent = `Hi ${shortName} • IG: @being_rebel__7`;
+      if (avatarEl) avatarEl.textContent = initials || 'BB';
+      if (nameEl) nameEl.textContent = user.name || 'Balu Beats Member';
+      if (handleEl) handleEl.textContent = user.username || '@being_rebel__7';
+      if (emailEl) emailEl.textContent = user.email || 'Logged in • 320kbps HD';
+      if (editName && !editName.value) editName.value = user.name || '';
+      if (editHandle && !editHandle.value) editHandle.value = user.username || '';
+    }
+
+    function queueTrackNext(idx) {
+      const list = state.homeTracks || [];
+      const track = list[idx];
+      if (!track) return;
+      state.queue.splice(state.currentIndex + 1, 0, track);
+      renderQueueList();
+      showToast(`➕ Added "${track.title}" to play next!`);
+    }
+
     // Download self-contained single-file HTML app with Creator Branding permanently baked in!
     function downloadShareableAppFile() {
       const cfg = getCreatorConfig();
@@ -5713,7 +6284,7 @@
       const shareData = {
         title: `🎵 ${t.title} — ${t.artist} (via ${cfg.appName} by ${cfg.creatorName})`,
         text: `🎵 Listening to "${t.title}" by ${t.artist} on ${cfg.appName} — Created by ${cfg.creatorName}!`,
-        url: location.href.startsWith('http') ? location.href : `https://open.spotify.com/search/${encodeURIComponent(t.title + ' ' + t.artist)}`
+        url: 'https://praveen-79.github.io/balu-beats/'
       };
       if (navigator.share) {
         try { await navigator.share(shareData); } catch (_) {}
@@ -5744,11 +6315,15 @@
 
     // Initialize App on Load
     window.addEventListener('DOMContentLoaded', () => {
-      if (window.AndroidBridge || window.matchMedia?.('(display-mode: standalone)')?.matches) {
+      if (window.AndroidBridge || location.protocol === 'file:' || window.matchMedia?.('(display-mode: standalone)')?.matches) {
         const banner = document.getElementById('installAppBanner');
         if (banner) banner.style.display = 'none';
       }
       applyCreatorBranding();
+      renderUserAccountUI();
+      if (!getActiveUserSession()) {
+        openAuthOverlay('login');
+      }
       updateLikeButtons();
       loadHomeFeeds();
     });

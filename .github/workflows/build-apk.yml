@@ -95,8 +95,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="4"
-              android:versionName="2.2.0">
+              android:versionCode="5"
+              android:versionName="2.3.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
               <uses-permission android:name="android.permission.INTERNET" />
@@ -234,16 +234,9 @@ jobs:
 
                   webView.setWebViewClient(new WebViewClient() {
                       @Override
-                      public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-                          if (failingUrl != null && failingUrl.startsWith("https://balu-beats.vercel.app")) {
-                              view.loadUrl("file:///android_asset/index.html");
-                          }
-                      }
-
-                      @Override
                       public boolean shouldOverrideUrlLoading(WebView view, String url) {
                           if (url == null) return false;
-                          if (url.startsWith("https://balu-beats.vercel.app") || url.startsWith("file://")) {
+                          if (url.startsWith("file://")) {
                               return false;
                           }
                           try {
@@ -255,8 +248,8 @@ jobs:
                   });
 
                   setContentView(webView);
-                  // Load live Vercel app (auto-falls back to bundled offline index.html if offline)
-                  webView.loadUrl("https://balu-beats.vercel.app/");
+                  // Load bundled local app directly — 100% skips Vercel login / deployment protection!
+                  webView.loadUrl("file:///android_asset/index.html");
               }
 
               private void setupMediaSession() {
