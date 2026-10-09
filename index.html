@@ -1477,7 +1477,7 @@
         <button class="util-btn" onclick="toggleViewportMode()" id="viewportToggleBtn" title="Switch between Phone Frame and Wide View">
           📱 Phone View / 🖥️ Wide View
         </button>
-        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;">
+        <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;">
           📲 Download Android App (.APK)
         </a>
       </div>
@@ -1531,7 +1531,7 @@
               <div style="font-size:10.5px;color:var(--text-secondary);">100% Full-Length 320kbps Songs • Android APK & Web App</div>
             </div>
             <div style="display:flex;gap:6px;flex-shrink:0;">
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" class="util-btn primary" style="padding:6px 10px;font-size:11px;text-decoration:none;">
+              <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="padding:6px 10px;font-size:11px;text-decoration:none;">
                 ⬇ .APK
               </a>
               <button class="util-btn" style="padding:6px 10px;font-size:11px;" onclick="triggerInstallPWA()">
@@ -1987,7 +1987,7 @@
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
           Install the native Android application package (<code>Balu_Beats.apk</code>) directly on your phone!
         </p>
-        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;">
+        <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;">
           ⬇ Download Balu_Beats.apk (Android)
         </a>
       </div>
@@ -3223,19 +3223,20 @@
         }
       }
 
-      // 2. If running on Vercel (*.vercel.app) or local server, use our fast /api/saavn serverless backend!
-      if (location.protocol.startsWith('http') && !location.hostname.includes('github.io')) {
-        try {
-          const localRes = await fetch(`/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`);
-          if (localRes.ok) {
-            const json = await localRes.json();
-            const parsedDirect = deduplicateTracks(parseSaavnDirectJson(json));
-            if (parsedDirect.length) return parsedDirect;
-            const parsedMirror = deduplicateTracks(parseSaavnMirrorJson(json));
-            if (parsedMirror.length) return parsedMirror;
-          }
-        } catch (_) {}
-      }
+      // 2. Use our fast Vercel Serverless Backend (https://balu-beats.vercel.app/api/saavn)!
+      try {
+        const apiEndpoint = (location.protocol.startsWith('http') && !location.hostname.includes('github.io'))
+          ? `/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`
+          : `https://balu-beats.vercel.app/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`;
+        const localRes = await fetch(apiEndpoint);
+        if (localRes.ok) {
+          const json = await localRes.json();
+          const parsedDirect = deduplicateTracks(parseSaavnDirectJson(json));
+          if (parsedDirect.length) return parsedDirect;
+          const parsedMirror = deduplicateTracks(parseSaavnMirrorJson(json));
+          if (parsedMirror.length) return parsedMirror;
+        }
+      } catch (_) {}
 
       // 3. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors IN PARALLEL!
       const mirrors = [
