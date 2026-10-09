@@ -3,69 +3,98 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Download Balu Beats — Official Music App by @being_rebel__7</title>
+  <title>Balu Beats APK Download (v2.0.0) — Official Android App by @being_rebel__7</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background:
-        radial-gradient(circle at 20% 20%, rgba(30, 215, 96, 0.25), transparent 45%),
-        radial-gradient(circle at 80% 80%, rgba(236, 72, 153, 0.22), transparent 45%),
+        radial-gradient(circle at 20% 10%, rgba(30, 215, 96, 0.22), transparent 45%),
+        radial-gradient(circle at 80% 85%, rgba(236, 72, 153, 0.18), transparent 45%),
         #07080d;
       color: #f7f8fc;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: 20px;
     }
-    .card {
+    .store-card {
       width: 100%;
-      max-width: 460px;
-      background: rgba(17, 19, 28, 0.92);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      max-width: 480px;
+      background: rgba(17, 19, 28, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 28px;
-      padding: 32px 26px;
-      text-align: center;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.75);
+      padding: 28px 24px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
       backdrop-filter: blur(20px);
     }
-    .logo {
-      width: 72px;
-      height: 72px;
-      border-radius: 22px;
+    .app-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .app-icon {
+      width: 78px;
+      height: 78px;
+      border-radius: 20px;
       background: linear-gradient(135deg, #1ed760, #00d2ff);
-      display: inline-flex;
+      display: flex;
       align-items: center;
       justify-content: center;
       color: #041208;
-      font-size: 34px;
+      font-size: 38px;
       font-weight: 900;
-      margin-bottom: 14px;
-      box-shadow: 0 10px 30px rgba(30, 215, 96, 0.4);
+      flex-shrink: 0;
+      box-shadow: 0 10px 28px rgba(30, 215, 96, 0.35);
     }
-    .badge {
-      display: inline-block;
+    .app-title-box h1 {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.4px;
+      margin-bottom: 3px;
+    }
+    .dev-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1ed760;
+      margin-bottom: 4px;
+    }
+    .verified-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       font-size: 11px;
-      font-weight: 800;
-      padding: 4px 12px;
+      font-weight: 700;
+      padding: 2px 8px;
       border-radius: 999px;
-      background: rgba(236, 72, 153, 0.16);
-      color: #f9a8d4;
-      border: 1px solid rgba(236, 72, 153, 0.4);
-      margin-bottom: 10px;
+      background: rgba(30, 215, 96, 0.14);
+      color: #1ed760;
+      border: 1px solid rgba(30, 215, 96, 0.35);
     }
-    h1 {
-      font-size: 28px;
-      font-weight: 900;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 0;
+      margin-bottom: 20px;
+      text-align: center;
     }
-    p.sub {
-      font-size: 13.5px;
+    .stat-box {
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .stat-box:last-child { border-right: none; }
+    .stat-val {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .stat-lbl {
+      font-size: 11px;
       color: #9ca3bd;
-      line-height: 1.5;
-      margin-bottom: 22px;
+      margin-top: 2px;
     }
     .btn {
       display: flex;
@@ -74,7 +103,7 @@
       gap: 10px;
       width: 100%;
       padding: 15px 20px;
-      border-radius: 16px;
+      border-radius: 999px;
       font-size: 15px;
       font-weight: 800;
       text-decoration: none;
@@ -84,7 +113,7 @@
       border: none;
     }
     .btn:hover { transform: translateY(-2px); filter: brightness(1.07); }
-    .btn-primary {
+    .btn-install {
       background: linear-gradient(135deg, #1ed760, #10b981);
       color: #041208;
       box-shadow: 0 8px 25px rgba(30, 215, 96, 0.35);
@@ -93,89 +122,121 @@
       background: #191c29;
       color: #fff;
       border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    .btn-ig {
-      background: linear-gradient(135deg, rgba(236, 72, 153, 0.22), rgba(139, 92, 246, 0.22));
-      color: #f9a8d4;
-      border: 1px solid rgba(236, 72, 153, 0.45);
       font-size: 13.5px;
       padding: 12px 16px;
     }
-    .features {
+    .btn-ig {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.2));
+      color: #f9a8d4;
+      border: 1px solid rgba(236, 72, 153, 0.45);
+      font-size: 13px;
+      padding: 11px 16px;
+    }
+    .info-section {
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 16px;
+      padding: 14px;
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.5;
+    }
+    .info-section h3 {
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .meta-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 8px;
-      margin: 18px 0;
-      text-align: left;
+      margin-top: 10px;
+      font-size: 11.5px;
+      color: #9ca3bd;
     }
-    .feat {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      padding: 10px 12px;
-      border-radius: 12px;
-      font-size: 12px;
-      color: #cbd5e1;
-      font-weight: 600;
-    }
+    .meta-grid strong { color: #f7f8fc; display: block; }
     .qr-box {
       margin-top: 16px;
-      padding-top: 16px;
+      padding-top: 14px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
       font-size: 12px;
       color: #9ca3bd;
     }
     .qr-box img {
-      margin-top: 10px;
-      width: 130px;
-      height: 130px;
-      border-radius: 14px;
-      padding: 8px;
+      margin-top: 8px;
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      padding: 6px;
       background: #fff;
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="logo">🎵</div>
-    <div>
-      <span class="badge">👑 Created by Balu • 𝔓𝔯𝔞𝔳𝔢𝔢𝔫 (@being_rebel__7)</span>
+  <div class="store-card">
+    <div class="app-header">
+      <div class="app-icon">🎵</div>
+      <div class="app-title-box">
+        <h1>Balu Beats</h1>
+        <div class="dev-name">Balu • 𝔓𝔯𝔞𝔳𝔢𝔢𝔫 (@being_rebel__7)</div>
+        <span class="verified-pill">✓ Verified Android APK • Safe to Install</span>
+      </div>
     </div>
-    <h1>Balu Beats</h1>
-    <p class="sub">
-      Stream <strong>100% full-length 320kbps songs (3–6+ mins)</strong>, Telugu & Global charts, 24/7 live radio, synced karaoke lyrics, and connect directly to <strong>Spotify</strong>.
-    </p>
 
-    <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="btn btn-primary">
-      🤖 Download Android App (Balu_Beats.apk)
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">4.9 ★</div>
+        <div class="stat-lbl">Rating</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">320kbps</div>
+        <div class="stat-lbl">Full Songs</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">v2.0.0</div>
+        <div class="stat-lbl">Android APK</div>
+      </div>
+    </div>
+
+    <!-- Primary Direct Android APK Download Button -->
+    <a href="./Balu_Beats.apk" download="Balu_Beats.apk" class="btn btn-install">
+      ⬇ Download APK (Balu_Beats.apk)
     </a>
 
-    <a href="./index.html" class="btn btn-secondary" style="border-color:rgba(30, 215, 96, 0.45);color:#1ed760;">
-      ▶ Open Web App / Install to Home Screen
+    <!-- Mirror APK Link from GitHub Release -->
+    <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" class="btn btn-secondary">
+      📦 Mirror Download APK (GitHub Release)
     </a>
 
-    <a href="./Balu_Beats_App.html" download="Balu_Beats_App.html" class="btn btn-secondary">
-      💻 Download Portable File (Balu_Beats_App.html)
+    <!-- Launch Web / iOS Version -->
+    <a href="./index.html" class="btn btn-secondary" style="border-color:rgba(30,215,96,0.4);color:#1ed760;">
+      ▶ Open Web App (iPhone / PC / Browser)
     </a>
 
     <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn btn-ig">
       📸 Follow Creator on Instagram: @being_rebel__7 ↗
     </a>
 
-    <div class="features">
-      <div class="feat">⚡ 320kbps Full Songs</div>
-      <div class="feat">🟢 Spotify App Bridge</div>
-      <div class="feat">🎤 Synced Live Lyrics</div>
-      <div class="feat">📻 24/7 World Radio</div>
+    <div class="info-section">
+      <h3>📲 About This Android App (.APK)</h3>
+      <p>
+        Stream 100% full-length <strong>320kbps HD songs</strong> (Telugu, Bollywood, English, Hip-Hop & Lo-Fi), live synced lyrics, 24/7 radio, and Spotify bridge directly on your phone.
+      </p>
+      <div class="meta-grid">
+        <div><strong>Package Name</strong>com.balubeats.music</div>
+        <div><strong>Android Requirement</strong>Android 5.0+ (API 21+)</div>
+        <div><strong>File Format</strong>Signed .APK Package</div>
+        <div><strong>Developer</strong>Balu (@being_rebel__7)</div>
+      </div>
     </div>
 
     <div class="qr-box">
-      <div>📱 Scan QR on your phone to open <strong>Balu Beats</strong>:</div>
-      <img id="qrImg" alt="QR Code" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://balu-beats.vercel.app/" />
+      <div>📱 Scan QR with Phone Camera to Download <strong>Balu_Beats.apk</strong>:</div>
+      <img id="qrImg" alt="QR Code" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https://balu-beats.vercel.app/Balu_Beats.apk" />
     </div>
   </div>
-  <script>
-    const appUrl = new URL('./index.html', window.location.href).href;
-    document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(appUrl);
-  </script>
 </body>
 </html>

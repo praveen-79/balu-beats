@@ -1,9 +1,28 @@
 {
   "version": 2,
   "regions": ["bom1"],
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/store", "destination": "/download.html" },
+    { "source": "/download", "destination": "/download.html" },
+    { "source": "/apk", "destination": "/Balu_Beats.apk" }
+  ],
   "headers": [
     {
       "source": "/Balu_Beats.apk",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/vnd.android.package-archive"
+        },
+        {
+          "key": "Content-Disposition",
+          "value": "attachment; filename=\"Balu_Beats.apk\""
+        }
+      ]
+    },
+    {
+      "source": "/apk",
       "headers": [
         {
           "key": "Content-Type",
