@@ -1542,18 +1542,18 @@
 
           <!-- Source Filter Chips -->
           <div class="chips-scroll">
-            <button class="chip active" onclick="loadQuickCategory('ALL_CURATED', this)">🔥 All Full Songs</button>
-            <button class="chip" onclick="loadQuickCategory('the weeknd ed sheeran dua lipa', this)">🌎 English Full</button>
-            <button class="chip" onclick="loadQuickCategory('devara pushpa 2 thandel telugu', this)">🎬 Telugu Hits</button>
-            <button class="chip" onclick="loadQuickCategory('arijit singh bollywood hits', this)">🇮🇳 Bollywood Full</button>
-            <button class="chip" onclick="loadQuickCategory('hip hop rap phonk', this)">🎤 Hip-Hop</button>
-            <button class="chip" onclick="loadQuickCategory('lofi chill beats', this)">☕ Lo-Fi Chill</button>
+            <button class="chip active" onclick="loadQuickCategory('all', this)">🔥 All Full Songs</button>
+            <button class="chip" onclick="loadQuickCategory('telugu', this)">🎬 Telugu Hits</button>
+            <button class="chip" onclick="loadQuickCategory('english', this)">🌎 English Full</button>
+            <button class="chip" onclick="loadQuickCategory('bollywood', this)">🇮🇳 Bollywood Full</button>
+            <button class="chip" onclick="loadQuickCategory('hiphop', this)">🎤 Hip-Hop</button>
+            <button class="chip" onclick="loadQuickCategory('lofi', this)">☕ Lo-Fi Chill</button>
           </div>
 
           <!-- Featured Hero Card -->
           <div class="hero-card" id="heroCard">
             <div class="hero-info">
-              <div class="hero-tag">👑 Balu Beats • 100% Full Songs</div>
+              <div class="hero-tag" id="heroCategoryTag">👑 Balu Beats • 100% Full Songs</div>
               <div class="hero-title" id="heroTitle">Starboy & Full 320kbps Hits</div>
               <div class="hero-sub" id="heroSub">Stream complete 3–6 min 320kbps HD songs on Balu Beats</div>
               <div class="hero-btns">
@@ -1570,35 +1570,35 @@
 
           <!-- Quick Mood Grid -->
           <div class="quick-grid">
-            <div class="quick-card" onclick="searchAndGo('The Weeknd')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);">🌙</div>
-              <div class="quick-card-title">The Weeknd</div>
-            </div>
-            <div class="quick-card" onclick="searchAndGo('Telugu Blockbusters 2024')">
+            <div class="quick-card" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #f59e0b, #78350f);">🔥</div>
               <div class="quick-card-title">Telugu Hits</div>
             </div>
-            <div class="quick-card" onclick="searchAndGo('Arijit Singh')">
+            <div class="quick-card" onclick="openQuickCollection('english', 'The Weeknd Hits', 'the weeknd')">
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);">🌙</div>
+              <div class="quick-card-title">The Weeknd</div>
+            </div>
+            <div class="quick-card" onclick="openQuickCollection('bollywood', 'Arijit Singh Hits', 'arijit singh')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #ec4899, #831843);">💖</div>
               <div class="quick-card-title">Arijit Singh</div>
             </div>
-            <div class="quick-card" onclick="searchAndGo('Anirudh Ravichander')">
+            <div class="quick-card" onclick="openQuickCollection('telugu', 'Anirudh Ravichander', 'anirudh')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">⚡</div>
               <div class="quick-card-title">Anirudh Hits</div>
             </div>
-            <div class="quick-card" onclick="searchAndGo('Ed Sheeran Dua Lipa')">
+            <div class="quick-card" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #00d2ff, #0369a1);">🎧</div>
               <div class="quick-card-title">Global Pop</div>
             </div>
-            <div class="quick-card" onclick="searchAndGo('Imagine Dragons Coldplay')">
+            <div class="quick-card" onclick="openQuickCollection('hiphop', 'Hip-Hop & Rap', 'travis scott')">
               <div class="quick-card-icon" style="background: linear-gradient(135deg, #10b981, #065f46);">🪐</div>
-              <div class="quick-card-title">Rock & Anthems</div>
+              <div class="quick-card-title">Hip-Hop & Rap</div>
             </div>
           </div>
 
           <!-- Full-Length Songs Carousel (320kbps) -->
-          <div class="section-header">
-            <h2 class="section-title">⚡ Featured Full Songs (320kbps HD)</h2>
+          <div class="section-header" id="carouselSectionHeader">
+            <h2 class="section-title" id="carouselSectionTitle">⚡ Featured Full Songs (320kbps HD)</h2>
             <button class="section-link" onclick="switchTab('search')">Search All</button>
           </div>
           <div class="horiz-scroll" id="homeFullSongsCarousel">
@@ -1606,8 +1606,8 @@
           </div>
 
           <!-- Full-Length Trending Chart List -->
-          <div class="section-header">
-            <h2 class="section-title">🎵 Complete Full-Length Tracks (3–6 Mins)</h2>
+          <div class="section-header" id="listSectionHeader">
+            <h2 class="section-title" id="listSectionTitle">🎵 Complete Full-Length Tracks (3–6 Mins)</h2>
             <button class="section-link" onclick="loadHomeFeeds()">Refresh</button>
           </div>
           <div class="track-list" id="homeGlobalList">
@@ -1640,7 +1640,7 @@
             </div>
           </div>
 
-          <div id="searchStatus" style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;"></div>
+          <div id="searchStatus" style="font-size:12px;color:var(--accent-green);font-weight:700;margin-bottom:8px;"></div>
           <div class="track-list" id="searchResultsList"></div>
 
           <!-- Browse Categories -->
@@ -1648,23 +1648,23 @@
             <h2 class="section-title">Browse Moods & Genres</h2>
           </div>
           <div class="genre-grid">
-            <div class="genre-card" style="background:linear-gradient(135deg,#e11d48,#881337)" onclick="searchAndGo('Top Pop Hits')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#f59e0b,#78350f)" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
+              <span>Telugu Hits</span><span class="emoji">🎬</span>
+            </div>
+            <div class="genre-card" style="background:linear-gradient(135deg,#e11d48,#881337)" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
               <span>Pop Anthems</span><span class="emoji">🎤</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#7c3aed,#3b0764)" onclick="searchAndGo('Phonk Drift Gym')">
-              <span>Phonk & Gym</span><span class="emoji">🔥</span>
+            <div class="genre-card" style="background:linear-gradient(135deg,#059669,#064e3b)" onclick="openQuickCollection('bollywood', 'Bollywood Romantic Hits', 'arijit singh')">
+              <span>Bollywood</span><span class="emoji">💖</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#0284c7,#0c4a6e)" onclick="searchAndGo('Lo-Fi Chill Study Beats')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#7c3aed,#3b0764)" onclick="openQuickCollection('hiphop', 'Hip-Hop & Phonk', 'travis scott')">
+              <span>Hip-Hop & Phonk</span><span class="emoji">🔥</span>
+            </div>
+            <div class="genre-card" style="background:linear-gradient(135deg,#0284c7,#0c4a6e)" onclick="openQuickCollection('lofi', 'Lo-Fi Chill Beats', 'lofi chill')">
               <span>Lo-Fi Study</span><span class="emoji">☕</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#059669,#064e3b)" onclick="searchAndGo('Bollywood Romantic Hits')">
-              <span>Bollywood</span><span class="emoji">🎬</span>
-            </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#d97706,#78350f)" onclick="searchAndGo('Hip Hop Rap Classics')">
-              <span>Hip-Hop</span><span class="emoji">🎧</span>
-            </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#4f46e5,#1e1b4b)" onclick="searchAndGo('EDM Festival Bass')">
-              <span>EDM & Electronic</span><span class="emoji">⚡</span>
+            <div class="genre-card" style="background:linear-gradient(135deg,#4f46e5,#1e1b4b)" onclick="openQuickCollection('english', 'Rock & EDM Classics', 'imagine dragons')">
+              <span>Rock & EDM</span><span class="emoji">⚡</span>
             </div>
           </div>
         </section>
@@ -2313,7 +2313,750 @@
       }
     ];
 
+    const BALU_CATEGORIES = {
+      "telugu": [
+            {
+                  "id": "saavn_lV488Mwv",
+                  "title": "Devara Thandavam (From \"Devara Part 1\")",
+                  "artist": "Anirudh Ravichander",
+                  "album": "Devara Thandavam (From \"Devara Part 1\")",
+                  "artwork": "https://c.saavncdn.com/714/Devara-Thandavam-From-Devara-Part-1-Telugu-2024-20241107141003-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/714/ddf1bdb62739ac7b8e64ae8b2ed8a428_320.mp4",
+                  "duration": 138,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_0xpQY8-t",
+                  "title": "Dhivara",
+                  "artist": "Ramya Behara, Deepu",
+                  "album": "Baahubali - The Beginning (Telugu)",
+                  "artwork": "https://c.saavncdn.com/301/Baahubali-The-Beginning-Telugu-2015-20251028160018-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/301/78a0e467f2f62690869c1b0474745953_320.mp4",
+                  "duration": 327,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_48VSLyyC",
+                  "title": "Dheevara (English Version)",
+                  "artist": "Adithya, Ramya Behara",
+                  "album": "Baahubali - The Beginning (Telugu)",
+                  "artwork": "https://c.saavncdn.com/301/Baahubali-The-Beginning-Telugu-2015-20251028160018-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/301/e30a643c363131fcd388bb358c34bfdb_320.mp4",
+                  "duration": 190,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_rN5VhdEe",
+                  "title": "Chuttamalle (From \"Devara Part 1\")",
+                  "artist": "Shilpa Rao, Anirudh Ravichander",
+                  "album": "Prema Kavithalu - 2026 Valentines Day Special",
+                  "artwork": "https://c.saavncdn.com/353/Prema-Kavithalu-2026-Valentines-Day-Special-Telugu-2026-20260212201005-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/353/e0d72673f57b00aed0d3655783fb76e4_320.mp4",
+                  "duration": 222,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_0jQi4RJN",
+                  "title": "Peelings (From \"Pushpa 2 The Rule\")",
+                  "artist": "Shankarr Babu Kandukoori, Laxmi Dasa",
+                  "album": "Top 10 Dance Dhamaka Hits",
+                  "artwork": "https://c.saavncdn.com/915/Top-10-Dance-Dhamaka-Hits-Telugu-2025-20251014181041-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/915/338e5143057ba7dcd6c7bbbb1ce8bb89_320.mp4",
+                  "duration": 247,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_kVG8O4dR",
+                  "title": "Kissik (From \"Pushpa 2 The Rule\")",
+                  "artist": "Sublahshini, Devi Sri Prasad",
+                  "album": "Tollywood Romantic Songs",
+                  "artwork": "https://c.saavncdn.com/209/Tollywood-Romantic-Songs-Telugu-2026-20260206171136-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/209/a28988f11e10beedabf2eb4d98f2a77a_320.mp4",
+                  "duration": 248,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_nlLW8_pg",
+                  "title": "Sooseki (From \"Pushpa 2 The Rule\")",
+                  "artist": "Chandrabose, Devi Sri Prasad",
+                  "album": "Summer Hot Romatic Waves",
+                  "artwork": "https://c.saavncdn.com/814/Summer-Hot-Romatic-Waves-Telugu-2026-20260601162119-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/814/8889030c23e8ba111f551605a9ef2b8f_320.mp4",
+                  "duration": 260,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_Vv39UvCz",
+                  "title": "Samayama (From \"Hi Nanna\")",
+                  "artist": "Hesham Abdul Wahab, Anurag Kulkarni",
+                  "album": "Samayama (From \"Hi Nanna\")",
+                  "artwork": "https://c.saavncdn.com/307/Samayama-From-Hi-Nanna-Telugu-2023-20230918164922-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/307/a3f7b8cd383c95bad0310aca20e0c2a0_320.mp4",
+                  "duration": 204,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_fPyYQPRu",
+                  "title": "Gaaju Bomma (From \"Hi Nanna\")",
+                  "artist": "Hesham Abdul Wahab",
+                  "album": "Gaaju Bomma (From \"Hi Nanna\")",
+                  "artwork": "https://c.saavncdn.com/332/Gaaju-Bomma-From-Hi-Nanna-Telugu-2023-20231005201031-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/332/dd813d44f169c547f0361d1d9660549a_320.mp4",
+                  "duration": 266,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_X0EnH2OU",
+                  "title": "Ammaadi (From \"Hi Nanna\")",
+                  "artist": "Shakthisree Gopalan, Kaala Bhairava",
+                  "album": "Ammaadi (From \"Hi Nanna\")",
+                  "artwork": "https://c.saavncdn.com/712/Ammaadi-From-Hi-Nanna-Telugu-2023-20231103201011-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/712/14eb6af8b65219bedb0a46d70838a568_320.mp4",
+                  "duration": 219,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            },
+            {
+                  "id": "saavn_E4DQ0TLy",
+                  "title": "Odiyamma (From \"Hi Nanna\")",
+                  "artist": "Hesham Abdul Wahab, Dhruv Vikram",
+                  "album": "Odiyamma (From \"Hi Nanna\") - Telugu",
+                  "artwork": "https://c.saavncdn.com/156/Odiyamma-From-Hi-Nanna-Telugu-Telugu-2023-20231204191025-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/156/a5bad8befd61185d4c9094b99e9325e4_320.mp4",
+                  "duration": 195,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "telugu"
+            }
+      ],
+      "bollywood": [
+            {
+                  "id": "saavn_YiVML4Zo",
+                  "title": "Gehra Hua (From \"Dhurandhar\")",
+                  "artist": "Shashwat Sachdev, Arijit Singh",
+                  "album": "Gehra Hua (From \"Dhurandhar\")",
+                  "artwork": "https://c.saavncdn.com/450/Gehra-Hua-From-Dhurandhar-Hindi-2025-20251205154217-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/450/f467e05e2825cec2203546333e0d0550_320.mp4",
+                  "duration": 362,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn_aRZbUYD7",
+                  "title": "Tum Hi Ho",
+                  "artist": "Mithoon, Arijit Singh",
+                  "album": "Aashiqui 2",
+                  "artwork": "https://c.saavncdn.com/430/Aashiqui-2-Hindi-2013-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/430/5c5ea5cc00e3bff45616013226f376fe_320.mp4",
+                  "duration": 262,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn_O_MuqsES",
+                  "title": "Jawani Tohar Jhal Jhal Jhalke",
+                  "artist": "Khesari Lal Yadav, Priyanka Singh",
+                  "album": "Khesari Lal Bhojpuri Hits",
+                  "artwork": "https://c.saavncdn.com/406/Khesari-Lal-Bhojpuri-Hits-Bhojpuri-2026-20260717151205-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/406/f263a6aeddd1e06852a3e0f79edf4f03_320.mp4",
+                  "duration": 232,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn_XhdRTOMu",
+                  "title": "Animal",
+                  "artist": "Katseye",
+                  "album": "Animal",
+                  "artwork": "https://c.saavncdn.com/455/Animal-English-2026-20260725050543-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/455/6752e5842509ac2cede9e9826397ffb4_320.mp4",
+                  "duration": 158,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn__oONnN9B",
+                  "title": "Animals",
+                  "artist": "Maroon 5",
+                  "album": "Animals",
+                  "artwork": "https://c.saavncdn.com/109/Animals-English-2014-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/109/fa3e55582519220b53e3a42f40a1e893_320.mp4",
+                  "duration": 231,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn_Q6l0a09y",
+                  "title": "Aaj Ki Raat",
+                  "artist": "Amitabh Bhattacharya, Sachin-Jigar",
+                  "album": "Stree 2",
+                  "artwork": "https://c.saavncdn.com/373/Stree-2-Hindi-2024-20240828083834-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/373/36b1b3637cdeedfaa9a9012453948aa6_320.mp4",
+                  "duration": 228,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn_3r4R_yeL",
+                  "title": "Tumhare Hi Rahenge Hum",
+                  "artist": "Amitabh Bhattacharya, Sachin-Jigar",
+                  "album": "Stree 2",
+                  "artwork": "https://c.saavncdn.com/373/Stree-2-Hindi-2024-20240828083834-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/373/a0958d974322de810950840344956818_320.mp4",
+                  "duration": 230,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn_ZsGGaRro",
+                  "title": "Aayi Nai",
+                  "artist": "Amitabh Bhattacharya, Sachin-Jigar",
+                  "album": "Stree 2",
+                  "artwork": "https://c.saavncdn.com/373/Stree-2-Hindi-2024-20240828083834-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/373/9a3ad2173b2e80bc6f9655d1da7c8f27_320.mp4",
+                  "duration": 178,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            },
+            {
+                  "id": "saavn_OLR5vaQP",
+                  "title": "Khoobsurat",
+                  "artist": "Amitabh Bhattacharya, Sachin-Jigar",
+                  "album": "Stree 2",
+                  "artwork": "https://c.saavncdn.com/373/Stree-2-Hindi-2024-20240828083834-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/373/6fceb8fe15f321872661c0835b6303b3_320.mp4",
+                  "duration": 244,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "bollywood"
+            }
+      ],
+      "english": [
+            {
+                  "id": "saavn_TcDP-KUl",
+                  "title": "Starboy",
+                  "artist": "The Weeknd",
+                  "album": "The Highlights",
+                  "artwork": "https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/396/b4e570050007b056c662f2a98c9f28ec_320.mp4",
+                  "duration": 230,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_fW-Mxsnu",
+                  "title": "Blinding Lights",
+                  "artist": "The Weeknd",
+                  "album": "After Hours",
+                  "artwork": "https://c.saavncdn.com/077/After-Hours-English-2020-20260804045014-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/077/0b02a92687d1ae3369b6859f44872e52_320.mp4",
+                  "duration": 200,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_3IoDK8qI",
+                  "title": "Levitating",
+                  "artist": "Dua Lipa",
+                  "album": "Future Nostalgia",
+                  "artwork": "https://c.saavncdn.com/665/Future-Nostalgia-English-2020-20260306223201-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/665/7790c3b9097592113008eaf1031d6e57_320.mp4",
+                  "duration": 203,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_KM0fXz2B",
+                  "title": "No Lie",
+                  "artist": "Sean Paul",
+                  "album": "Summer 2016 Vibes",
+                  "artwork": "https://c.saavncdn.com/126/Summer-2016-Vibes-English-2026-20260331062927-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/126/2eb5c605f76ccc20dd6a096d475bf281_320.mp4",
+                  "duration": 221,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_wwSCc15h",
+                  "title": "Shape of You",
+                  "artist": "Ed Sheeran",
+                  "album": "÷",
+                  "artwork": "https://c.saavncdn.com/286/WMG_190295851286-English-2017-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/286/2929d11a5d44a3592ced0383fa6f1977_320.mp4",
+                  "duration": 233,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_6o8JoQ8b",
+                  "title": "Perfect",
+                  "artist": "Ed Sheeran",
+                  "album": "÷",
+                  "artwork": "https://c.saavncdn.com/286/WMG_190295851286-English-2017-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/286/71bb6cc3391ddf619a4a3f1a1134f1c4_320.mp4",
+                  "duration": 263,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_BArxE6Mu",
+                  "title": "Sapphire",
+                  "artist": "Ed Sheeran",
+                  "album": "Play (Deluxe)",
+                  "artwork": "https://c.saavncdn.com/145/Play-Deluxe-English-2025-20251125054236-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/145/f7ce82c57b1d3d87d240ffddeef5fed4_320.mp4",
+                  "duration": 179,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_BeXBcbVK",
+                  "title": "Believer",
+                  "artist": "Imagine Dragons",
+                  "album": "Evolve",
+                  "artwork": "https://c.saavncdn.com/248/Evolve-English-2018-20260605220036-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/248/46944eb7b4b31f5b0abf5eb2e1be2d2a_320.mp4",
+                  "duration": 204,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_ZQFFR_5u",
+                  "title": "Bones",
+                  "artist": "Imagine Dragons",
+                  "album": "Mercury - Acts 1 & 2",
+                  "artwork": "https://c.saavncdn.com/964/Mercury-Acts-1-2-English-2022-20250618164354-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/964/a5e37e9830f26b64a7e809507dcabfbc_320.mp4",
+                  "duration": 165,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_zikdtWU6",
+                  "title": "Thunder",
+                  "artist": "Imagine Dragons",
+                  "album": "Evolve",
+                  "artwork": "https://c.saavncdn.com/248/Evolve-English-2018-20260605220036-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/248/077a488b6fcd1e0c3be8a0d3e696bb5b_320.mp4",
+                  "duration": 187,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_drvhW8ob",
+                  "title": "Enemy (from the series Arcane League of Legends)",
+                  "artist": "Jid, Imagine Dragons",
+                  "album": "Enemy (from the series Arcane League of Legends)",
+                  "artwork": "https://c.saavncdn.com/943/Enemy-from-the-series-Arcane-League-of-Legends--English-2021-20211028173417-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/943/0bf0e926b199165c6f54127ddad64e31_320.mp4",
+                  "duration": 173,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            },
+            {
+                  "id": "saavn_Grohf5-o",
+                  "title": "Something Just Like This",
+                  "artist": "The Chainsmokers, Coldplay",
+                  "album": "Something Just Like This",
+                  "artwork": "https://c.saavncdn.com/168/Something-Just-Like-This-English-2017-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/168/d9809a7248f1674a6fb6136ca15f9bc0_320.mp4",
+                  "duration": 247,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "english"
+            }
+      ],
+      "hiphop": [
+            {
+                  "id": "saavn_G1kEe5uL",
+                  "title": "FE!N",
+                  "artist": "Travis Scott",
+                  "album": "UTOPIA",
+                  "artwork": "https://c.saavncdn.com/882/UTOPIA-English-2023-20230728085013-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/882/a787117873ad2aff5ad382cb96d5801a_320.mp4",
+                  "duration": 191,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_OTuJnKgP",
+                  "title": "HIGHEST IN THE ROOM",
+                  "artist": "Travis Scott",
+                  "album": "HIGHEST IN THE ROOM",
+                  "artwork": "https://c.saavncdn.com/792/HIGHEST-IN-THE-ROOM-English-2019-20191007210430-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/792/73869152a03ba75e2674c0fee340a8f5_320.mp4",
+                  "duration": 175,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_4JjtJqJv",
+                  "title": "Water (Remix)",
+                  "artist": "Tyla, Travis Scott",
+                  "album": "Water (Remix)",
+                  "artwork": "https://c.saavncdn.com/083/Water-Remix-English-2023-20231117144319-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/083/e527117452c7bf157d4c09b96949835f_320.mp4",
+                  "duration": 200,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_VbK-MhbL",
+                  "title": "SICKO MODE",
+                  "artist": "Travis Scott",
+                  "album": "ASTROWORLD",
+                  "artwork": "https://c.saavncdn.com/169/ASTROWORLD-English-2018-20190328195029-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/169/bb0ae388f4ef98787d73495bf237ee25_320.mp4",
+                  "duration": 313,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_OdO7jziP",
+                  "title": "Without Me",
+                  "artist": "Eminem",
+                  "album": "Curtain Call: The Hits",
+                  "artwork": "https://c.saavncdn.com/934/Curtain-Call-The-Hits-English-2005-20250826045028-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/934/c102186cbe0576e0f4bc9d30cfa1b730_320.mp4",
+                  "duration": 290,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_giPCZbqs",
+                  "title": "Mockingbird",
+                  "artist": "Eminem",
+                  "album": "Mockingbird",
+                  "artwork": "https://c.saavncdn.com/857/Mockingbird-English-2005-20190208151031-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/857/d211e1efacfa0b0cb188c7c73085cc06_320.mp4",
+                  "duration": 251,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_xKlnh38y",
+                  "title": "One Dance",
+                  "artist": "Drake",
+                  "album": "Views",
+                  "artwork": "https://c.saavncdn.com/521/Views-English-2016-20240201113111-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/521/d027519787725d447dc66ad347722617_320.mp4",
+                  "duration": 174,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_zwt4Qk_y",
+                  "title": "Solar Eclipse",
+                  "artist": "Drake, Don Toliver",
+                  "album": "HABIBTI (FOMO)",
+                  "artwork": "https://c.saavncdn.com/035/HABIBTI-FOMO-English-2026-20261002063545-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/035/ee1d70c30a9f86546fa0cd836a83ecef_320.mp4",
+                  "duration": 218,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_TY9AiNdp",
+                  "title": "God's Plan",
+                  "artist": "Drake",
+                  "album": "Scorpion",
+                  "artwork": "https://c.saavncdn.com/152/Scorpion-English-2018-20180701062706-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/152/ff77c15a4e8d258ce599e29d3e81991d_320.mp4",
+                  "duration": 198,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_ufIKv01V",
+                  "title": "Janice STFU",
+                  "artist": "Drake",
+                  "album": "ICEMAN",
+                  "artwork": "https://c.saavncdn.com/992/ICEMAN-English-2026-20260524030434-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/992/c9fc4c727fae366ca86069967f5515b0_320.mp4",
+                  "duration": 237,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_9cP0csMY",
+                  "title": "National Treasures",
+                  "artist": "Drake",
+                  "album": "ICEMAN",
+                  "artwork": "https://c.saavncdn.com/992/ICEMAN-English-2026-20260524030434-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/992/fc5f0ae6d402c222b6a38e96f48ceea3_320.mp4",
+                  "duration": 200,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            },
+            {
+                  "id": "saavn_PfcG4gJU",
+                  "title": "Excuses",
+                  "artist": "AP Dhillon, Gurinder Gill",
+                  "album": "Excuses",
+                  "artwork": "https://c.saavncdn.com/890/Excuses-English-2021-20210930112054-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/890/a18aabc4681dc6c334d5d29b67e84a0f_320.mp4",
+                  "duration": 177,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "hiphop"
+            }
+      ],
+      "lofi": [
+            {
+                  "id": "saavn_P-wGhtLq",
+                  "title": "Love Me Like You Do (From \"Fifty Shades Of Grey\")",
+                  "artist": "Ellie Goulding",
+                  "album": "Relax & Chill",
+                  "artwork": "https://c.saavncdn.com/080/Relax-Chill-English-2026-20260820053608-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/080/707ac927188f2f31ee89b38b66df8cd0_320.mp4",
+                  "duration": 252,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_GS2rpg6M",
+                  "title": "LoFi Chill",
+                  "artist": "Lofi Sleep Chill & Study, Lofi Hip-Hop Beats",
+                  "album": "LoFi Sleep",
+                  "artwork": "https://c.saavncdn.com/268/LoFi-Sleep-Unknown-2020-20201010020626-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/268/bdbbf1fee8faf8d8e389140171b58631_320.mp4",
+                  "duration": 180,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_e-PQSpyz",
+                  "title": "Jeeta Tha Jiske Liye (Lo-Fi Remix)",
+                  "artist": "Kumar Sanu, Alka Yagnik",
+                  "album": "Chill Evenings",
+                  "artwork": "https://c.saavncdn.com/886/Chill-Evenings-Hindi-2024-20240725164600-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/886/f920c07a7b30bf0a0b0c7e5d7e3bceaf_320.mp4",
+                  "duration": 282,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_Gj_QzGIq",
+                  "title": "Lo-Fi Chill",
+                  "artist": "Bohoman",
+                  "album": "Lo-Fi Chill",
+                  "artwork": "https://c.saavncdn.com/348/Lo-Fi-Chill-Unknown-2021-20230120100622-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/348/10894a9dd775895db992e3ea339183ce_320.mp4",
+                  "duration": 119,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_HqXDmMaS",
+                  "title": "Pehle Bhi Main Lofi Mix(Remix By Moodyboy)",
+                  "artist": "Vishal Mishra",
+                  "album": "Pehle Bhi Main Lofi Mix",
+                  "artwork": "https://c.saavncdn.com/530/Pehle-Bhi-Main-Lofi-Mix-Hindi-2024-20240709151002-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/530/c0bc50c83a3c2833efa02c8579f86e4b_320.mp4",
+                  "duration": 250,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_kIb_jgP2",
+                  "title": "Hanuman Chalisa (Lofi)",
+                  "artist": "Rasraj Ji Maharaj",
+                  "album": "Hanuman Chalisa (Lofi)",
+                  "artwork": "https://c.saavncdn.com/574/Hanuman-Chalisa-Lofi-Hindi-2023-20260413074820-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/574/570709ca4b63fcbfc3bec2f8334f798e_320.mp4",
+                  "duration": 257,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_L0CEVnq0",
+                  "title": "Bajrang Baan-Lofi",
+                  "artist": "Rasraj Ji Maharaj",
+                  "album": "Bajrang Baan-Lofi",
+                  "artwork": "https://c.saavncdn.com/601/Bajrang-Baan-Lofi-Hindi-2023-20260413074821-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/601/5eab70279b4cf92c6d4c776cf30b8891_320.mp4",
+                  "duration": 218,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_mWZfLlP5",
+                  "title": "Lofi Lovee",
+                  "artist": "Ved Sharma, Asees Kaur",
+                  "album": "Lofi Lovee",
+                  "artwork": "https://c.saavncdn.com/484/Lofi-Lovee-Hindi-2024-20240416123103-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/484/ab8889902c9b39231dba75dfc7e3d317_320.mp4",
+                  "duration": 210,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_WUwenrlh",
+                  "title": "Sunderkand-Lofi",
+                  "artist": "Rasraj Ji Maharaj",
+                  "album": "Sunderkand-Lofi",
+                  "artwork": "https://c.saavncdn.com/612/Sunderkand-Lofi-Hindi-2023-20241211141132-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/612/4ae4e0fcec60f57580f91715707fb87b_320.mp4",
+                  "duration": 3789,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_KivfJi_5",
+                  "title": "Chuttamalle Lofi Flip(Remix By Iampratheek)",
+                  "artist": "Shilpa Rao, Anirudh Ravichander",
+                  "album": "Chuttamalle Lofi Flip",
+                  "artwork": "https://c.saavncdn.com/137/Chuttamalle-Lofi-Flip-Telugu-2025-20250602181238-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/137/03b4e81a2c6c3633c71bd9ebd495bc26_320.mp4",
+                  "duration": 238,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_hrPVNeCh",
+                  "title": "Mellaga Lofi Mix",
+                  "artist": "S.P.Charan, Sumangali",
+                  "album": "Varsham",
+                  "artwork": "https://c.saavncdn.com/137/Varsham-Telugu-2025-20250603162319-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/137/81cf51d01a65be3a4ac7886ffbc60d64_320.mp4",
+                  "duration": 252,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            },
+            {
+                  "id": "saavn_BBofLUOE",
+                  "title": "Avunanavaa - Lofi",
+                  "artist": "Sid Sriram, Yj music",
+                  "album": "Avunanavaa - Lofi",
+                  "artwork": "https://c.saavncdn.com/599/Avunanavaa-Lofi-Telugu-2023-20230221103240-500x500.jpg",
+                  "streamUrl": "https://aac.saavncdn.com/599/7d20000f3f007a7451fa9b64f3a4e9f4_sar_320.mp4",
+                  "duration": 200,
+                  "source": "Full 320kbps",
+                  "sourceKey": "saavn",
+                  "isFullTrack": true,
+                  "category": "lofi"
+            }
+      ]
+};
+
     const state = {
+      activeCategory: 'all',
+      searchReqId: 0,
       queue: [],
       currentIndex: -1,
       currentTrack: null,
@@ -2492,27 +3235,27 @@
         } catch (_) {}
       }
 
-      // 3. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors!
+      // 3. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors IN PARALLEL!
       const mirrors = [
         `https://saavnx.vercel.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
         `https://akdev-jiosaavnapi.netlify.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
         `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`
       ];
 
-      for (const url of mirrors) {
-        try {
+      try {
+        const fastResult = await Promise.any(mirrors.map(async (url) => {
           const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 5500);
+          const timer = setTimeout(() => controller.abort(), 4500);
           const res = await fetch(url, { signal: controller.signal });
           clearTimeout(timer);
-          if (!res.ok) continue;
+          if (!res.ok) throw new Error('status ' + res.status);
           const json = await res.json();
           const tracks = deduplicateTracks(parseSaavnMirrorJson(json));
-          if (tracks.length > 0) return tracks;
-        } catch (e) {
-          // Try next mirror
-        }
-      }
+          if (!tracks.length) throw new Error('empty');
+          return tracks;
+        }));
+        if (fastResult && fastResult.length) return fastResult;
+      } catch (_) {}
 
       // 4. Fallback to matching curated full 320kbps tracks if offline
       const qLow = query.toLowerCase();
@@ -2676,59 +3419,152 @@
       });
     }
 
+    function getCategoryPlaylist(catKey) {
+      if (catKey === 'telugu') {
+        const curatedTelugu = BALU_CURATED_FULL_SONGS.filter(t =>
+          /devara|pushpa|thandel|anuvanuvuu|suttamla/i.test(t.title + ' ' + t.album)
+        );
+        return deduplicateTracks([...curatedTelugu, ...(BALU_CATEGORIES.telugu || [])]);
+      }
+      if (catKey === 'english') {
+        const curatedEng = BALU_CURATED_FULL_SONGS.filter(t =>
+          /weeknd|sheeran|dua|imagine|chainsmokers/i.test(t.artist)
+        );
+        return deduplicateTracks([...curatedEng, ...(BALU_CATEGORIES.english || [])]);
+      }
+      if (catKey === 'bollywood') {
+        const curatedHin = BALU_CURATED_FULL_SONGS.filter(t =>
+          /kesariya|chaleya|apna bana|tum hi ho|gehra/i.test(t.title)
+        );
+        return deduplicateTracks([...curatedHin, ...(BALU_CATEGORIES.bollywood || [])]);
+      }
+      if (catKey === 'hiphop') {
+        return deduplicateTracks([...(BALU_CATEGORIES.hiphop || []), ...BALU_CURATED_FULL_SONGS.slice(0, 4)]);
+      }
+      if (catKey === 'lofi') {
+        return deduplicateTracks([...(BALU_CATEGORIES.lofi || []), ...BALU_CURATED_FULL_SONGS.slice(0, 4)]);
+      }
+      return deduplicateTracks([
+        ...BALU_CURATED_FULL_SONGS,
+        ...(BALU_CATEGORIES.telugu || []).slice(0, 4),
+        ...(BALU_CATEGORIES.english || []).slice(0, 4)
+      ]);
+    }
+
+    const CATEGORY_META = {
+      all:       { tag: '👑 Balu Beats • 100% Full Songs', title: '⚡ Featured Full Songs (320kbps HD)', listTitle: '🎵 Complete Full-Length Tracks (3–6 Mins)', liveQuery: 'top hits' },
+      telugu:    { tag: '🎬 Telugu Blockbusters • 320kbps', title: '🎬 Telugu Featured Hits (320kbps)', listTitle: '🔥 All Telugu Full-Length Songs', liveQuery: 'telugu hits' },
+      english:   { tag: '🌎 Global English • 320kbps', title: '🌎 English Pop & Global Hits', listTitle: '🎵 Complete English Full Songs', liveQuery: 'the weeknd' },
+      bollywood: { tag: '🇮🇳 Bollywood Full • 320kbps', title: '🇮🇳 Bollywood Blockbusters (320kbps)', listTitle: '💖 Hindi Romantic & Chart Hits', liveQuery: 'arijit singh' },
+      hiphop:    { tag: '🎤 Hip-Hop & Rap • 320kbps', title: '🎤 Hip-Hop & Phonk Anthems', listTitle: '🔥 Full-Length Rap & Gym Tracks', liveQuery: 'travis scott' },
+      lofi:      { tag: '☕ Lo-Fi Chill • 320kbps', title: '☕ Late Night Lo-Fi & Chill', listTitle: '🌙 Relaxing Full-Length Lo-Fi Beats', liveQuery: 'lofi chill' }
+    };
+
     async function loadHomeFeeds() {
+      state.activeCategory = 'all';
       const carouselEl = document.getElementById('homeFullSongsCarousel');
       const globalEl = document.getElementById('homeGlobalList');
 
-      // 1. Render Curated 100% Full-Length 320kbps Songs IMMEDIATELY (0ms wait!)
-      const initialFull = BALU_CURATED_FULL_SONGS;
+      const initialFull = getCategoryPlaylist('all');
       window.__heroTrack = initialFull[0];
       document.getElementById('heroTitle').textContent = initialFull[0].title;
       document.getElementById('heroSub').textContent = `${initialFull[0].artist} • Full Song (${formatTime(initialFull[0].duration)})`;
       document.getElementById('heroArt').src = initialFull[0].artwork;
 
-      renderCarouselCards(carouselEl, initialFull.slice(0, 10));
+      renderCarouselCards(carouselEl, initialFull.slice(0, 12));
       renderTrackList(globalEl, initialFull);
 
       if (state.queue.length === 0) {
         state.queue = [...initialFull];
         updateQueueUI();
       }
-
-      // 2. Fetch fresh live 320kbps full tracks in background to enrich feed
-      try {
-        const freshTracks = await searchSaavnTracks('top hits 2025', 14);
-        if (freshTracks && freshTracks.length > 4) {
-          const merged = deduplicateTracks([...initialFull, ...freshTracks]);
-          renderTrackList(globalEl, merged);
-          if (state.currentIndex === -1) {
-            state.queue = merged;
-            updateQueueUI();
-          }
-        }
-      } catch (_) {}
     }
 
-    async function loadQuickCategory(query, chipBtn) {
+    async function loadQuickCategory(catKey, chipBtn) {
       if (chipBtn) {
         chipBtn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         chipBtn.classList.add('active');
       }
+      state.activeCategory = catKey;
+      const meta = CATEGORY_META[catKey] || CATEGORY_META.all;
+      const carouselEl = document.getElementById('homeFullSongsCarousel');
       const globalEl = document.getElementById('homeGlobalList');
-      if (query === 'ALL_CURATED') {
-        showToast('Loaded Featured 320kbps Full Songs!');
-        renderTrackList(globalEl, BALU_CURATED_FULL_SONGS);
-        return;
+
+      // 1. INSTANT 0ms UI UPDATE (Hero + Carousel + Track List + Section Headings!)
+      const instantTracks = getCategoryPlaylist(catKey);
+      document.getElementById('heroCategoryTag').textContent = meta.tag;
+      document.getElementById('carouselSectionTitle').textContent = meta.title;
+      document.getElementById('listSectionTitle').textContent = meta.listTitle;
+
+      if (instantTracks[0]) {
+        window.__heroTrack = instantTracks[0];
+        document.getElementById('heroTitle').textContent = instantTracks[0].title;
+        document.getElementById('heroSub').textContent = `${instantTracks[0].artist} • Full Song (${formatTime(instantTracks[0].duration)})`;
+        document.getElementById('heroArt').src = instantTracks[0].artwork;
       }
-      showToast(`Loading full songs for "${query}"...`);
-      const tracks = await smartSearch(query, 'saavn');
-      renderTrackList(globalEl, tracks);
-      if (tracks[0]) {
-        window.__heroTrack = tracks[0];
-        document.getElementById('heroTitle').textContent = tracks[0].title;
-        document.getElementById('heroSub').textContent = `${tracks[0].artist} • Full Song (${formatTime(tracks[0].duration)})`;
-        document.getElementById('heroArt').src = tracks[0].artwork;
+
+      renderCarouselCards(carouselEl, instantTracks.slice(0, 12));
+      carouselEl.scrollLeft = 0;
+      renderTrackList(globalEl, instantTracks);
+
+      // Start playing the first song of the selected category immediately!
+      if (instantTracks.length > 0) {
+        playFromList(instantTracks, 0);
+        showToast(`▶ Playing ${meta.tag.split('•')[0].trim()}: ${instantTracks[0].title}`);
       }
+
+      // Smoothly scroll so the user sees the newly opened category tracks right away
+      const headerEl = document.getElementById('carouselSectionHeader');
+      if (headerEl) {
+        headerEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // 2. Fetch even more live songs in background without blocking
+      try {
+        const liveMore = await searchSaavnTracks(meta.liveQuery, 14);
+        if (state.activeCategory === catKey && liveMore && liveMore.length > 0) {
+          const combined = deduplicateTracks([...instantTracks, ...liveMore]);
+          renderTrackList(globalEl, combined);
+        }
+      } catch (_) {}
+    }
+
+    // Instant handler for the 6 Quick Mood Grid cards & Genre cards
+    async function openQuickCollection(catKey, label, liveQuery) {
+      const reqId = ++state.searchReqId;
+      switchTab('search', true);
+      const mainScroll = document.getElementById('mainScroll');
+      if (mainScroll) mainScroll.scrollTop = 0;
+
+      document.getElementById('searchInput').value = label;
+      const statusEl = document.getElementById('searchStatus');
+      const listEl = document.getElementById('searchResultsList');
+
+      // 1. Render pre-loaded 320kbps category songs in 0ms!
+      const basePool = getCategoryPlaylist(catKey);
+      const qLow = (liveQuery || '').toLowerCase();
+      const prioritized = [
+        ...basePool.filter(t => (t.title + ' ' + t.artist + ' ' + t.album).toLowerCase().includes(qLow)),
+        ...basePool.filter(t => !(t.title + ' ' + t.artist + ' ' + t.album).toLowerCase().includes(qLow))
+      ];
+
+      statusEl.textContent = `✅ ${label} — Playing 100% Full-Length 320kbps Songs (${prioritized.length} tracks)`;
+      renderTrackList(listEl, prioritized);
+
+      if (prioritized.length > 0) {
+        playFromList(prioritized, 0);
+        showToast(`▶ Playing ${label}: ${prioritized[0].title}`);
+      }
+
+      // 2. Enrich with live API tracks in background
+      try {
+        const liveResults = await searchSaavnTracks(liveQuery || label, 18);
+        if (state.searchReqId === reqId && liveResults && liveResults.length > 0) {
+          const merged = deduplicateTracks([...prioritized.slice(0, 4), ...liveResults, ...prioritized.slice(4)]);
+          statusEl.textContent = `✅ ${label} — ${merged.length} Full-Length 320kbps Songs Ready`;
+          renderTrackList(listEl, merged);
+        }
+      } catch (_) {}
     }
 
     function playHeroTrack() {
@@ -3076,12 +3912,35 @@
     });
 
     async function executeSearch(query) {
+      const reqId = ++state.searchReqId;
       const statusEl = document.getElementById('searchStatus');
       const listEl = document.getElementById('searchResultsList');
-      statusEl.textContent = `Searching "${query}" across ${state.searchEngine.toUpperCase()}...`;
+
+      // Show instant local matches immediately (0ms) while fetching more from cloud!
+      const qLow = query.toLowerCase();
+      const allLocal = deduplicateTracks([
+        ...BALU_CURATED_FULL_SONGS,
+        ...(BALU_CATEGORIES.telugu || []),
+        ...(BALU_CATEGORIES.english || []),
+        ...(BALU_CATEGORIES.bollywood || []),
+        ...(BALU_CATEGORIES.hiphop || []),
+        ...(BALU_CATEGORIES.lofi || [])
+      ]);
+      const instantMatches = allLocal.filter(t =>
+        (t.title + ' ' + t.artist + ' ' + t.album + ' ' + (t.category || '')).toLowerCase().includes(qLow)
+      );
+      if (instantMatches.length > 0) {
+        statusEl.textContent = `⚡ Instant 320kbps matches for "${query}" (loading more live tracks...)`;
+        renderTrackList(listEl, instantMatches);
+      } else {
+        statusEl.textContent = `🔍 Searching 320kbps full songs for "${query}"...`;
+      }
+
       const results = await smartSearch(query, state.searchEngine);
-      statusEl.textContent = `Found ${results.length} playable tracks for "${query}"`;
-      renderTrackList(listEl, results);
+      if (state.searchReqId !== reqId) return;
+      const finalResults = deduplicateTracks([...instantMatches, ...results]);
+      statusEl.textContent = `✅ Found ${finalResults.length} Full-Length 320kbps Songs for "${query}"`;
+      renderTrackList(listEl, finalResults);
     }
 
     function setSearchEngine(engine, chipBtn) {
@@ -3093,7 +3952,7 @@
     }
 
     function searchAndGo(query) {
-      switchTab('search');
+      switchTab('search', true);
       document.getElementById('searchInput').value = query;
       executeSearch(query);
     }
@@ -3437,7 +4296,7 @@
     drawVisualizer();
 
     // Navigation & Modals
-    function switchTab(tabId) {
+    function switchTab(tabId, skipAutoLoad = false) {
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
       const pane = document.getElementById('tab-' + tabId);
@@ -3451,8 +4310,9 @@
       if (tabId === 'library') {
         renderLibrary();
       }
-      if (tabId === 'search' && !document.getElementById('searchResultsList').children.length) {
-        executeSearch('top hits 2025');
+      if (tabId === 'search' && !skipAutoLoad && !document.getElementById('searchResultsList').children.length) {
+        renderTrackList(document.getElementById('searchResultsList'), getCategoryPlaylist('all'));
+        document.getElementById('searchStatus').textContent = '🔥 Popular Full-Length 320kbps Songs';
       }
     }
 
