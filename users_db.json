@@ -1,0 +1,26 @@
+[
+  {
+    "id": "bb_creator_vip",
+    "name": "Balu • Praveen (Creator)",
+    "username": "@being_rebel__7",
+    "email": "creator@balubeats.app",
+    "password": "balu",
+    "vibe": "telugu",
+    "role": "CREATOR / ADMIN",
+    "device": "📱 Android Native APK (Balu Beats v3.2.0)",
+    "joinedAt": "Creator VIP",
+    "timestamp": "2026-10-10 11:30:00"
+  },
+  {
+    "id": "bb_sample_tester_1",
+    "name": "WhatsApp Group Tester (Sample)",
+    "username": "@balu_tester",
+    "email": "tester@whatsapp.group",
+    "password": "password123",
+    "vibe": "telugu",
+    "role": "BETA TESTER",
+    "device": "📱 Android Native APK (Balu Beats)",
+    "joinedAt": "10/10/2026",
+    "timestamp": "2026-10-10 11:32:15"
+  }
+]
