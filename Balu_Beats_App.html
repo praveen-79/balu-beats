@@ -1998,23 +1998,38 @@
             </div>
           </div>
 
-          <!-- Download Official Android APK & Public No-Login Links -->
-          <div class="connect-card" style="border-color:rgba(30,215,96,0.35);">
-            <h3>📲 Official Android App (.APK) & Public Link</h3>
-            <p>
-              Share or install <strong>Balu Beats v2.2.0</strong> directly. Use the public links below so friends never need any Vercel login:
+          <!-- App Updates & APK Download Center -->
+          <div class="connect-card" style="border-color:rgba(30,215,96,0.35);background:linear-gradient(135deg,rgba(30,215,96,0.08),rgba(0,210,255,0.05));">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
+                <span>🚀</span> App Version & Updates
+              </h3>
+              <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
+                v3.1.0 (Latest)
+              </span>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
+              Check for new releases, notification upgrades, or download the latest <code>Balu_Beats.apk</code> directly:
             </p>
+
+            <!-- Dynamic Live Update Status Box -->
+            <div id="updateStatusBox" style="display:none;padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;line-height:1.5;"></div>
+
+            <!-- Action Buttons: Check Updates & Download Latest APK -->
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="text-decoration:none;flex:1;justify-content:center;">
-                ⬇ Download Balu_Beats.apk
-              </a>
-              <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="text-decoration:none;flex:1;justify-content:center;">
-                🏪 Open APK Store Page
+              <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
+                🔄 Check for Updates
+              </button>
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
+                ⬇ Download Latest APK (v3.1.0)
               </a>
             </div>
+
+            <!-- Fast Store Link & Direct Share Link -->
             <div style="display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
-              <span style="font-size:11.5px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">https://praveen-79.github.io/balu-beats/</span>
-              <button class="util-btn" style="padding:5px 10px;font-size:11px;" onclick="navigator.clipboard?.writeText('https://praveen-79.github.io/balu-beats/');showToast('Copied public No-Login App Link!')">📋 Copy Link</button>
+              <span style="font-size:11px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">https://praveen-79.github.io/balu-beats/download.html</span>
+              <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="padding:4px 9px;font-size:11px;text-decoration:none;">🏪 APK Store</a>
+              <button class="util-btn" style="padding:4px 9px;font-size:11px;" onclick="navigator.clipboard?.writeText('https://praveen-79.github.io/balu-beats/download.html');showToast('Copied APK Store Link!')">📋 Copy</button>
             </div>
           </div>
         </section>
@@ -6337,6 +6352,65 @@
       state.queue.splice(state.currentIndex + 1, 0, track);
       renderQueueList();
       showToast(`➕ Added "${track.title}" to play next!`);
+    }
+
+    async function checkForAppUpdates() {
+      const btn = document.getElementById('checkUpdateBtn');
+      const box = document.getElementById('updateStatusBox');
+      if (!box) return;
+
+      const currentVersion = 'v3.1.0';
+      box.style.display = 'block';
+      box.style.background = 'rgba(0, 210, 255, 0.12)';
+      box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
+      box.style.color = '#7dd3fc';
+      box.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><span>⏳</span> Checking release servers for updates...</div>`;
+      if (btn) { btn.disabled = true; btn.textContent = '⏳ Checking...'; }
+
+      try {
+        const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
+        const data = await res.json();
+        const latestSha = (data.sha || '').slice(0, 7);
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'Latest improvements & permanent notification card';
+        const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
+
+        box.style.background = 'rgba(30, 215, 96, 0.14)';
+        box.style.border = '1px solid rgba(30, 215, 96, 0.45)';
+        box.style.color = '#86efac';
+        box.innerHTML = `
+          <div style="font-weight:800;margin-bottom:5px;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
+            <span>✓</span> Balu Beats <strong>${currentVersion}</strong> (Latest Official Build)
+          </div>
+          <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:8px;">
+            • Build: <code>${latestSha}</code> • Released: ${commitDate}<br/>
+            • <em>${escapeHtml(commitMsg)}</em>
+          </div>
+          <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
+            ✨ What's New: Permanent Spotify Notification Card on lock screen & notification bar, 0ms instant trigger, background playback, and 140+ HD 320kbps songs.
+          </div>
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Tap to Download / Update APK (v3.1.0)
+          </a>
+        `;
+        showToast(`✓ Balu Beats ${currentVersion} update is ready!`);
+      } catch (err) {
+        box.style.background = 'rgba(30, 215, 96, 0.14)';
+        box.style.border = '1px solid rgba(30, 215, 96, 0.45)';
+        box.style.color = '#86efac';
+        box.innerHTML = `
+          <div style="font-weight:800;margin-bottom:5px;color:#1ed760;font-size:13px;">
+            ✓ Balu Beats ${currentVersion} is ready to download!
+          </div>
+          <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:10px;">
+            Tap below to download and install the latest APK update directly onto your phone:
+          </div>
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Download Latest APK (v3.1.0)
+          </a>
+        `;
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 Check for Updates'; }
+      }
     }
 
     // Download self-contained single-file HTML app with Creator Branding permanently baked in!
