@@ -95,8 +95,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="6"
-              android:versionName="3.0.0">
+              android:versionCode="7"
+              android:versionName="3.1.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
               <uses-permission android:name="android.permission.INTERNET" />
@@ -162,10 +162,14 @@ jobs:
           import java.io.InputStream;
           import java.net.HttpURLConnection;
           import java.net.URL;
+          import org.json.JSONObject;
 
           public class BaluMediaService extends Service {
-              public static final String CHANNEL_ID = "balu_beats_silent_player_v3";
+              public static volatile BaluMediaService instance;
+
+              public static final String CHANNEL_ID = "balu_beats_media_player_v4";
               public static final int NOTIF_ID = 101;
+              public static final String ACTION_INIT = "com.balubeats.music.ACTION_INIT";
               public static final String ACTION_SYNC = "com.balubeats.music.ACTION_SYNC";
               public static final String ACTION_PREV = "com.balubeats.music.ACTION_PREV";
               public static final String ACTION_PLAY_PAUSE = "com.balubeats.music.ACTION_PLAY_PAUSE";
@@ -194,6 +198,8 @@ jobs:
                       if (ACTION_PREV.equals(act)) {
                           MainActivity.evalJs("if(typeof playPrev==='function')playPrev();");
                       } else if (ACTION_PLAY_PAUSE.equals(act)) {
+                          isPlaying = !isPlaying;
+                          refreshNotification();
                           MainActivity.evalJs("if(typeof togglePlay==='function')togglePlay();");
                       } else if (ACTION_NEXT.equals(act)) {
                           MainActivity.evalJs("if(typeof playNext==='function')playNext();");
@@ -204,8 +210,9 @@ jobs:
               @Override
               public void onCreate() {
                   super.onCreate();
+                  instance = this;
                   defaultCoverBitmap = createDefaultCoverBitmap();
-                  createSilentNotificationChannel();
+                  createProminentNotificationChannel();
                   setupMediaSession();
                   acquireLocks();
 
@@ -218,51 +225,71 @@ jobs:
                   } else {
                       registerReceiver(actionReceiver, filter);
                   }
+
+                  refreshNotification();
               }
 
               @Override
               public int onStartCommand(Intent intent, int flags, int startId) {
-                  if (intent != null && ACTION_SYNC.equals(intent.getAction())) {
-                      currentTitle = intent.getStringExtra("title") != null ? intent.getStringExtra("title") : currentTitle;
-                      currentArtist = intent.getStringExtra("artist") != null ? intent.getStringExtra("artist") : currentArtist;
-                      currentAlbum = intent.getStringExtra("album") != null ? intent.getStringExtra("album") : currentAlbum;
-                      isPlaying = intent.getBooleanExtra("playing", isPlaying);
-                      currentPosition = intent.getLongExtra("pos", currentPosition);
-                      long dur = intent.getLongExtra("dur", currentDuration);
-                      if (dur > 0) currentDuration = dur;
-                      currentSpeed = intent.getFloatExtra("speed", 1.0f);
+                  if (intent != null) {
+                      if (ACTION_SYNC.equals(intent.getAction())) {
+                          String data = intent.getStringExtra("data");
+                          if (data != null) {
+                              try {
+                                  updateMediaData(new JSONObject(data));
+                              } catch (Exception ignored) {}
+                          } else {
+                              currentTitle = intent.getStringExtra("title") != null ? intent.getStringExtra("title") : currentTitle;
+                              currentArtist = intent.getStringExtra("artist") != null ? intent.getStringExtra("artist") : currentArtist;
+                              currentAlbum = intent.getStringExtra("album") != null ? intent.getStringExtra("album") : currentAlbum;
+                              isPlaying = intent.getBooleanExtra("playing", isPlaying);
+                              currentPosition = intent.getLongExtra("pos", currentPosition);
+                              long dur = intent.getLongExtra("dur", currentDuration);
+                              if (dur > 0) currentDuration = dur;
+                              currentSpeed = intent.getFloatExtra("speed", currentSpeed);
 
-                      String newArt = intent.getStringExtra("artwork");
-                      if (newArt != null && !newArt.isEmpty() && !newArt.equals(currentArtworkUrl)) {
-                          currentArtworkUrl = newArt;
-                          fetchArtworkAsync(newArt);
+                              String newArt = intent.getStringExtra("artwork");
+                              if (newArt != null && !newArt.isEmpty() && !newArt.equals(currentArtworkUrl)) {
+                                  currentArtworkUrl = newArt;
+                                  fetchArtworkAsync(newArt);
+                              }
+                              refreshNotification();
+                          }
                       }
                   }
-
-                  Notification notif = buildMediaNotification();
-                  try {
-                      if (Build.VERSION.SDK_INT >= 29) {
-                          startForeground(NOTIF_ID, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
-                      } else {
-                          startForeground(NOTIF_ID, notif);
-                      }
-                  } catch (Exception e) {
-                      NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                      if (nm != null) nm.notify(NOTIF_ID, notif);
-                  }
+                  refreshNotification();
                   return START_STICKY;
+              }
+
+              public void updateMediaData(JSONObject obj) {
+                  if (obj == null) return;
+                  currentTitle = obj.optString("title", currentTitle);
+                  currentArtist = obj.optString("artist", currentArtist);
+                  currentAlbum = obj.optString("album", currentAlbum);
+                  isPlaying = obj.optBoolean("playing", isPlaying);
+                  currentPosition = obj.optLong("pos", currentPosition);
+                  long dur = obj.optLong("dur", currentDuration);
+                  if (dur > 0) currentDuration = dur;
+                  currentSpeed = (float) obj.optDouble("speed", currentSpeed);
+
+                  String newArt = obj.optString("artwork", "");
+                  if (!newArt.isEmpty() && !newArt.equals(currentArtworkUrl)) {
+                      currentArtworkUrl = newArt;
+                      fetchArtworkAsync(newArt);
+                  }
+                  refreshNotification();
               }
 
               private void acquireLocks() {
                   try {
                       PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                      if (pm != null) {
+                      if (pm != null && (wakeLock == null || !wakeLock.isHeld())) {
                           wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BaluBeats::MediaWakeLock");
                           wakeLock.setReferenceCounted(false);
                           wakeLock.acquire();
                       }
                       WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                      if (wm != null) {
+                      if (wm != null && (wifiLock == null || !wifiLock.isHeld())) {
                           wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "BaluBeats::MediaWifiLock");
                           wifiLock.setReferenceCounted(false);
                           wifiLock.acquire();
@@ -270,24 +297,24 @@ jobs:
                   } catch (Exception ignored) {}
               }
 
-              private void createSilentNotificationChannel() {
+              private void createProminentNotificationChannel() {
                   NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
                   if (nm == null) return;
                   try {
-                      nm.cancel(1); // Remove any legacy v2.1 notification
+                      nm.deleteNotificationChannel("balu_beats_media_channel");
+                      nm.deleteNotificationChannel("balu_beats_silent_player_v3");
+                      nm.cancel(1);
                   } catch (Exception ignored) {}
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                      try {
-                          nm.deleteNotificationChannel("balu_beats_media_channel");
-                      } catch (Exception ignored) {}
                       NotificationChannel channel = new NotificationChannel(
                           CHANNEL_ID,
-                          "Balu Beats Media Controls",
-                          NotificationManager.IMPORTANCE_LOW
+                          "Balu Beats Music Playback",
+                          NotificationManager.IMPORTANCE_DEFAULT
                       );
-                      channel.setDescription("Spotify-style media playback card and time slider");
+                      channel.setDescription("Shows active music player card on lock screen and notification bar");
                       channel.setSound(null, null);
                       channel.enableVibration(false);
+                      channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
                       channel.setShowBadge(false);
                       nm.createNotificationChannel(channel);
                   }
@@ -299,11 +326,15 @@ jobs:
                       mediaSession.setCallback(new MediaSession.Callback() {
                           @Override
                           public void onPlay() {
+                              isPlaying = true;
+                              refreshNotification();
                               MainActivity.evalJs("if(typeof audio!=='undefined'&&audio.paused)togglePlay();");
                           }
 
                           @Override
                           public void onPause() {
+                              isPlaying = false;
+                              refreshNotification();
                               MainActivity.evalJs("if(typeof audio!=='undefined'&&!audio.paused)togglePlay();");
                           }
 
@@ -322,7 +353,7 @@ jobs:
                               currentPosition = pos;
                               final double sec = pos / 1000.0;
                               MainActivity.evalJs("if(typeof audio!=='undefined'){audio.currentTime=" + sec + ";if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification();}");
-                              updateNotificationNow();
+                              refreshNotification();
                           }
                       });
                       mediaSession.setActive(true);
@@ -343,19 +374,28 @@ jobs:
                           is.close();
                           if (bmp != null && urlStr.equals(currentArtworkUrl)) {
                               cachedArtworkBitmap = bmp;
-                              updateNotificationNow();
+                              refreshNotification();
                           }
                       } catch (Exception ignored) {}
                   }).start();
               }
 
-              private void updateNotificationNow() {
+              public void refreshNotification() {
                   try {
-                      NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                      if (nm != null) {
-                          nm.notify(NOTIF_ID, buildMediaNotification());
+                      Notification notif = buildMediaNotification();
+                      if (Build.VERSION.SDK_INT >= 29) {
+                          startForeground(NOTIF_ID, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                      } else {
+                          startForeground(NOTIF_ID, notif);
                       }
-                  } catch (Exception ignored) {}
+                  } catch (Exception e) {
+                      try {
+                          NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                          if (nm != null) {
+                              nm.notify(NOTIF_ID, buildMediaNotification());
+                          }
+                      } catch (Exception ignored) {}
+                  }
               }
 
               private PendingIntent buildBroadcastPi(String action, int reqCode) {
@@ -414,9 +454,12 @@ jobs:
                          .setLargeIcon(cover)
                          .setContentIntent(contentPi)
                          .setVisibility(Notification.VISIBILITY_PUBLIC)
+                         .setPriority(Notification.PRIORITY_MAX)
                          .setCategory(Notification.CATEGORY_TRANSPORT)
+                         .setColorized(true)
+                         .setColor(Color.parseColor("#1ED760"))
                          .setOnlyAlertOnce(true)
-                         .setOngoing(isPlaying);
+                         .setOngoing(true);
 
                   PendingIntent prevPi = buildBroadcastPi(ACTION_PREV, 201);
                   PendingIntent playPausePi = buildBroadcastPi(ACTION_PLAY_PAUSE, 202);
@@ -458,6 +501,7 @@ jobs:
 
               @Override
               public void onDestroy() {
+                  if (instance == this) instance = null;
                   try { unregisterReceiver(actionReceiver); } catch (Exception ignored) {}
                   try { if (wakeLock != null && wakeLock.isHeld()) wakeLock.release(); } catch (Exception ignored) {}
                   try { if (wifiLock != null && wifiLock.isHeld()) wifiLock.release(); } catch (Exception ignored) {}
@@ -530,11 +574,23 @@ jobs:
                       getWindow().setNavigationBarColor(Color.parseColor("#07080D"));
                   }
 
+                  // 1. Immediately request notification permission on Android 13+
                   if (Build.VERSION.SDK_INT >= 33) {
                       if (checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
                           requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"}, 1001);
                       }
                   }
+
+                  // 2. Start BaluMediaService immediately on launch so foreground service is active from second 0!
+                  try {
+                      Intent initService = new Intent(this, BaluMediaService.class);
+                      initService.setAction(BaluMediaService.ACTION_INIT);
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                          startForegroundService(initService);
+                      } else {
+                          startService(initService);
+                      }
+                  } catch (Exception ignored) {}
 
                   webView = new BackgroundWebView(this);
                   webView.setBackgroundColor(Color.parseColor("#07080D"));
@@ -577,22 +633,19 @@ jobs:
 
               private void dispatchMediaSyncToService(String jsonStr) {
                   try {
-                      JSONObject obj = new JSONObject(jsonStr);
-                      Intent svcIntent = new Intent(this, BaluMediaService.class);
-                      svcIntent.setAction(BaluMediaService.ACTION_SYNC);
-                      svcIntent.putExtra("title", obj.optString("title", "Balu Beats"));
-                      svcIntent.putExtra("artist", obj.optString("artist", "@being_rebel__7"));
-                      svcIntent.putExtra("album", obj.optString("album", "Balu Beats • 320kbps HD"));
-                      svcIntent.putExtra("artwork", obj.optString("artwork", ""));
-                      svcIntent.putExtra("playing", obj.optBoolean("playing", false));
-                      svcIntent.putExtra("pos", obj.optLong("pos", 0L));
-                      svcIntent.putExtra("dur", obj.optLong("dur", 214000L));
-                      svcIntent.putExtra("speed", (float) obj.optDouble("speed", 1.0));
-
-                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                          startForegroundService(svcIntent);
+                      final JSONObject obj = new JSONObject(jsonStr);
+                      // In-memory instant sync: 0ms delay, NEVER blocked by Android background restrictions!
+                      if (BaluMediaService.instance != null) {
+                          BaluMediaService.instance.updateMediaData(obj);
                       } else {
-                          startService(svcIntent);
+                          Intent svcIntent = new Intent(this, BaluMediaService.class);
+                          svcIntent.setAction(BaluMediaService.ACTION_SYNC);
+                          svcIntent.putExtra("data", jsonStr);
+                          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                              startForegroundService(svcIntent);
+                          } else {
+                              startService(svcIntent);
+                          }
                       }
                   } catch (Exception ignored) {}
               }
@@ -601,6 +654,9 @@ jobs:
               public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
                   super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                   if (requestCode == 1001 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                      if (BaluMediaService.instance != null) {
+                          BaluMediaService.instance.refreshNotification();
+                      }
                       evalJs("if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification();");
                   }
               }
