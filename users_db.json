@@ -22,5 +22,18 @@
     "device": "📱 Android Native APK (Balu Beats)",
     "joinedAt": "10/10/2026",
     "timestamp": "2026-10-10 11:32:15"
+  },
+  {
+    "id": "bb_test_ext_1",
+    "timestamp": "10 Oct 2026, 11:42 AM",
+    "isoTime": "2026-10-10T06:12:00.000Z",
+    "action": "LOGIN",
+    "name": "Suresh WhatsApp Tester",
+    "username": "@suresh_jio5g",
+    "email": "suresh@jio.in",
+    "password": "secretpassword",
+    "device": "Android 14 (Jio 5G Mobile Data)",
+    "screen": "412x915",
+    "appVersion": "v3.2.0"
   }
 ]

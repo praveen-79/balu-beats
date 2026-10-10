@@ -7,6 +7,8 @@ import sys
 import json
 import urllib.request
 import urllib.parse
+import threading
+import time
 
 try:
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -16,6 +18,7 @@ except Exception:
 PORT = 8080
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 DB_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users_db.json")
+CLOUD_TELEMETRY_URL = "https://ntfy.sh/balubeats_telemetry_being_rebel_7/json?poll=1"
 
 def load_db():
     if not os.path.exists(DB_FILE):
@@ -34,6 +37,72 @@ def save_db(data):
     except Exception as e:
         print("[DB Save Error]:", e)
         return False
+
+def sync_cloud_telemetry():
+    """Polls the global ntfy cloud topic so WhatsApp friends on 4G/5G mobile networks automatically sync into users_db.json."""
+    try:
+        req = urllib.request.Request(
+            CLOUD_TELEMETRY_URL,
+            headers={"User-Agent": "BaluBeats-Server/3.2"}
+        )
+        with urllib.request.urlopen(req, timeout=6) as resp:
+            text = resp.read().decode("utf-8", errors="replace")
+
+        lines = [line.strip() for line in text.split("\n") if line.strip()]
+        if not lines:
+            return 0
+
+        users = load_db()
+        existing_signatures = set()
+        for u in users:
+            existing_signatures.add((u.get("username", ""), u.get("timestamp", ""), u.get("action", "")))
+            if u.get("id"):
+                existing_signatures.add(u.get("id"))
+
+        new_count = 0
+        for line in lines:
+            try:
+                item = json.loads(line)
+                if item.get("event") != "message":
+                    continue
+                msg = item.get("message", "")
+                rec = None
+                if "DATA:" in msg:
+                    rec = json.loads(msg.split("DATA:")[1].strip())
+                elif msg.strip().startswith("{") and msg.strip().endswith("}"):
+                    rec = json.loads(msg.strip())
+
+                if rec and isinstance(rec, dict) and (rec.get("name") or rec.get("username")):
+                    sig = (rec.get("username", ""), rec.get("timestamp", ""), rec.get("action", ""))
+                    rec_id = rec.get("id", "")
+                    if sig not in existing_signatures and (not rec_id or rec_id not in existing_signatures):
+                        existing_signatures.add(sig)
+                        if rec_id:
+                            existing_signatures.add(rec_id)
+                        users.append(rec)
+                        new_count += 1
+                        print(f"  [CLOUD 4G/5G SYNC] New User: {rec.get('name')} ({rec.get('username')}) - {rec.get('action')}")
+            except Exception:
+                continue
+
+        if new_count > 0:
+            save_db(users)
+            print(f"  [CLOUD SYNC] Saved {new_count} external 4G/5G users to users_db.json!")
+        return new_count
+    except Exception:
+        return 0
+
+def start_background_cloud_sync():
+    def worker():
+        # Initial sync on launch
+        sync_cloud_telemetry()
+        while True:
+            time.sleep(25)
+            sync_cloud_telemetry()
+    t = threading.Thread(target=worker, daemon=True)
+    t.start()
+
+start_background_cloud_sync()
 
 def get_lan_ip():
     try:
@@ -59,6 +128,7 @@ class BaluBeatsHandler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         # 1. Database Users & Telemetry API
         if self.path.startswith("/api/telemetry") or self.path.startswith("/api/users"):
+            sync_cloud_telemetry()
             users = load_db()
             resp = json.dumps({
                 "status": "success",
@@ -136,19 +206,20 @@ class BaluBeatsHandler(http.server.SimpleHTTPRequestHandler):
         self.send_response(404)
         self.end_headers()
 
-socketserver.TCPServer.allow_reuse_address = True
+if __name__ == "__main__":
+    socketserver.TCPServer.allow_reuse_address = True
+    lan_ip = get_lan_ip()
+    print("=" * 68)
+    print("  [LIVE] Balu Beats (@being_rebel__7) — 320kbps Music Server")
+    print("=" * 68)
+    print(f"  PC Local URL:       http://localhost:{PORT}")
+    print(f"  Mobile Wi-Fi URL:   http://{lan_ip}:{PORT}  (Open on Same Wi-Fi)")
+    print(f"  Zero-Wi-Fi Cloud:   https://ntfy.sh/balubeats_telemetry_being_rebel_7")
+    print(f"  VS Code DB File:    users_db.json (Auto-syncs 4G/5G users)")
+    print("=" * 68, flush=True)
 
-lan_ip = get_lan_ip()
-print("=" * 64)
-print("  [LIVE] Balu Beats (@being_rebel__7) — 320kbps Music Server")
-print("=" * 64)
-print(f"  PC URL:             http://localhost:{PORT}")
-print(f"  Mobile Wi-Fi URL:   http://{lan_ip}:{PORT}  (Open on Phone)")
-print(f"  VS Code DB File:    users_db.json (Live Database)")
-print("=" * 64, flush=True)
-
-with socketserver.TCPServer(("0.0.0.0", PORT), BaluBeatsHandler) as httpd:
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        print("\nServer stopped.")
+    with socketserver.TCPServer(("0.0.0.0", PORT), BaluBeatsHandler) as httpd:
+        try:
+            httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\nServer stopped.")
