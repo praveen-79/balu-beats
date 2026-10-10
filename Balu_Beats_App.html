@@ -5888,62 +5888,105 @@
       'karthik telugu melodies', 'chinmayi sripada hits', 'sunitha telugu hits',
       'ram miriyala anurag kulkarni', 'bheems ceciroleo mass', 'kaala bhairava telugu'
     ];
-    let suggestionTopicIdx = 0;
+    let suggestionTopicIdx = Math.floor(Math.random() * SUGGESTION_TOPICS.length);
 
-    async function loadHomeFeeds() {
+    function shuffleTracks(list) {
+      const arr = [...(list || [])];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = tmp;
+      }
+      return arr;
+    }
+
+    async function loadHomeFeeds(preservePlayback = false) {
       state.activeCategory = 'all';
       const carouselEl = document.getElementById('homeFullSongsCarousel');
       const teluguCarouselEl = document.getElementById('homeTeluguCarousel');
       const recCarouselEl = document.getElementById('homeRecommendedCarousel');
+      const recTitleEl = document.getElementById('recCarouselTitle');
       const globalEl = document.getElementById('homeGlobalList');
 
-      const initialFull = getCategoryPlaylist('all');
+      // 1. Freshly shuffle all curated pools on every open (0ms instant fresh layout!)
+      const initialFull = shuffleTracks(getCategoryPlaylist('all'));
+      const freshTelugu = shuffleTracks(getCategoryPlaylist('telugu'));
+      const freshRecMix = shuffleTracks(deduplicateTracks([
+        ...(BALU_CATEGORIES.telugu || []),
+        ...(BALU_CATEGORIES.bollywood || []),
+        ...(BALU_CATEGORIES.english || []),
+        ...(BALU_CATEGORIES.hiphop || []),
+        ...(BALU_CATEGORIES.lofi || [])
+      ]));
 
-      window.__heroTrack = initialFull[0];
-      document.getElementById('heroTitle').textContent = initialFull[0].title;
-      document.getElementById('heroSub').textContent = `${initialFull[0].artist} • Full Song (${formatTime(initialFull[0].duration)})`;
-      document.getElementById('heroArt').src = initialFull[0].artwork;
-
-      renderCarouselCards(carouselEl, initialFull.slice(0, 28));
-      if (teluguCarouselEl) {
-        renderCarouselCards(teluguCarouselEl, getCategoryPlaylist('telugu'));
-      }
-      if (recCarouselEl) {
-        const recMix = deduplicateTracks([
-          ...(BALU_CATEGORIES.bollywood || []),
-          ...(BALU_CATEGORIES.english || []),
-          ...(BALU_CATEGORIES.hiphop || [])
-        ]);
-        renderCarouselCards(recCarouselEl, recMix);
+      if (initialFull[0]) {
+        window.__heroTrack = initialFull[0];
+        document.getElementById('heroTitle').textContent = initialFull[0].title;
+        document.getElementById('heroSub').textContent = `${initialFull[0].artist} • Full Song (${formatTime(initialFull[0].duration)})`;
+        document.getElementById('heroArt').src = initialFull[0].artwork;
       }
 
-      // Render ALL 151+ preloaded tracks without slicing to 45!
+      if (carouselEl) renderCarouselCards(carouselEl, initialFull.slice(0, 28));
+      if (teluguCarouselEl) renderCarouselCards(teluguCarouselEl, freshTelugu);
+      if (recCarouselEl) renderCarouselCards(recCarouselEl, freshRecMix.slice(0, 30));
+
       renderTrackList(globalEl, initialFull);
 
-      if (state.queue.length === 0) {
-        state.queue = [...initialFull];
-        updateQueueUI();
-      }
-      if (!state.currentTrack && initialFull.length > 0) {
-        state.currentIndex = 0;
-        state.currentTrack = initialFull[0];
-        audio.src = initialFull[0].streamUrl;
-        updateNowPlayingCoverflowDeck(initialFull[0]);
-        syncNativeAndroidNotification(true);
+      if (!preservePlayback) {
+        if (state.queue.length === 0) {
+          state.queue = [...initialFull];
+          updateQueueUI();
+        }
+        if (!state.currentTrack && initialFull.length > 0) {
+          state.currentIndex = 0;
+          state.currentTrack = initialFull[0];
+          audio.src = initialFull[0].streamUrl;
+          updateNowPlayingCoverflowDeck(initialFull[0]);
+          syncNativeAndroidNotification(true);
+        }
       }
 
-      // Also fetch fresh trending cloud songs in background to expand Home catalog automatically
+      // 2. Fetch fresh randomized cloud suggestions on every open so Home always shows new songs!
+      const randomStart = Math.floor(Math.random() * SUGGESTION_TOPICS.length);
+      suggestionTopicIdx = (randomStart + 1) % SUGGESTION_TOPICS.length;
+      const topicA = SUGGESTION_TOPICS[randomStart];
+      const topicB = SUGGESTION_TOPICS[(randomStart + 3) % SUGGESTION_TOPICS.length];
+      const teluguTopics = [
+        'telugu latest hits', 'devara pushpa 2 kalki', 'anirudh thaman dsp telugu',
+        'sid sriram telugu melody', 'hi nanna guntur kaaram', 'telugu trending songs'
+      ];
+      const liveTeluguTopic = teluguTopics[Math.floor(Math.random() * teluguTopics.length)];
+
       try {
-        const [liveTelugu, liveTrending] = await Promise.all([
-          searchSaavnTracks('telugu latest hits', 40, 1),
-          searchSaavnTracks('top trending hits', 40, 1)
+        const [liveTelugu, liveMixA, liveMixB] = await Promise.all([
+          searchSaavnTracks(liveTeluguTopic, 40, 1),
+          searchSaavnTracks(topicA, 40, 1),
+          searchSaavnTracks(topicB, 40, 1)
         ]);
         if (state.activeCategory === 'all') {
-          const expanded = deduplicateTracks([...initialFull, ...liveTelugu, ...liveTrending]);
-          renderTrackList(globalEl, expanded);
-          if (teluguCarouselEl && liveTelugu.length > 0) {
-            renderCarouselCards(teluguCarouselEl, deduplicateTracks([...getCategoryPlaylist('telugu'), ...liveTelugu]));
+          const freshCloudRecs = shuffleTracks(deduplicateTracks([...liveMixA, ...liveMixB]));
+          const freshCloudTelugu = shuffleTracks(deduplicateTracks([...liveTelugu, ...freshTelugu]));
+          const expandedGlobal = deduplicateTracks([
+            ...freshCloudRecs.slice(0, 24),
+            ...liveTelugu.slice(0, 16),
+            ...initialFull
+          ]);
+
+          if (recCarouselEl && freshCloudRecs.length > 0) {
+            renderCarouselCards(recCarouselEl, freshCloudRecs.slice(0, 35));
+            if (recTitleEl) {
+              recTitleEl.textContent = `✨ Recommended For You (${topicA.toUpperCase()})`;
+            }
           }
+          if (carouselEl && freshCloudRecs.length > 0) {
+            const featuredMix = deduplicateTracks([...freshCloudRecs.slice(0, 12), ...initialFull.slice(0, 20)]);
+            renderCarouselCards(carouselEl, featuredMix);
+          }
+          if (teluguCarouselEl && freshCloudTelugu.length > 0) {
+            renderCarouselCards(teluguCarouselEl, freshCloudTelugu.slice(0, 32));
+          }
+          renderTrackList(globalEl, expandedGlobal);
         }
       } catch (_) {}
     }
@@ -7626,6 +7669,9 @@
       const navBtn = document.querySelector(`.nav-item[data-tab="${tabId}"]`);
       if (navBtn) navBtn.classList.add('active');
 
+      if (tabId === 'home' && !skipAutoLoad) {
+        loadHomeFeeds(true);
+      }
       if (tabId === 'radio' && !document.getElementById('radioStationsList').children.length) {
         loadRadioStations('pop');
       }
@@ -7633,7 +7679,7 @@
         renderLibrary();
       }
       if (tabId === 'search' && !skipAutoLoad && !document.getElementById('searchResultsList').children.length) {
-        renderTrackList(document.getElementById('searchResultsList'), getCategoryPlaylist('all'));
+        renderTrackList(document.getElementById('searchResultsList'), shuffleTracks(getCategoryPlaylist('all')));
         document.getElementById('searchStatus').textContent = '🔥 Popular Full-Length 320kbps Songs';
       }
     }
