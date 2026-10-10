@@ -2194,11 +2194,11 @@
                 <span>🚀</span> App Version & Updates
               </h3>
               <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                v3.3.0 (Latest • Zero-Lag Notification & Smooth Lyrics)
+                v3.4.0 (Latest • Related Auto-Play & Clean Exit)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
-              Check for new releases, AudioFocus multitasking upgrades, or download the latest <code>Balu_Beats.apk</code> directly:
+              Check for new releases, unlimited search & related songs auto-play, or download the latest <code>Balu_Beats.apk</code> directly:
             </p>
 
             <!-- Dynamic Live Update Status Box -->
@@ -2209,8 +2209,8 @@
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
                 🔄 Check for Updates
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.3.0" download="Balu_Beats_v3.3.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
-                ⬇ Download Latest APK (v3.3.0)
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.4.0" download="Balu_Beats_v3.4.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
+                ⬇ Download Latest APK (v3.4.0)
               </a>
             </div>
 
@@ -7783,7 +7783,7 @@ function doGet(e) {
       const box = document.getElementById('updateStatusBox');
       if (!box) return;
 
-      let currentVersion = 'v3.3.0';
+      let currentVersion = 'v3.4.0';
       box.style.display = 'block';
       box.style.background = 'rgba(0, 210, 255, 0.12)';
       box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
@@ -7795,13 +7795,13 @@ function doGet(e) {
         const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
         const data = await res.json();
         const latestSha = (data.sha || '').slice(0, 7);
-        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.3.0: Zero-lag notification & smooth lyrics';
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.4.0: Unlimited search, related auto-play & clean exit';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
         const verMatch = commitMsg.match(/v\d+\.\d+\.\d+/i);
         if (verMatch) currentVersion = verMatch[0];
 
         const badgeEl = document.getElementById('appVersionBadge');
-        if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Zero-Lag Notification & Smooth Lyrics)`;
+        if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Related Auto-Play & Clean Exit)`;
         const dlBtn = document.getElementById('directDownloadUpdateBtn');
         if (dlBtn) {
           dlBtn.href = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}`;
@@ -7820,7 +7820,7 @@ function doGet(e) {
             • <em>${escapeHtml(commitMsg)}</em>
           </div>
           <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
-            ✨ What's New: Zero-lag media notification card (always shows exact playing song), zero-stutter music & karaoke lyrics engine, and AudioFocus smooth multitasking.
+            ✨ What's New in v3.4.0: 60–80+ songs per search with multi-page loading, automatic related songs playback, and instant music stop when closing the app.
           </div>
           <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
             ⬇ Tap to Download / Update APK (${currentVersion})
@@ -7991,6 +7991,14 @@ function doGet(e) {
         };
       } catch (_) {}
     }
+
+    // Stop music cleanly when closing the app/window
+    window.addEventListener('beforeunload', () => {
+      try {
+        audio.pause();
+        audio.src = '';
+      } catch (_) {}
+    });
 
     // Initialize App on Load
     window.addEventListener('DOMContentLoaded', () => {
