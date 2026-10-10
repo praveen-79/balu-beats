@@ -5265,8 +5265,10 @@
         updateQueueUI();
       }
       if (!state.currentTrack && initialFull.length > 0) {
+        state.currentIndex = 0;
         state.currentTrack = initialFull[0];
-        syncNativeAndroidNotification();
+        audio.src = initialFull[0].streamUrl;
+        syncNativeAndroidNotification(true);
       }
     }
 
@@ -5505,6 +5507,18 @@
       state.currentTrack = track;
       state.isPlaying = true;
 
+      // 0. If full stream URL is already known, trigger audio.play() IMMEDIATELY inside user gesture!
+      let initialPlayPromise = null;
+      let url = track.streamUrl;
+      if (track.urlsByQuality && track.urlsByQuality[state.quality]) {
+        url = track.urlsByQuality[state.quality];
+      }
+      if ((track.isFullTrack || track.sourceKey === 'radio') && url) {
+        audio.src = url;
+        audio.playbackRate = state.speed;
+        initialPlayPromise = audio.play();
+      }
+
       // 1. Update UI & Notification IMMEDIATELY (0ms delay, 0-song lag)
       document.getElementById('miniTitle').textContent = track.title;
       document.getElementById('miniArtist').textContent = `${track.artist} • ${track.source}`;
@@ -5551,16 +5565,19 @@
 
       if (state.playReqId !== reqId) return;
 
-      // 3. Resolve stream URL for selected quality if available
-      let url = track.streamUrl;
-      if (track.urlsByQuality && track.urlsByQuality[state.quality]) {
-        url = track.urlsByQuality[state.quality];
+      // 3. Await initial playback or start upgraded stream
+      if (!initialPlayPromise) {
+        url = track.streamUrl;
+        if (track.urlsByQuality && track.urlsByQuality[state.quality]) {
+          url = track.urlsByQuality[state.quality];
+        }
+        audio.src = url;
+        audio.playbackRate = state.speed;
+        initialPlayPromise = audio.play();
       }
 
-      audio.src = url;
-      audio.playbackRate = state.speed;
       try {
-        await audio.play();
+        await initialPlayPromise;
         if (state.playReqId !== reqId) return;
         state.isPlaying = true;
       } catch (err) {
@@ -5594,9 +5611,9 @@
     }
 
     function togglePlay() {
-      if (!state.currentTrack) {
+      if (!state.currentTrack || !audio.src || state.currentIndex < 0) {
         if (state.queue.length > 0) {
-          state.currentIndex = 0;
+          state.currentIndex = state.currentIndex >= 0 ? state.currentIndex : 0;
           playCurrentIndex();
         }
         return;
@@ -5606,20 +5623,22 @@
           state.isPlaying = true;
           updatePlayIcons();
           updateActiveTrackHighlight();
-          if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+          if ('mediaSession' in navigator) {
             navigator.mediaSession.playbackState = 'playing';
           }
           updateMediaPositionState();
           syncNativeAndroidNotification(true);
           if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
-        }).catch(() => {});
+        }).catch(() => {
+          playCurrentIndex();
+        });
       } else {
         state.isLoadingTrack = false;
         audio.pause();
         state.isPlaying = false;
         updatePlayIcons();
         updateActiveTrackHighlight();
-        if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+        if ('mediaSession' in navigator) {
           navigator.mediaSession.playbackState = 'paused';
         }
         updateMediaPositionState();
@@ -5676,31 +5695,6 @@
       playCurrentIndex();
     }
 
-    // Smooth Android AudioFocus Volume Ducking & Restoration
-    window.restoreAudioFocusVolume = function() {
-      if (audio) {
-        audio.volume = state.volume !== undefined ? state.volume : 1.0;
-      }
-    };
-
-    window.duckAudioFocusVolume = function() {
-      if (audio) {
-        const targetVol = Math.max(0.18, (state.volume !== undefined ? state.volume : 1.0) * 0.25);
-        audio.volume = targetVol;
-      }
-    };
-
-    window.pauseOnAudioFocusLoss = function() {
-      if (audio && !audio.paused) {
-        state.isLoadingTrack = false;
-        audio.pause();
-        state.isPlaying = false;
-        updatePlayIcons();
-        updateActiveTrackHighlight();
-        syncNativeAndroidNotification(true);
-      }
-    };
-
     // Keep volume steady (100% by default, never auto-ducked)
     audio.preload = 'auto';
     audio.volume = 1.0;
@@ -5733,7 +5727,7 @@
       state.isPlaying = true;
       updatePlayIcons();
       updateActiveTrackHighlight();
-      if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+      if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
       updateMediaPositionState();
@@ -5747,7 +5741,7 @@
       state.isPlaying = !audio.paused;
       updatePlayIcons();
       updateActiveTrackHighlight();
-      if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
+      if ('mediaSession' in navigator) {
         navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
       }
       updateMediaPositionState();
@@ -5820,7 +5814,6 @@
     }
 
     function updateMediaPositionState() {
-      if (location.protocol === 'file:') return; // Native APK uses BaluMediaService MediaSession directly
       if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
         const dur = (!state.isLoadingTrack && audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
         const cur = state.isLoadingTrack ? 0 : (audio.currentTime || 0);
@@ -5898,10 +5891,6 @@
     // Native Phone Lock-Screen, Notification Shade & Headphone MediaSession Controls + Seek Slider
     function updateMediaSession(track) {
       if (!track) return;
-      // When running inside the Native Android APK (file://), let BaluMediaService own the single MediaSession
-      // so Chromium WebView doesn't create a competing MediaSession that ducks audio!
-      if (location.protocol === 'file:') return;
-
       if ('mediaSession' in navigator) {
         const artUrl = track.artwork || 'icon-512.png';
         navigator.mediaSession.metadata = new MediaMetadata({
