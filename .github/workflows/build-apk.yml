@@ -96,7 +96,7 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="12"
+              android:versionCode="13"
               android:versionName="3.5.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
@@ -637,6 +637,10 @@ jobs:
           package com.balubeats.music;
 
           import android.app.Activity;
+          import android.app.Notification;
+          import android.app.NotificationChannel;
+          import android.app.NotificationManager;
+          import android.app.PendingIntent;
           import android.content.Context;
           import android.content.Intent;
           import android.content.pm.PackageManager;
@@ -656,12 +660,19 @@ jobs:
 
           public class MainActivity extends Activity {
               private static BackgroundWebView webView;
+              private static final String UPDATE_CHANNEL_ID = "balu_beats_updates_v35";
+              private static final int UPDATE_NOTIF_ID = 205;
 
-              // Direct 0ms JS-to-Native Media Bridge (bypasses console buffering)
+              // Direct 0ms JS-to-Native Media & Update Notification Bridge
               public class AndroidMediaBridge {
                   @JavascriptInterface
                   public void syncMedia(final String jsonStr) {
                       runOnUiThread(() -> dispatchMediaSyncToService(jsonStr));
+                  }
+
+                  @JavascriptInterface
+                  public void postUpdateNotification(final String title, final String message, final String url) {
+                      runOnUiThread(() -> showNativeUpdateNotification(title, message, url));
                   }
               }
 
@@ -731,9 +742,11 @@ jobs:
                   super.onCreate(savedInstanceState);
                   requestWindowFeature(Window.FEATURE_NO_TITLE);
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                      getWindow().setStatusBarColor(Color.parseColor("#07080D"));
-                      getWindow().setNavigationBarColor(Color.parseColor("#07080D"));
+                      getWindow().setStatusBarColor(Color.parseColor("#050507"));
+                      getWindow().setNavigationBarColor(Color.parseColor("#050507"));
                   }
+
+                  createUpdateNotificationChannel();
 
                   // 1. Immediately request notification permission on Android 13+
                   if (Build.VERSION.SDK_INT >= 33) {
@@ -758,7 +771,7 @@ jobs:
                   }
 
                   webView = new BackgroundWebView(this);
-                  webView.setBackgroundColor(Color.parseColor("#07080D"));
+                  webView.setBackgroundColor(Color.parseColor("#050507"));
                   WebSettings settings = webView.getSettings();
                   settings.setJavaScriptEnabled(true);
                   settings.setDomStorageEnabled(true);
@@ -771,9 +784,23 @@ jobs:
                   webView.setWebChromeClient(new WebChromeClient() {
                       @Override
                       public boolean onConsoleMessage(ConsoleMessage cm) {
-                          if (cm != null && cm.message() != null && cm.message().startsWith("BALU_MEDIA:")) {
-                              dispatchMediaSyncToService(cm.message().substring(11));
-                              return true;
+                          if (cm != null && cm.message() != null) {
+                              String msg = cm.message();
+                              if (msg.startsWith("BALU_MEDIA:")) {
+                                  dispatchMediaSyncToService(msg.substring(11));
+                                  return true;
+                              }
+                              if (msg.startsWith("BALU_UPDATE_NOTIF:")) {
+                                  try {
+                                      JSONObject uObj = new JSONObject(msg.substring(18));
+                                      showNativeUpdateNotification(
+                                          uObj.optString("title", "Balu Beats v3.5.0 Update Live!"),
+                                          uObj.optString("message", "New Dark Smoked-Glass 3D Theme, Artist Search & Custom Playlists!"),
+                                          uObj.optString("url", "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2")
+                                      );
+                                  } catch (Exception ignored) {}
+                                  return true;
+                              }
                           }
                           return super.onConsoleMessage(cm);
                       }
@@ -792,11 +819,93 @@ jobs:
                           } catch (Exception ignored) {}
                           return true;
                       }
+
+                      @Override
+                      public void onPageFinished(WebView view, String url) {
+                          super.onPageFinished(view, url);
+                          handleAccountDeepLink(getIntent());
+                      }
                   });
 
                   setContentView(webView);
                   // Load bundled local app directly — 100% skips Vercel login / deployment protection!
                   webView.loadUrl("file:///android_asset/index.html");
+              }
+
+              @Override
+              protected void onNewIntent(Intent intent) {
+                  super.onNewIntent(intent);
+                  setIntent(intent);
+                  handleAccountDeepLink(intent);
+              }
+
+              private void handleAccountDeepLink(Intent intent) {
+                  if (intent != null && intent.getBooleanExtra("open_account", false)) {
+                      intent.removeExtra("open_account");
+                      evalJs("if(typeof switchTab==='function')switchTab('connect', true);");
+                  }
+              }
+
+              private void createUpdateNotificationChannel() {
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                      NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                      if (nm == null) return;
+                      NotificationChannel ch = new NotificationChannel(
+                          UPDATE_CHANNEL_ID,
+                          "Balu Beats App Updates & Releases",
+                          NotificationManager.IMPORTANCE_HIGH
+                      );
+                      ch.setDescription("Notifies when a new Balu Beats APK update or theme release is published");
+                      ch.enableLights(true);
+                      ch.setLightColor(Color.parseColor("#1ED760"));
+                      ch.enableVibration(true);
+                      ch.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+                      nm.createNotificationChannel(ch);
+                  }
+              }
+
+              private void showNativeUpdateNotification(String title, String message, String downloadUrl) {
+                  try {
+                      NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                      if (nm == null) return;
+
+                      int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                          flags |= PendingIntent.FLAG_IMMUTABLE;
+                      }
+
+                      Intent openAccIntent = new Intent(this, MainActivity.class);
+                      openAccIntent.putExtra("open_account", true);
+                      openAccIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                      PendingIntent openAccPi = PendingIntent.getActivity(this, 301, openAccIntent, flags);
+
+                      String safeUrl = (downloadUrl != null && downloadUrl.startsWith("http"))
+                          ? downloadUrl
+                          : "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2";
+                      Intent dlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
+                      PendingIntent dlPi = PendingIntent.getActivity(this, 302, dlIntent, flags);
+
+                      Notification.Builder builder = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                          ? new Notification.Builder(this, UPDATE_CHANNEL_ID)
+                          : new Notification.Builder(this);
+
+                      builder.setContentTitle(title != null ? title : "Balu Beats v3.5.0 Update Live!")
+                             .setContentText(message != null ? message : "Tap to view update in Account or download APK v3.5.0")
+                             .setStyle(new Notification.BigTextStyle().bigText(message))
+                             .setSmallIcon(R.drawable.ic_launcher)
+                             .setContentIntent(openAccPi)
+                             .setAutoCancel(true)
+                             .setVisibility(Notification.VISIBILITY_PUBLIC)
+                             .setPriority(Notification.PRIORITY_HIGH)
+                             .setColor(Color.parseColor("#1ED760"));
+
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                          builder.addAction(new Notification.Action.Builder(android.R.drawable.stat_sys_download_done, "View in Account", openAccPi).build());
+                          builder.addAction(new Notification.Action.Builder(android.R.drawable.stat_sys_download, "Download APK v3.5", dlPi).build());
+                      }
+
+                      nm.notify(UPDATE_NOTIF_ID, builder.build());
+                  } catch (Exception ignored) {}
               }
 
               @Override

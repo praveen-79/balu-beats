@@ -1983,21 +1983,22 @@
   <div id="toast" class="toast">Ready to play!</div>
 
   <!-- ================= CREATOR BROADCAST ANNOUNCEMENT BANNER ================= -->
-  <div id="creatorBroadcastBanner" style="display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:linear-gradient(135deg,#1b1c22,#0d0e12);border:1.5px solid rgba(255,255,255,0.35);box-shadow:0 12px 35px rgba(0,0,0,0.85);border-radius:16px;padding:14px 16px;z-index:99999;color:#fff;">
+  <div id="creatorBroadcastBanner" style="display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:linear-gradient(145deg,rgba(42,44,52,0.96),rgba(14,15,19,0.98));backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);border:1.5px solid rgba(255,255,255,0.38);box-shadow:0 18px 45px rgba(0,0,0,0.92),inset 0 1px 0 rgba(255,255,255,0.32);border-radius:20px;padding:14px 16px;z-index:99999;color:#fff;">
     <div style="display:flex;align-items:flex-start;gap:12px;">
-      <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#ffffff,#cbd5e1);color:#060709;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">
-        📢
+      <div style="width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ffffff,#cbd5e1);color:#060709;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;box-shadow:0 6px 16px rgba(0,0,0,0.5);">
+        🚀
       </div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-          <span style="font-size:11px;font-weight:800;color:#e5e7eb;text-transform:uppercase;letter-spacing:0.5px;">👑 Balu Announcement (@being_rebel__7)</span>
+          <span style="font-size:10.5px;font-weight:800;color:#1ed760;text-transform:uppercase;letter-spacing:0.6px;">👑 Official Update Notification • @being_rebel__7</span>
           <button onclick="dismissCreatorBroadcast()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:0 4px;">✕</button>
         </div>
         <h4 id="broadcastTitle" style="font-size:14px;font-weight:900;margin:0 0 4px 0;color:#fff;"></h4>
-        <p id="broadcastMsg" style="font-size:12.5px;color:#cbd5e1;line-height:1.4;margin:0 0 10px 0;"></p>
-        <div style="display:flex;gap:8px;" id="broadcastActions">
-          <a id="broadcastActionBtn" href="download.html" class="util-btn primary" style="padding:6px 14px;font-size:11.5px;text-decoration:none;font-weight:800;border-radius:8px;">⬇️ Update App Now</a>
-          <button onclick="dismissCreatorBroadcast()" class="util-btn" style="padding:6px 12px;font-size:11.5px;border-radius:8px;background:rgba(255,255,255,0.06);color:#fff;">Dismiss</button>
+        <p id="broadcastMsg" style="font-size:12px;color:#d1d5db;line-height:1.45;margin:0 0 10px 0;"></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;" id="broadcastActions">
+          <a id="broadcastActionBtn" href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2" download="Balu_Beats_v3.5.apk" class="util-btn primary" style="padding:7px 14px;font-size:11.5px;text-decoration:none;font-weight:900;border-radius:999px;">⬇ Download APK v3.5</a>
+          <button onclick="switchTab('connect');dismissCreatorBroadcast();" class="util-btn" style="padding:7px 12px;font-size:11.5px;border-radius:999px;background:rgba(255,255,255,0.10);border-color:rgba(255,255,255,0.26);color:#fff;font-weight:700;">👤 View in Account</button>
+          <button onclick="dismissCreatorBroadcast()" class="util-btn" style="padding:7px 12px;font-size:11.5px;border-radius:999px;background:rgba(255,255,255,0.05);color:#cbd5e1;">Dismiss</button>
         </div>
       </div>
     </div>
@@ -2475,43 +2476,70 @@
 
           <!-- App Updates & APK Download Center -->
           <div class="connect-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
               <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
-                <span>🚀</span> App Version & Updates
+                <span>🚀</span> Native APK Update & Notification Center
               </h3>
-              <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                v3.5.0 (Latest • Smoked Glass Theme, Artists & Playlists)
+              <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.45);">
+                v3.5.0 • Build 12 (LIVE)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
-              Check for new releases, artist profiles, custom playlists, or download the latest <code>Balu_Beats.apk</code> directly:
+              Official Native Android APK release & live push notification center for <code>Balu_Beats.apk</code>:
             </p>
 
             <!-- Published Live v3.5 Update Status Box (Visible by default in Account section) -->
-            <div id="updateStatusBox" style="display:block;padding:12px;border-radius:14px;margin-bottom:12px;font-size:12px;line-height:1.5;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.22);color:#e2e8f0;">
-              <div style="font-weight:800;margin-bottom:5px;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
-                <span>✓</span> Balu Beats <strong>v3.5 (v3.5.0)</strong> — Latest Official Update Published
+            <div id="updateStatusBox" style="display:block;padding:13px;border-radius:16px;margin-bottom:12px;font-size:12px;line-height:1.5;background:linear-gradient(145deg,rgba(46,48,56,0.78),rgba(20,21,26,0.92));border:1px solid rgba(255,255,255,0.26);color:#e2e8f0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.25);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px;">
+                <div style="font-weight:900;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
+                  <span>✓</span> Balu Beats <strong>v3.5 (v3.5.0)</strong> — Native APK Update Live
+                </div>
+                <span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.24);">Signed APK</span>
               </div>
-              <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.35);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
-                ✨ <strong>What's New in v3.5:</strong><br/>
-                • <strong>Dark Smoked-Glass 3D Coverflow Theme:</strong> Frosted charcoal-ash glass & 3D fanned album deck<br/>
-                • <strong>Artist Search & Profiles:</strong> Matching artists carousel + complete artist metadata on all songs<br/>
-                • <strong>Custom Playlists in Library:</strong> Create playlists & add any song in 1 tap (<code>📁+</code>)<br/>
-                • <strong>Permanent APK Signing Key:</strong> Eliminates Android package conflict errors on future updates
+              <div style="font-size:11.5px;color:#d1d5db;margin-bottom:10px;background:rgba(0,0,0,0.42);padding:9px 11px;border-radius:12px;border:1px solid rgba(255,255,255,0.10);">
+                ✨ <strong>What's Included in v3.5.0 Native APK:</strong><br/>
+                • <strong>Dark Smoked-Glass 3D Coverflow Theme:</strong> Deep charcoal-ash glass, top-right silver spotlight rays & 5-card 3D fanned album deck<br/>
+                • <strong>Artist Search & Profiles Fixed:</strong> Dedicated "🎤 Matching Artists" carousel + multi-field artist extraction<br/>
+                • <strong>Custom Playlists in Library:</strong> Create playlists & tap <code>📁+</code> on any song to add it<br/>
+                • <strong>Permanent APK Signing Key:</strong> Installs directly over existing builds without package conflict errors
               </div>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-                ⬇ Tap to Download / Install v3.5 APK Update
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2" download="Balu_Beats_v3.5.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;padding:11px 14px;font-size:13px;">
+                ⬇ Install / Update Native APK (v3.5.0)
               </a>
             </div>
 
             <!-- Action Buttons: Check Updates & Download Latest APK -->
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
                 🔄 Check for Updates (v3.5)
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(255,255,255,0.28);color:#ffffff;font-weight:800;">
-                ⬇ Download Latest APK (v3.5.0)
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2" download="Balu_Beats_v3.5.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(255,255,255,0.28);color:#ffffff;font-weight:800;">
+                ⬇ Direct APK Download
               </a>
+            </div>
+
+            <!-- Publish Update Notification to All Users & Native APK -->
+            <div style="padding:12px;border-radius:15px;margin-bottom:12px;background:rgba(0,0,0,0.38);border:1px solid rgba(255,255,255,0.18);">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:12.5px;font-weight:900;color:#ffffff;display:flex;align-items:center;gap:5px;">
+                  🔔 Publish Update Notification (Push to All Users)
+                </span>
+                <span style="font-size:10px;font-weight:800;color:#1ed760;">● Live Push Ready</span>
+              </div>
+              <p style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;line-height:1.4;">
+                Send an instant update notification banner & native Android status-bar alert to all users on the APK and Web App:
+              </p>
+              <input type="text" id="updateNotifTitleInput" class="connect-input" style="margin-bottom:6px;font-weight:700;" value="🚀 Balu Beats v3.5.0 Update Live!" placeholder="Notification Title..." />
+              <input type="text" id="updateNotifBodyInput" class="connect-input" style="margin-bottom:8px;" value="New Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel, Custom Playlists (📁+) & Conflict-Free Native APK! Tap to update now." placeholder="Notification Message..." />
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="util-btn primary" id="publishUpdateNotifBtn" onclick="publishUpdateAndNotifyAll()" style="flex:1.4;justify-content:center;font-weight:900;padding:10px 12px;">
+                  📢 Publish Update & Notify All
+                </button>
+                <button class="util-btn" onclick="triggerLocalUpdateNotificationPreview()" style="flex:1;justify-content:center;font-weight:800;padding:10px 12px;border-color:rgba(255,255,255,0.26);color:#fff;">
+                  🔔 Test Alert Here
+                </button>
+              </div>
+              <div id="publishUpdateNotifStatus" style="display:none;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(30,215,96,0.15);border:1px solid rgba(30,215,96,0.4);color:#86efac;"></div>
             </div>
 
             <!-- Fast Store Link & Direct Share Link -->
@@ -8580,18 +8608,19 @@ function doGet(e) {
       if (!box) return;
 
       let currentVersion = 'v3.5.0';
+      const apkDownloadUrl = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2&t=${Date.now()}`;
       box.style.display = 'block';
-      box.style.background = 'rgba(0, 210, 255, 0.12)';
-      box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
-      box.style.color = '#7dd3fc';
-      box.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><span>⏳</span> Checking release servers for updates...</div>`;
+      box.style.background = 'rgba(255, 255, 255, 0.08)';
+      box.style.border = '1px solid rgba(255, 255, 255, 0.28)';
+      box.style.color = '#e5e7eb';
+      box.innerHTML = `<div style="display:flex;align-items:center;gap:8px;"><span>⏳</span> Checking release servers for Native APK updates...</div>`;
       if (btn) { btn.disabled = true; btn.textContent = '⏳ Checking...'; }
 
       try {
         const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
         const data = await res.json();
         const latestSha = (data.sha || '').slice(0, 7);
-        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.5.0: Artist search, custom playlists & persistent APK signature';
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.5.0: Dark Smoked-Glass 3D Coverflow Theme, Artist Search & Custom Playlists';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
         const verMatch = commitMsg.match(/v\d+\.\d+\.\d+/i);
         if (verMatch && verMatch[0].localeCompare('v3.5.0', undefined, { numeric: true }) > 0) {
@@ -8599,49 +8628,154 @@ function doGet(e) {
         }
 
         const badgeEl = document.getElementById('appVersionBadge');
-        if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Artists, Playlists & Update Conflict Fix)`;
+        if (badgeEl) badgeEl.textContent = `${currentVersion} • Build 12 (LIVE)`;
         const dlBtn = document.getElementById('directDownloadUpdateBtn');
         if (dlBtn) {
-          dlBtn.href = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}`;
-          dlBtn.textContent = `⬇ Download Latest APK (${currentVersion})`;
+          dlBtn.href = apkDownloadUrl;
+          dlBtn.textContent = `⬇ Direct APK (${currentVersion})`;
         }
 
-        box.style.background = 'rgba(30, 215, 96, 0.14)';
-        box.style.border = '1px solid rgba(30, 215, 96, 0.45)';
-        box.style.color = '#86efac';
+        box.style.background = 'linear-gradient(145deg,rgba(46,48,56,0.78),rgba(20,21,26,0.92))';
+        box.style.border = '1px solid rgba(30, 215, 96, 0.5)';
+        box.style.color = '#e2e8f0';
         box.innerHTML = `
-          <div style="font-weight:800;margin-bottom:5px;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
-            <span>✓</span> Balu Beats <strong>${currentVersion}</strong> (Latest Official Build)
+          <div style="font-weight:900;margin-bottom:5px;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
+            <span>✓</span> Balu Beats <strong>${currentVersion}</strong> — Native APK Update Ready
           </div>
           <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:8px;">
             • Build: <code>${latestSha}</code> • Released: ${commitDate}<br/>
             • <em>${escapeHtml(commitMsg)}</em>
           </div>
-          <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
-            ✨ What's New in v3.5.0: Full Artist Search & Artist Carousel, Custom Playlists & Add-to-Playlist (📁+) in Library, and Persistent APK Signing Key to eliminate package conflicts on future updates.
+          <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.38);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.10);">
+            ✨ <strong>What's New in v3.5.0:</strong> Dark Smoked-Glass 3D Coverflow Theme, Full Artist Search & Artist Carousel, Custom Playlists & Add-to-Playlist (<code>📁+</code>) in Library, and Persistent APK Signing Key.
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Tap to Download / Update APK (${currentVersion})
+          <a href="${apkDownloadUrl}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;padding:11px 14px;font-size:13px;">
+            ⬇ Tap to Download / Install Native APK (${currentVersion})
           </a>
         `;
-        showToast(`✓ Balu Beats ${currentVersion} update is ready!`);
+        dispatchNativeUpdateAlert(
+          `🚀 Balu Beats ${currentVersion} Update Ready!`,
+          `Dark Smoked-Glass 3D Theme, Artist Search, Custom Playlists (📁+) & Conflict-Free APK Ready to Install!`,
+          apkDownloadUrl
+        );
+        showToast(`✓ Balu Beats ${currentVersion} Native APK update is ready!`);
       } catch (err) {
-        box.style.background = 'rgba(30, 215, 96, 0.14)';
-        box.style.border = '1px solid rgba(30, 215, 96, 0.45)';
-        box.style.color = '#86efac';
+        box.style.background = 'linear-gradient(145deg,rgba(46,48,56,0.78),rgba(20,21,26,0.92))';
+        box.style.border = '1px solid rgba(30, 215, 96, 0.5)';
+        box.style.color = '#e2e8f0';
         box.innerHTML = `
-          <div style="font-weight:800;margin-bottom:5px;color:#1ed760;font-size:13px;">
-            ✓ Balu Beats ${currentVersion} is ready to download!
+          <div style="font-weight:900;margin-bottom:5px;color:#1ed760;font-size:13px;">
+            ✓ Balu Beats ${currentVersion} Native APK is ready to install!
           </div>
           <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:10px;">
-            Tap below to download and install the latest APK update directly onto your phone:
+            Tap below to download and install the latest v3.5.0 APK update directly onto your phone:
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Download Latest APK (${currentVersion})
+          <a href="${apkDownloadUrl}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;padding:11px 14px;">
+            ⬇ Install / Update Native APK (${currentVersion})
           </a>
         `;
       } finally {
         if (btn) { btn.disabled = false; btn.textContent = '🔄 Check for Updates (v3.5)'; }
+      }
+    }
+
+    function dispatchNativeUpdateAlert(title, message, url = 'https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2') {
+      const safeTitle = title || '🚀 Balu Beats v3.5.0 Update Live!';
+      const safeMsg = message || 'New Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel, Custom Playlists (📁+) & Conflict-Free Native APK!';
+
+      // 1. Native Android APK Notification Bridge (0ms direct call + console fallback)
+      if (window.AndroidMediaBridge && typeof window.AndroidMediaBridge.postUpdateNotification === 'function') {
+        try {
+          window.AndroidMediaBridge.postUpdateNotification(safeTitle, safeMsg, url);
+        } catch (_) {}
+      } else {
+        try {
+          console.log('BALU_UPDATE_NOTIF:' + JSON.stringify({ title: safeTitle, message: safeMsg, url }));
+        } catch (_) {}
+      }
+
+      // 2. Web / PWA System Notification if granted
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(safeTitle, {
+            body: safeMsg,
+            icon: 'icon-192.png'
+          });
+        } catch (_) {}
+      } else if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission().then(perm => {
+          if (perm === 'granted') {
+            try { new Notification(safeTitle, { body: safeMsg, icon: 'icon-192.png' }); } catch (_) {}
+          }
+        }).catch(() => {});
+      }
+    }
+
+    function triggerLocalUpdateNotificationPreview() {
+      const titleInp = document.getElementById('updateNotifTitleInput');
+      const bodyInp = document.getElementById('updateNotifBodyInput');
+      const title = (titleInp?.value || '').trim() || '🚀 Balu Beats v3.5.0 Update Live!';
+      const msg = (bodyInp?.value || '').trim() || 'New Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel, Custom Playlists (📁+) & Conflict-Free Native APK! Tap to update now.';
+      const apkUrl = 'https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2';
+
+      const titleEl = document.getElementById('broadcastTitle');
+      const msgEl = document.getElementById('broadcastMsg');
+      const banner = document.getElementById('creatorBroadcastBanner');
+      const actionBtn = document.getElementById('broadcastActionBtn');
+      if (banner && titleEl && msgEl) {
+        titleEl.textContent = title;
+        msgEl.textContent = msg;
+        if (actionBtn) {
+          actionBtn.style.display = 'inline-flex';
+          actionBtn.href = apkUrl;
+        }
+        banner.style.display = 'block';
+      }
+      dispatchNativeUpdateAlert(title, msg, apkUrl);
+      showToast('🔔 Update Notification Banner & Native Phone Alert triggered!');
+    }
+
+    async function publishUpdateAndNotifyAll() {
+      const titleInp = document.getElementById('updateNotifTitleInput');
+      const bodyInp = document.getElementById('updateNotifBodyInput');
+      const btn = document.getElementById('publishUpdateNotifBtn');
+      const statusEl = document.getElementById('publishUpdateNotifStatus');
+      const title = (titleInp?.value || '').trim() || '🚀 Balu Beats v3.5.0 Update Live!';
+      const msg = (bodyInp?.value || '').trim() || 'New Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel, Custom Playlists (📁+) & Conflict-Free Native APK! Tap to update now.';
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = '⏳ Publishing to All Users...';
+      }
+
+      // Immediately show local banner + native phone notification
+      triggerLocalUpdateNotificationPreview();
+
+      try {
+        await fetch('https://ntfy.sh/balubeats_telemetry_being_rebel_7', {
+          method: 'POST',
+          headers: {
+            'Title': title.replace(/[^\x20-\x7E]/g, '').trim() || 'Balu Beats v3.5.0 Update Live!',
+            'Priority': 'high',
+            'Tags': 'rocket,musical_note'
+          },
+          body: msg
+        });
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.innerHTML = '✅ <strong>Published Live!</strong> Update notification pushed to all Native APK & Web users and displayed on your phone.';
+        }
+        showToast('🚀 v3.5.0 Update Notification broadcasted to all users!');
+      } catch (e) {
+        if (statusEl) {
+          statusEl.style.display = 'block';
+          statusEl.innerHTML = '✅ <strong>Local Alert Displayed!</strong> Native APK notification triggered on this device.';
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = '📢 Publish Update & Notify All';
+        }
       }
     }
 
@@ -8729,26 +8863,17 @@ function doGet(e) {
       const actionBtn = document.getElementById('broadcastActionBtn');
       if (!banner || !titleEl || !msgEl) return;
 
-      titleEl.textContent = title || 'Announcement from Balu';
+      titleEl.textContent = title || '🚀 Balu Beats v3.5.0 Update Live!';
       msgEl.textContent = msg;
 
-      const isUpdate = (title + ' ' + msg).toLowerCase().includes('update');
+      const apkUrl = 'https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2';
       if (actionBtn) {
-        actionBtn.style.display = isUpdate ? 'inline-flex' : 'none';
-        actionBtn.href = 'download.html';
+        actionBtn.style.display = 'inline-flex';
+        actionBtn.href = apkUrl;
       }
 
       banner.style.display = 'block';
-
-      // System notification if permission granted
-      if ('Notification' in window && Notification.permission === 'granted') {
-        try {
-          new Notification(title || 'Balu Beats Announcement', {
-            body: msg,
-            icon: 'icon-192.png'
-          });
-        } catch (_) {}
-      }
+      dispatchNativeUpdateAlert(title || '🚀 Balu Beats v3.5.0 Update Live!', msg, apkUrl);
     }
 
     async function checkCreatorBroadcasts() {
@@ -8809,6 +8934,18 @@ function doGet(e) {
       refreshDeveloperTelemetry(false);
       checkCreatorBroadcasts();
       listenCreatorBroadcastStream();
+
+      // Automatically surface the v3.5.0 Smoked-Glass Update Notification once per install/update
+      if (!localStorage.getItem('bb_notified_v350_smoked_v2')) {
+        localStorage.setItem('bb_notified_v350_smoked_v2', 'true');
+        setTimeout(() => {
+          showCreatorBroadcast({
+            id: 'v350_smoked_release_v2',
+            title: '🚀 Balu Beats v3.5.0 Update Live!',
+            message: 'New Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel, Custom Playlists (📁+) & Conflict-Free Native APK Update Available in Account!'
+          });
+        }, 1200);
+      }
 
       // Request notification permission smoothly
       if ('Notification' in window && Notification.permission === 'default') {
