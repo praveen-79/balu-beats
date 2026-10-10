@@ -187,7 +187,7 @@ class BaluBeatsHandler(http.server.SimpleHTTPRequestHandler):
                     "action": payload.get("action", "LOGIN"),
                     "device": payload.get("device") or payload.get("deviceType") or "Web Browser",
                     "timestamp": payload.get("timestamp") or payload.get("localTime") or "Now",
-                    "appVersion": payload.get("appVersion", "v3.4.0")
+                    "appVersion": payload.get("appVersion", "v3.5.0")
                 }
                 users.append(record)
                 save_db(users)

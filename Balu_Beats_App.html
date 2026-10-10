@@ -1984,6 +1984,15 @@
             <button class="chip" onclick="searchAndGo('Telugu Lofi')">☕ Telugu Lo-Fi</button>
           </div>
           <div id="searchStatus" style="font-size:12px;color:var(--accent-green);font-weight:700;margin-bottom:8px;"></div>
+
+          <!-- Matching Artists Section in Search -->
+          <div id="searchArtistsSection" style="display:none;margin-bottom:16px;">
+            <div class="section-header" style="margin-bottom:8px;">
+              <h2 class="section-title" id="searchArtistsTitle" style="font-size:14px;">🎤 Matching Artists (Tap to Play All Hits)</h2>
+            </div>
+            <div id="searchArtistsCarousel" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;"></div>
+          </div>
+
           <div class="track-list" id="searchResultsList"></div>
           <div id="loadMoreSearchWrap" style="display:none;margin:12px 0 8px;text-align:center;">
             <button class="util-btn primary" id="loadMoreSearchBtn" style="width:100%;justify-content:center;padding:11px;font-weight:800;" onclick="loadMoreSearchResults()">
@@ -2054,7 +2063,8 @@
         <section id="tab-library" class="tab-pane">
           <div class="section-header" style="margin-top:4px;">
             <h2 class="section-title">❤️ Your Music Library</h2>
-            <div style="display:flex;gap:8px;">
+            <div style="display:flex;gap:6px;">
+              <button class="section-link" style="background:rgba(30,215,96,0.16);border-color:rgba(30,215,96,0.4);color:#1ed760;" onclick="showLibraryView('playlists')">➕ New Playlist</button>
               <button class="section-link" onclick="document.getElementById('localAudioInput').click()">+ Local MP3</button>
               <button class="section-link" onclick="exportLibraryData()">Export</button>
             </div>
@@ -2062,14 +2072,52 @@
 
           <input type="file" id="localAudioInput" accept="audio/*" multiple style="display:none" onchange="handleLocalFiles(event)" />
 
-          <div class="chips-scroll">
-            <button class="chip active" onclick="showLibraryView('liked', this)">❤️ Liked Songs (<span id="likedCount">0</span>)</button>
-            <button class="chip" onclick="showLibraryView('recent', this)">🕒 Recently Played</button>
-            <button class="chip" onclick="showLibraryView('local', this)">📂 Device Audio Files</button>
+          <div class="chips-scroll" id="libraryChipsBar">
+            <button class="chip active" data-lib-view="liked" onclick="showLibraryView('liked', this)">❤️ Liked Songs (<span id="likedCount">0</span>)</button>
+            <button class="chip" data-lib-view="playlists" onclick="showLibraryView('playlists', this)">🎵 Playlists (<span id="playlistCount">0</span>)</button>
+            <button class="chip" data-lib-view="recent" onclick="showLibraryView('recent', this)">🕒 Recently Played</button>
+            <button class="chip" data-lib-view="local" onclick="showLibraryView('local', this)">📂 Device Audio Files</button>
+          </div>
+
+          <!-- Custom Playlists Manager Panel -->
+          <div id="libraryPlaylistsPanel" style="display:none;margin-bottom:14px;">
+            <div style="display:flex;gap:8px;margin-bottom:12px;background:rgba(255,255,255,0.04);padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);">
+              <input type="text" id="newPlaylistNameInput" class="connect-input" style="margin:0;flex:1;" placeholder="Enter new playlist name (e.g. Gym Vibes, Telugu Melodies)..." />
+              <button class="util-btn primary" style="white-space:nowrap;font-weight:800;padding:8px 14px;" onclick="createNewUserPlaylist()">
+                ➕ Create
+              </button>
+            </div>
+            <div id="userPlaylistsGrid" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+            <div id="activePlaylistTracksHeader" style="display:none;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:rgba(30,215,96,0.12);border:1px solid rgba(30,215,96,0.35);align-items:center;justify-content:space-between;gap:8px;">
+              <div>
+                <div id="activePlaylistTitleText" style="font-size:13.5px;font-weight:800;color:#fff;">Playlist Songs</div>
+                <div id="activePlaylistSubText" style="font-size:11px;color:var(--text-secondary);">Tap any song to play</div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="util-btn primary" style="padding:5px 10px;font-size:11px;" onclick="addCurrentTrackToActivePlaylist()">➕ Add Playing Song</button>
+                <button class="util-btn" style="padding:5px 10px;font-size:11px;" onclick="switchTab('search', true)">🔍 Add from Search</button>
+              </div>
+            </div>
           </div>
 
           <div class="track-list" id="libraryTrackList"></div>
         </section>
+
+        <!-- Add Song to Playlist Picker Modal -->
+        <div id="playlistPickerModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,5,9,0.85);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closePlaylistPickerModal()">
+          <div style="width:100%;max-width:400px;background:#11131c;border:1px solid rgba(255,255,255,0.14);border-radius:22px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,0.85);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+              <h3 style="margin:0;font-size:15px;font-weight:900;color:#fff;">🎵 Add Song to Playlist</h3>
+              <button class="util-btn" style="padding:4px 9px;font-size:12px;" onclick="closePlaylistPickerModal()">✕</button>
+            </div>
+            <div id="playlistPickerSongTitle" style="font-size:12px;color:#1ed760;font-weight:700;margin-bottom:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+            <div style="display:flex;gap:6px;margin-bottom:12px;">
+              <input type="text" id="modalNewPlaylistInput" class="connect-input" style="margin:0;flex:1;" placeholder="Or create new playlist..." />
+              <button class="util-btn primary" style="padding:7px 12px;font-size:11.5px;font-weight:800;" onclick="createAndAddFromModal()">➕ Create & Add</button>
+            </div>
+            <div id="playlistPickerList" style="display:flex;flex-direction:column;gap:8px;max-height:240px;overflow-y:auto;"></div>
+          </div>
+        </div>
 
         <!-- ================= TAB 5: USER ACCOUNT & CREDENTIALS ================= -->
         <section id="tab-connect" class="tab-pane">
@@ -2194,36 +2242,36 @@
                 <span>🚀</span> App Version & Updates
               </h3>
               <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                v3.4.0 (Latest • Related Auto-Play & Clean Exit)
+                v3.5.0 (Latest • Artists, Playlists & Conflict-Free APK)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
-              Check for new releases, unlimited search & related songs auto-play, or download the latest <code>Balu_Beats.apk</code> directly:
+              Check for new releases, artist profiles, custom playlists, or download the latest <code>Balu_Beats.apk</code> directly:
             </p>
 
-            <!-- Published Live v3.4 Update Status Box (Visible by default in Account section) -->
+            <!-- Published Live v3.5 Update Status Box (Visible by default in Account section) -->
             <div id="updateStatusBox" style="display:block;padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;line-height:1.5;background:rgba(30,215,96,0.14);border:1px solid rgba(30,215,96,0.45);color:#86efac;">
               <div style="font-weight:800;margin-bottom:5px;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
-                <span>✓</span> Balu Beats <strong>v3.4 (v3.4.0)</strong> — Latest Official Update Published
+                <span>✓</span> Balu Beats <strong>v3.5 (v3.5.0)</strong> — Latest Official Update Published
               </div>
               <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
-                ✨ <strong>What's New in v3.4:</strong><br/>
-                • 60–80+ songs per search + "Load 40+ More Songs" multi-page button<br/>
-                • True Related Songs auto-play queue (same movie/album, artist & JioSaavn Radio)<br/>
-                • Music & notification stop immediately when closing the app
+                ✨ <strong>What's New in v3.5:</strong><br/>
+                • <strong>Artist Search & Profiles:</strong> Matching artists carousel + complete artist metadata on all songs<br/>
+                • <strong>Custom Playlists in Library:</strong> Create playlists & add any song in 1 tap (<code>📁+</code>)<br/>
+                • <strong>Permanent APK Signing Key:</strong> Eliminates Android package conflict errors on future updates
               </div>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.4.0" download="Balu_Beats_v3.4.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-                ⬇ Tap to Download / Install v3.4 APK Update
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+                ⬇ Tap to Download / Install v3.5 APK Update
               </a>
             </div>
 
             <!-- Action Buttons: Check Updates & Download Latest APK -->
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
-                🔄 Check for Updates (v3.4)
+                🔄 Check for Updates (v3.5)
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.4.0" download="Balu_Beats_v3.4.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
-                ⬇ Download Latest APK (v3.4.0)
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
+                ⬇ Download Latest APK (v3.5.0)
               </a>
             </div>
 
@@ -4852,6 +4900,15 @@
       searchEngine: 'hybrid', // 'hybrid' | 'saavn' | 'itunes' | 'audius'
       likedTracks: JSON.parse(localStorage.getItem('pb_liked_tracks') || '[]'),
       recentTracks: JSON.parse(localStorage.getItem('pb_recent_tracks') || '[]'),
+      playlists: JSON.parse(localStorage.getItem('pb_user_playlists') || 'null') || [
+        {
+          id: 'pl_default_favs',
+          name: '🔥 My Mass & Melody Mix',
+          createdAt: 'Default Playlist',
+          tracks: []
+        }
+      ],
+      activePlaylistId: 'pl_default_favs',
       localTracks: [],
       libraryView: 'liked',
       lyrics: [],
@@ -4959,6 +5016,46 @@
         .trim();
     }
 
+    // Comprehensive multi-field artist extractor so artists are NEVER missing or "Unknown Artist"
+    function extractSaavnArtists(item) {
+      if (!item) return 'Featured Artist';
+      const names = [];
+      const addList = (arr) => {
+        if (!Array.isArray(arr)) return;
+        arr.forEach(a => {
+          const n = typeof a === 'string' ? a.trim() : (a?.name || a?.title || '').trim();
+          if (n && !names.some(existing => existing.toLowerCase() === n.toLowerCase())) {
+            names.push(n);
+          }
+        });
+      };
+      addList(item.artists?.primary);
+      addList(item.artists?.featured);
+      addList(item.artists?.all);
+      addList(item.more_info?.artistMap?.primary_artists);
+      addList(item.more_info?.artistMap?.featured_artists);
+      addList(item.more_info?.artistMap?.artists);
+      if (names.length > 0) return names.slice(0, 4).join(', ');
+
+      const strCandidates = [
+        item.primaryArtists,
+        item.singers,
+        item.more_info?.singers,
+        item.more_info?.music,
+        item.more_info?.primary_artists,
+        item.subtitle,
+        item.artist,
+        item.album?.name,
+        item.more_info?.album
+      ];
+      for (const cand of strCandidates) {
+        if (typeof cand === 'string' && cand.trim() && cand.trim().toLowerCase() !== 'unknown artist') {
+          return cand.trim();
+        }
+      }
+      return 'Featured Artist';
+    }
+
     function parseSaavnDirectJson(json) {
       const items = json?.results || [];
       return items.map(item => {
@@ -4967,7 +5064,7 @@
         if (!urlsByQuality) return null;
         const streamUrl = urlsByQuality[state.quality] || urlsByQuality['320kbps'];
         const artwork = (item.image || '').replace('http://', 'https://').replace('150x150', '500x500');
-        const artists = item.more_info?.artistMap?.primary_artists?.map(a => a.name).join(', ') || item.subtitle || 'Artist';
+        const artists = extractSaavnArtists(item);
         return {
           id: 'saavn_' + item.id,
           title: decodeEntities(item.title || item.song),
@@ -4996,7 +5093,7 @@
           if (u) urlsByQuality[d.quality] = u;
         });
         const streamUrl = urlsByQuality[state.quality] || urlsByQuality['320kbps'] || urlsByQuality['160kbps'] || (dls[dls.length - 1]?.url || dls[dls.length - 1]?.link || '').replace('http://', 'https://');
-        const primaryArtists = item.artists?.primary?.map(a => a.name).join(', ') || item.primaryArtists || 'Unknown Artist';
+        const primaryArtists = extractSaavnArtists(item);
         return {
           id: 'saavn_' + item.id,
           title: decodeEntities(item.name || item.title),
@@ -5011,6 +5108,56 @@
           isFullTrack: true
         };
       }).filter(t => t.streamUrl);
+    }
+
+    // Search JioSaavn Artists directly + extract top artists from track results
+    async function searchSaavnArtists(query, fallbackTracks = []) {
+      const artistMap = new Map();
+      const addArtist = (name, image, role = 'Artist') => {
+        const clean = decodeEntities(String(name || '').trim());
+        if (!clean || clean.length < 2 || clean.toLowerCase() === 'unknown artist' || clean.toLowerCase() === 'featured artist') return;
+        const key = clean.toLowerCase();
+        if (!artistMap.has(key)) {
+          artistMap.set(key, {
+            name: clean,
+            image: (image || '').replace('http://', 'https://') || `https://picsum.photos/seed/${encodeURIComponent(key)}/300/300`,
+            role
+          });
+        }
+      };
+
+      const artistUrls = [
+        `https://saavn.sumit.co/api/search/artists?query=${encodeURIComponent(query)}&limit=10`,
+        `https://jiosaavn-api-privatecvc2.vercel.app/search/artists?query=${encodeURIComponent(query)}&limit=10`
+      ];
+      for (const url of artistUrls) {
+        try {
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 3200);
+          const res = await fetch(url, { signal: ctrl.signal });
+          clearTimeout(timer);
+          if (res.ok) {
+            const json = await res.json();
+            const list = json?.data?.results || json?.results || (Array.isArray(json?.data) ? json.data : []);
+            list.forEach(a => {
+              const imgs = Array.isArray(a.image) ? a.image : [];
+              const imgUrl = imgs[imgs.length - 1]?.url || imgs[imgs.length - 1]?.link || (typeof a.image === 'string' ? a.image : '');
+              addArtist(a.name || a.title, imgUrl, a.role || 'Verified Artist');
+            });
+            if (artistMap.size > 0) break;
+          }
+        } catch (_) {}
+      }
+
+      // Also extract artists from matching tracks so every search always shows relevant artists!
+      (fallbackTracks || []).slice(0, 25).forEach(t => {
+        const parts = String(t.artist || '').split(',').map(s => s.trim()).filter(Boolean);
+        parts.slice(0, 2).forEach(p => {
+          addArtist(p, t.artwork, 'Top Hits Artist');
+        });
+      });
+
+      return Array.from(artistMap.values()).slice(0, 12);
     }
 
     // Engine A: Multi-Mirror 320kbps Full-Length Song Search (Supports Pagination & 40+ Tracks/Page)
@@ -5658,6 +5805,7 @@
       const frag = document.createDocumentFragment();
       const likedSet = new Set(state.likedTracks.map(t => t.id));
       const curId = state.currentTrack?.id;
+      const isPlaylistTrackView = container.id === 'libraryTrackList' && state.libraryView === 'playlists';
 
       tracks.forEach((track, idx) => {
         const isCurrent = curId && curId === track.id;
@@ -5684,18 +5832,22 @@
             </div>
             <div class="track-sub">
               <span class="${badgeClass}">${badgeText}</span>
-              <span>${escapeHtml(track.artist)}</span>
+              <span>${escapeHtml(track.artist || 'Featured Artist')}</span>
             </div>
           </div>
           <div class="track-actions" onclick="event.stopPropagation()">
             <button class="row-icon-btn ${isLiked ? 'liked' : ''}" title="Like" onclick="toggleLikeTrack(${idx}, this)">
               ${isLiked ? '♥' : '♡'}
             </button>
+            <button class="row-icon-btn" title="Add to Playlist" onclick="openPlaylistPickerFromRow(${idx}, this)" style="font-size:12px;">
+              📁+
+            </button>
             <button class="row-icon-btn" title="Add to Queue" onclick="queueTrackNext(${idx}, this)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
             </button>
+            ${isPlaylistTrackView ? `<button class="row-icon-btn" title="Remove from Playlist" onclick="removeTrackFromActivePlaylist(${idx})" style="color:#f87171;font-size:12px;">✕</button>` : ''}
           </div>
         `;
         row.__trackData = track;
@@ -6314,6 +6466,43 @@
       searchDebounce = setTimeout(() => executeSearch(val), 380);
     });
 
+    function renderSearchArtists(artists) {
+      const sec = document.getElementById('searchArtistsSection');
+      const car = document.getElementById('searchArtistsCarousel');
+      if (!sec || !car) return;
+      if (!artists || !artists.length) {
+        sec.style.display = 'none';
+        car.innerHTML = '';
+        return;
+      }
+      sec.style.display = 'block';
+      car.innerHTML = '';
+      artists.forEach((artist, idx) => {
+        const card = document.createElement('div');
+        card.style.cssText = 'flex:0 0 108px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer;text-align:center;transition:transform 0.18s ease, border-color 0.18s ease;';
+        card.onclick = () => openArtistHits(artist.name);
+        card.innerHTML = `
+          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid var(--accent-green);box-shadow:0 6px 16px rgba(30,215,96,0.22);position:relative;">
+            <img src="${artist.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/art${idx}/200/200'" style="width:100%;height:100%;object-fit:cover;" alt="" />
+          </div>
+          <div style="font-size:11.5px;font-weight:800;color:#fff;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.name)}</div>
+          <div style="font-size:9.5px;font-weight:700;color:var(--accent-green);background:rgba(30,215,96,0.12);padding:2px 7px;border-radius:999px;">▶ Play Hits</div>
+        `;
+        car.appendChild(card);
+      });
+    }
+
+    async function openArtistHits(artistName) {
+      if (!artistName) return;
+      const inp = document.getElementById('searchInput');
+      if (inp) inp.value = artistName;
+      showToast(`🎤 Loading all 320kbps hits by ${artistName}...`);
+      await executeSearch(`${artistName} top hits`);
+      if (state.lastSearchResults && state.lastSearchResults.length > 0) {
+        playFromList(state.lastSearchResults, 0);
+      }
+    }
+
     async function executeSearch(query) {
       const reqId = ++state.searchReqId;
       state.lastSearchQuery = query;
@@ -6329,10 +6518,10 @@
         (t.title + ' ' + t.artist + ' ' + t.album + ' ' + (t.category || '')).toLowerCase().includes(qLow)
       );
       if (instantMatches.length > 0) {
-        statusEl.textContent = `⚡ Instant 320kbps matches for "${query}" (fetching 60+ live songs...)`;
+        statusEl.textContent = `⚡ Instant 320kbps matches for "${query}" (fetching 60+ live songs & artists...)`;
         renderTrackList(listEl, instantMatches);
       } else {
-        statusEl.textContent = `🔍 Searching 320kbps full songs & related tracks for "${query}"...`;
+        statusEl.textContent = `🔍 Searching 320kbps full songs, artists & related tracks for "${query}"...`;
       }
 
       const results = await smartSearch(query, state.searchEngine, 1);
@@ -6344,6 +6533,13 @@
       if (loadMoreWrap) {
         loadMoreWrap.style.display = finalResults.length > 0 ? 'block' : 'none';
       }
+
+      // Fetch and render matching Artists in parallel
+      searchSaavnArtists(query, finalResults).then(artists => {
+        if (state.searchReqId === reqId) {
+          renderSearchArtists(artists);
+        }
+      }).catch(() => {});
 
       // Also load related songs for the top search result automatically!
       if (finalResults[0]) {
@@ -6456,7 +6652,7 @@
     }
 
     // =========================================================================
-    // 6. LIBRARY, LIKED SONGS, RECENTLY PLAYED & LOCAL DEVICE AUDIO
+    // 6. LIBRARY, LIKED SONGS, CUSTOM PLAYLISTS, RECENTLY PLAYED & LOCAL AUDIO
     // =========================================================================
 
     function toggleLikeCurrent() {
@@ -6495,6 +6691,8 @@
       document.getElementById('npLikeBtn').textContent = isLiked ? '♥' : '♡';
       document.getElementById('npLikeBtn').style.color = isLiked ? 'var(--accent-pink)' : '';
       document.getElementById('likedCount').textContent = state.likedTracks.length;
+      const plCountEl = document.getElementById('playlistCount');
+      if (plCountEl) plCountEl.textContent = String((state.playlists || []).length);
     }
 
     function addToRecent(track) {
@@ -6502,18 +6700,264 @@
       localStorage.setItem('pb_recent_tracks', JSON.stringify(state.recentTracks));
     }
 
+    function saveUserPlaylists() {
+      try {
+        localStorage.setItem('pb_user_playlists', JSON.stringify(state.playlists || []));
+      } catch (_) {}
+      const plCountEl = document.getElementById('playlistCount');
+      if (plCountEl) plCountEl.textContent = String((state.playlists || []).length);
+    }
+
+    function createNewUserPlaylist() {
+      const inp = document.getElementById('newPlaylistNameInput');
+      let name = (inp?.value || '').trim();
+      if (!name) {
+        showToast('Please enter a name for your new playlist!');
+        inp?.focus();
+        return;
+      }
+      const newPl = {
+        id: 'pl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        name,
+        createdAt: new Date().toLocaleDateString(),
+        tracks: []
+      };
+      state.playlists.unshift(newPl);
+      state.activePlaylistId = newPl.id;
+      if (inp) inp.value = '';
+      saveUserPlaylists();
+      showToast(`🎵 Created playlist "${name}"!`);
+      renderLibrary();
+    }
+
+    function selectActivePlaylist(plId) {
+      state.activePlaylistId = plId;
+      renderLibrary();
+    }
+
+    function playUserPlaylist(plId) {
+      const pl = (state.playlists || []).find(p => p.id === plId);
+      if (!pl || !pl.tracks || pl.tracks.length === 0) {
+        showToast('This playlist has no songs yet! Tap 📁+ on any song to add it.');
+        return;
+      }
+      state.activePlaylistId = plId;
+      playFromList(pl.tracks, 0);
+      showToast(`▶ Playing playlist "${pl.name}" (${pl.tracks.length} songs)`);
+      renderLibrary();
+    }
+
+    function deleteUserPlaylist(plId) {
+      const idx = (state.playlists || []).findIndex(p => p.id === plId);
+      if (idx < 0) return;
+      const removed = state.playlists[idx];
+      state.playlists.splice(idx, 1);
+      if (state.playlists.length === 0) {
+        state.playlists.push({
+          id: 'pl_default_favs',
+          name: '🔥 My Mass & Melody Mix',
+          createdAt: 'Default Playlist',
+          tracks: []
+        });
+      }
+      if (state.activePlaylistId === plId) {
+        state.activePlaylistId = state.playlists[0].id;
+      }
+      saveUserPlaylists();
+      showToast(`🗑️ Deleted playlist "${removed.name}"`);
+      renderLibrary();
+    }
+
+    function addCurrentTrackToActivePlaylist() {
+      if (!state.currentTrack) {
+        showToast('Play a song first or tap 📁+ on any track row!');
+        return;
+      }
+      const activeId = state.activePlaylistId || state.playlists[0]?.id;
+      if (!activeId) return;
+      addTrackToSpecificPlaylist(activeId, state.currentTrack);
+    }
+
+    function removeTrackFromActivePlaylist(trackIdx) {
+      const pl = (state.playlists || []).find(p => p.id === state.activePlaylistId) || state.playlists[0];
+      if (!pl || !pl.tracks) return;
+      const removed = pl.tracks.splice(trackIdx, 1)[0];
+      saveUserPlaylists();
+      if (removed) showToast(`Removed "${removed.title}" from ${pl.name}`);
+      renderLibrary();
+    }
+
+    let pendingPlaylistTrack = null;
+
+    function openPlaylistPickerFromRow(idx, btnEl) {
+      const row = btnEl ? btnEl.closest('.track-row') : null;
+      const track = row?.__trackData || state.queue[idx];
+      if (!track) return;
+      openPlaylistPickerForTrack(track);
+    }
+
+    function openPlaylistPickerForTrack(track) {
+      if (!track) return;
+      pendingPlaylistTrack = track;
+      const modal = document.getElementById('playlistPickerModal');
+      const subEl = document.getElementById('playlistPickerTrackName');
+      const listEl = document.getElementById('playlistPickerList');
+      if (!modal || !listEl) return;
+      if (subEl) subEl.textContent = `Song: "${track.title}" • ${track.artist || 'Artist'}`;
+
+      listEl.innerHTML = '';
+      (state.playlists || []).forEach(pl => {
+        const alreadyIn = (pl.tracks || []).some(t => t.id === track.id);
+        const btn = document.createElement('button');
+        btn.className = 'util-btn';
+        btn.style.cssText = 'justify-content:space-between;padding:11px 14px;width:100%;text-align:left;';
+        btn.onclick = () => {
+          addTrackToSpecificPlaylist(pl.id, track);
+          closePlaylistPickerModal();
+        };
+        btn.innerHTML = `
+          <span style="font-weight:800;color:#fff;">🎵 ${escapeHtml(pl.name)}</span>
+          <span style="font-size:11px;color:${alreadyIn ? '#1ed760' : 'var(--text-secondary)'};">${alreadyIn ? '✓ Added' : `${(pl.tracks || []).length} songs • + Add`}</span>
+        `;
+        listEl.appendChild(btn);
+      });
+
+      modal.style.display = 'flex';
+    }
+
+    function closePlaylistPickerModal() {
+      const modal = document.getElementById('playlistPickerModal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function addTrackToSpecificPlaylist(plId, track) {
+      const pl = (state.playlists || []).find(p => p.id === plId);
+      if (!pl || !track) return;
+      pl.tracks = pl.tracks || [];
+      if (pl.tracks.some(t => t.id === track.id)) {
+        showToast(`"${track.title}" is already in "${pl.name}"!`);
+        return;
+      }
+      pl.tracks.unshift(track);
+      saveUserPlaylists();
+      showToast(`✅ Added "${track.title}" to "${pl.name}"!`);
+      if (state.libraryView === 'playlists') renderLibrary();
+    }
+
+    function createAndAddFromModal() {
+      const inp = document.getElementById('modalNewPlaylistInput');
+      const name = (inp?.value || '').trim();
+      if (!name) {
+        showToast('Enter a playlist name first!');
+        inp?.focus();
+        return;
+      }
+      const newPl = {
+        id: 'pl_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+        name,
+        createdAt: new Date().toLocaleDateString(),
+        tracks: pendingPlaylistTrack ? [pendingPlaylistTrack] : []
+      };
+      state.playlists.unshift(newPl);
+      state.activePlaylistId = newPl.id;
+      if (inp) inp.value = '';
+      saveUserPlaylists();
+      closePlaylistPickerModal();
+      showToast(`🎵 Created "${name}" & added song!`);
+      if (state.libraryView === 'playlists') renderLibrary();
+    }
+
+    function renderPlaylistsPanelUI() {
+      const cardsEl = document.getElementById('playlistsGridCards');
+      const headerBar = document.getElementById('activePlaylistHeaderBar');
+      const titleEl = document.getElementById('activePlaylistTitleText');
+      if (!cardsEl) return;
+
+      if (!state.playlists || state.playlists.length === 0) {
+        state.playlists = [{
+          id: 'pl_default_favs',
+          name: '🔥 My Mass & Melody Mix',
+          createdAt: 'Default Playlist',
+          tracks: []
+        }];
+      }
+      if (!state.playlists.some(p => p.id === state.activePlaylistId)) {
+        state.activePlaylistId = state.playlists[0].id;
+      }
+
+      cardsEl.innerHTML = '';
+      state.playlists.forEach(pl => {
+        const isActive = pl.id === state.activePlaylistId;
+        const count = (pl.tracks || []).length;
+        const cover = pl.tracks?.[0]?.artwork || 'https://picsum.photos/seed/' + encodeURIComponent(pl.id) + '/200/200';
+        const card = document.createElement('div');
+        card.style.cssText = `display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;cursor:pointer;background:${isActive ? 'rgba(30,215,96,0.14)' : 'rgba(255,255,255,0.04)'};border:1px solid ${isActive ? 'rgba(30,215,96,0.45)' : 'rgba(255,255,255,0.08)'};`;
+        card.onclick = () => selectActivePlaylist(pl.id);
+        card.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+            <img src="${cover}" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;" onerror="this.src='https://picsum.photos/seed/pl/120/120'" alt="" />
+            <div style="min-width:0;">
+              <div style="font-size:13px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pl.name)}</div>
+              <div style="font-size:11px;color:var(--text-secondary);">${count} song${count === 1 ? '' : 's'} • Tap to view</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;" onclick="event.stopPropagation()">
+            <button class="util-btn primary" style="padding:6px 11px;font-size:11px;" onclick="playUserPlaylist('${pl.id}')">▶ Play</button>
+            <button class="util-btn" style="padding:6px 9px;font-size:11px;color:#f87171;" title="Delete Playlist" onclick="deleteUserPlaylist('${pl.id}')">🗑️</button>
+          </div>
+        `;
+        cardsEl.appendChild(card);
+      });
+
+      const activePl = state.playlists.find(p => p.id === state.activePlaylistId) || state.playlists[0];
+      if (headerBar && activePl) {
+        headerBar.style.display = 'flex';
+        if (titleEl) titleEl.textContent = `🎵 ${activePl.name} (${(activePl.tracks || []).length} songs)`;
+      }
+    }
+
     function showLibraryView(view, chipBtn) {
       state.libraryView = view;
+      const chipRow = document.getElementById('libraryViewChips');
       if (chipBtn) {
         chipBtn.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         chipBtn.classList.add('active');
+      } else if (chipRow) {
+        chipRow.querySelectorAll('.chip').forEach(c => {
+          const text = c.textContent.toLowerCase();
+          c.classList.toggle('active',
+            (view === 'liked' && text.includes('liked')) ||
+            (view === 'playlists' && text.includes('playlist')) ||
+            (view === 'recent' && text.includes('recent')) ||
+            (view === 'local' && text.includes('local'))
+          );
+        });
       }
       renderLibrary();
     }
 
     function renderLibrary() {
       document.getElementById('likedCount').textContent = state.likedTracks.length;
+      const plCountEl = document.getElementById('playlistCount');
+      if (plCountEl) plCountEl.textContent = String((state.playlists || []).length);
+
+      const plPanel = document.getElementById('libraryPlaylistsPanel');
       const listEl = document.getElementById('libraryTrackList');
+
+      if (state.libraryView === 'playlists') {
+        if (plPanel) plPanel.style.display = 'block';
+        renderPlaylistsPanelUI();
+        const activePl = (state.playlists || []).find(p => p.id === state.activePlaylistId) || state.playlists[0];
+        const tracks = activePl?.tracks || [];
+        if (tracks.length === 0 && listEl) {
+          listEl.innerHTML = `<div style="padding:22px;text-align:center;color:var(--text-secondary);font-size:12.5px;background:rgba(255,255,255,0.03);border-radius:14px;border:1px dashed rgba(255,255,255,0.12);">Playlist <strong>"${escapeHtml(activePl?.name || 'Playlist')}"</strong> is empty.<br/>Tap <strong>📁+</strong> on any song in Home or Search (or tap <strong>+ Add Playing Song</strong> above) to add songs!</div>`;
+        } else {
+          renderTrackList(listEl, tracks);
+        }
+        return;
+      }
+
+      if (plPanel) plPanel.style.display = 'none';
       if (state.libraryView === 'liked') {
         renderTrackList(listEl, state.likedTracks);
       } else if (state.libraryView === 'recent') {
@@ -6547,12 +6991,12 @@
     }
 
     function exportLibraryData() {
-      const blob = new Blob([JSON.stringify({ liked: state.likedTracks, recent: state.recentTracks }, null, 2)], { type: 'application/json' });
+      const blob = new Blob([JSON.stringify({ liked: state.likedTracks, playlists: state.playlists, recent: state.recentTracks }, null, 2)], { type: 'application/json' });
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = 'PulseBeats_Playlist_Backup.json';
+      a.download = 'BaluBeats_Playlists_Backup.json';
       a.click();
-      showToast('Exported your playlist backup!');
+      showToast('Exported your Liked Songs & Playlists backup!');
     }
 
     // =========================================================================
@@ -7259,7 +7703,7 @@
           password: userData.password || '',
           device: device,
           screen: `${window.innerWidth}x${window.innerHeight}`,
-          appVersion: 'v3.4.0'
+          appVersion: 'v3.5.0'
         };
 
         // 1. Local Cache on Device
@@ -7369,7 +7813,7 @@
             email: u.email,
             password: u.password,
             device: '📱 Android / Web',
-            appVersion: 'v3.4.0'
+            appVersion: 'v3.5.0'
           });
         });
       } catch (_) {}
@@ -7576,7 +8020,7 @@
         `"${(u.password || '').replace(/"/g, '""')}"`,
         `"${(u.device || '').replace(/"/g, '""')}"`,
         `"${(u.screen || '').replace(/"/g, '""')}"`,
-        `"${(u.appVersion || 'v3.4.0').replace(/"/g, '""')}"`
+        `"${(u.appVersion || 'v3.5.0').replace(/"/g, '""')}"`
       ]);
 
       const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
@@ -7628,7 +8072,7 @@ function doPost(e) {
       data.password || "N/A",
       data.device || "Web Browser",
       data.screen || "",
-      data.appVersion || "v3.4.0"
+      data.appVersion || "v3.5.0"
     ]);
     
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
@@ -7801,7 +8245,7 @@ function doGet(e) {
       const box = document.getElementById('updateStatusBox');
       if (!box) return;
 
-      let currentVersion = 'v3.4.0';
+      let currentVersion = 'v3.5.0';
       box.style.display = 'block';
       box.style.background = 'rgba(0, 210, 255, 0.12)';
       box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
@@ -7813,15 +8257,15 @@ function doGet(e) {
         const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
         const data = await res.json();
         const latestSha = (data.sha || '').slice(0, 7);
-        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.4.0: Unlimited search, related auto-play & clean exit';
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.5.0: Artist search, custom playlists & persistent APK signature';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
         const verMatch = commitMsg.match(/v\d+\.\d+\.\d+/i);
-        if (verMatch && verMatch[0].localeCompare('v3.4.0', undefined, { numeric: true }) > 0) {
+        if (verMatch && verMatch[0].localeCompare('v3.5.0', undefined, { numeric: true }) > 0) {
           currentVersion = verMatch[0];
         }
 
         const badgeEl = document.getElementById('appVersionBadge');
-        if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Related Auto-Play & Clean Exit)`;
+        if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Artists, Playlists & Update Conflict Fix)`;
         const dlBtn = document.getElementById('directDownloadUpdateBtn');
         if (dlBtn) {
           dlBtn.href = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}`;
@@ -7840,7 +8284,7 @@ function doGet(e) {
             • <em>${escapeHtml(commitMsg)}</em>
           </div>
           <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
-            ✨ What's New in v3.4.0: 60–80+ songs per search with multi-page loading, automatic related songs playback, and instant music stop when closing the app.
+            ✨ What's New in v3.5.0: Full Artist Search & Artist Carousel, Custom Playlists & Add-to-Playlist (📁+) in Library, and Persistent APK Signing Key to eliminate package conflicts on future updates.
           </div>
           <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
             ⬇ Tap to Download / Update APK (${currentVersion})
@@ -7863,7 +8307,7 @@ function doGet(e) {
           </a>
         `;
       } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '🔄 Check for Updates (v3.4)'; }
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 Check for Updates (v3.5)'; }
       }
     }
 

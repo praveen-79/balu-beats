@@ -96,8 +96,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="10"
-              android:versionName="3.4.0">
+              android:versionCode="11"
+              android:versionName="3.5.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
               <uses-permission android:name="android.permission.INTERNET" />
@@ -899,13 +899,15 @@ jobs:
           # 4. Add classes.dex to unsigned.apk
           cd build/apk && zip -uj ../unsigned.apk classes.dex && cd ../..
 
-          # 5. Align and Sign APK (v1 + v2 + v3 signatures)
+          # 5. Align and Sign APK (v1 + v2 + v3 signatures using persistent release.keystore so updates never conflict)
           $BUILD_TOOLS_DIR/zipalign -f -p 4 build/unsigned.apk build/aligned.apk
-          keytool -genkeypair -v -keystore build/release.keystore -alias balubeats \
-            -keyalg RSA -keysize 2048 -validity 10000 \
-            -storepass balubeats123 -keypass balubeats123 \
-            -dname "CN=Balu Beats, OU=Music, O=Praveen, L=Hyderabad, ST=TS, C=IN"
-          $BUILD_TOOLS_DIR/apksigner sign --ks build/release.keystore \
+          if [ ! -f release.keystore ]; then
+            keytool -genkeypair -v -keystore release.keystore -alias balubeats \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass balubeats123 -keypass balubeats123 \
+              -dname "CN=Balu Beats, OU=Music, O=Praveen, L=Hyderabad, ST=TS, C=IN"
+          fi
+          $BUILD_TOOLS_DIR/apksigner sign --ks release.keystore \
             --ks-pass pass:balubeats123 --key-pass pass:balubeats123 \
             --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true \
             --out Balu_Beats.apk build/aligned.apk
@@ -920,5 +922,5 @@ jobs:
           gh release upload v1.0.0 Balu_Beats.apk Balu_Beats_App.html --clobber
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add Balu_Beats.apk Balu_Beats_App.html
-          git diff --staged --quiet || (git commit -m "chore: sync compiled v3.4.0 Balu_Beats.apk [skip ci]" && git push origin HEAD:main)
+          git add Balu_Beats.apk Balu_Beats_App.html release.keystore
+          git diff --staged --quiet || (git commit -m "chore: sync compiled v3.5.0 Balu_Beats.apk [skip ci]" && git push origin HEAD:main)
