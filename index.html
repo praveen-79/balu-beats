@@ -1744,6 +1744,27 @@
 <body>
   <div id="toast" class="toast">Ready to play!</div>
 
+  <!-- ================= CREATOR BROADCAST ANNOUNCEMENT BANNER ================= -->
+  <div id="creatorBroadcastBanner" style="display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:linear-gradient(135deg,#161b22,#0d1117);border:1.5px solid #1ed760;box-shadow:0 12px 35px rgba(0,0,0,0.8),0 0 25px rgba(30,215,96,0.3);border-radius:16px;padding:14px 16px;z-index:99999;color:#fff;">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1ed760,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">
+        📢
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+          <span style="font-size:11px;font-weight:800;color:#1ed760;text-transform:uppercase;letter-spacing:0.5px;">👑 Balu Announcement (@being_rebel__7)</span>
+          <button onclick="dismissCreatorBroadcast()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:0 4px;">✕</button>
+        </div>
+        <h4 id="broadcastTitle" style="font-size:14px;font-weight:900;margin:0 0 4px 0;color:#fff;"></h4>
+        <p id="broadcastMsg" style="font-size:12.5px;color:#cbd5e1;line-height:1.4;margin:0 0 10px 0;"></p>
+        <div style="display:flex;gap:8px;" id="broadcastActions">
+          <a id="broadcastActionBtn" href="download.html" class="util-btn primary" style="padding:6px 14px;font-size:11.5px;text-decoration:none;font-weight:800;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;border-radius:8px;">⬇️ Update App Now</a>
+          <button onclick="dismissCreatorBroadcast()" class="util-btn" style="padding:6px 12px;font-size:11.5px;border-radius:8px;background:rgba(255,255,255,0.06);color:#fff;">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div id="workspaceShell" class="workspace-shell phone-mode">
     <!-- Top Desktop Utility Bar -->
     <div class="desktop-bar">
@@ -7405,6 +7426,97 @@ function doGet(e) {
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
+    // =========================================================================
+    // CREATOR LIVE BROADCAST LISTENER (ntfy.sh / Admin Announcements)
+    // =========================================================================
+    let currentBroadcastId = null;
+
+    function dismissCreatorBroadcast() {
+      const banner = document.getElementById('creatorBroadcastBanner');
+      if (banner) banner.style.display = 'none';
+      if (currentBroadcastId) {
+        localStorage.setItem('bb_seen_broadcast_' + currentBroadcastId, 'true');
+      }
+    }
+
+    function showCreatorBroadcast(item) {
+      if (!item || !item.message) return;
+      const msg = item.message.trim();
+      const title = item.title || '';
+      // Filter out internal telemetry logs
+      if (msg.includes('DATA:') || title.includes('Balu Beats:') || msg.startsWith('👤 User:') || title.includes('Telemetry')) {
+        return;
+      }
+      if (localStorage.getItem('bb_seen_broadcast_' + item.id)) return;
+      currentBroadcastId = item.id;
+
+      const titleEl = document.getElementById('broadcastTitle');
+      const msgEl = document.getElementById('broadcastMsg');
+      const banner = document.getElementById('creatorBroadcastBanner');
+      const actionBtn = document.getElementById('broadcastActionBtn');
+      if (!banner || !titleEl || !msgEl) return;
+
+      titleEl.textContent = title || 'Announcement from Balu';
+      msgEl.textContent = msg;
+
+      const isUpdate = (title + ' ' + msg).toLowerCase().includes('update');
+      if (actionBtn) {
+        actionBtn.style.display = isUpdate ? 'inline-flex' : 'none';
+        actionBtn.href = 'download.html';
+      }
+
+      banner.style.display = 'block';
+
+      // System notification if permission granted
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(title || 'Balu Beats Announcement', {
+            body: msg,
+            icon: 'icon-192.png'
+          });
+        } catch (_) {}
+      }
+    }
+
+    async function checkCreatorBroadcasts() {
+      try {
+        const res = await fetch('https://ntfy.sh/balubeats_telemetry_being_rebel_7/json?poll=1', { cache: 'no-store' });
+        if (!res.ok) return;
+        const text = await res.text();
+        const lines = text.trim().split('\n');
+        for (let i = lines.length - 1; i >= 0; i--) {
+          const line = lines[i];
+          if (!line.trim()) continue;
+          try {
+            const item = JSON.parse(line);
+            if (item.event === 'message') {
+              const msg = (item.message || '').trim();
+              const title = item.title || '';
+              const isTelemetry = msg.includes('DATA:') || title.includes('Balu Beats:') || msg.startsWith('👤 User:') || title.includes('Telemetry');
+              if (!isTelemetry) {
+                showCreatorBroadcast(item);
+                break;
+              }
+            }
+          } catch (_) {}
+        }
+      } catch (_) {}
+    }
+
+    function listenCreatorBroadcastStream() {
+      try {
+        const es = new EventSource('https://ntfy.sh/balubeats_telemetry_being_rebel_7/sse');
+        es.onmessage = (e) => {
+          try {
+            const item = JSON.parse(e.data);
+            if (item.event === 'message') {
+              showCreatorBroadcast(item);
+            }
+          } catch (_) {}
+        };
+      } catch (_) {}
+    }
+
     // Initialize App on Load
     window.addEventListener('DOMContentLoaded', () => {
       if (window.AndroidBridge || location.protocol === 'file:' || window.matchMedia?.('(display-mode: standalone)')?.matches) {
@@ -7414,6 +7526,15 @@ function doGet(e) {
       applyCreatorBranding();
       renderUserAccountUI();
       refreshDeveloperTelemetry(false);
+      checkCreatorBroadcasts();
+      listenCreatorBroadcastStream();
+
+      // Request notification permission smoothly
+      if ('Notification' in window && Notification.permission === 'default') {
+        setTimeout(() => {
+          Notification.requestPermission().catch(() => {});
+        }, 8000);
+      }
 
       const activeUser = getActiveUserSession();
       // Instantly record user arrival or visitor from WhatsApp link
