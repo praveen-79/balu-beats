@@ -10,10 +10,10 @@
       min-height: 100vh;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background:
-        radial-gradient(circle at 20% 10%, rgba(30, 215, 96, 0.22), transparent 45%),
-        radial-gradient(circle at 80% 85%, rgba(236, 72, 153, 0.18), transparent 45%),
-        #07080d;
-      color: #f7f8fc;
+        radial-gradient(ellipse at 82% 6%, rgba(235, 238, 245, 0.20) 0%, rgba(160, 165, 178, 0.08) 34%, transparent 62%),
+        radial-gradient(circle at 18% 88%, rgba(95, 100, 114, 0.14) 0%, transparent 55%),
+        linear-gradient(168deg, #16171b 0%, #0b0c0e 48%, #040406 100%);
+      color: #f4f5f8;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -22,12 +22,13 @@
     .store-card {
       width: 100%;
       max-width: 480px;
-      background: rgba(17, 19, 28, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 28px;
+      background: linear-gradient(155deg, rgba(46, 48, 55, 0.76) 0%, rgba(22, 23, 27, 0.92) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 30px;
       padding: 28px 24px;
-      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
-      backdrop-filter: blur(20px);
+      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
     }
     .app-header {
       display: flex;
@@ -38,16 +39,17 @@
     .app-icon {
       width: 78px;
       height: 78px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #1ed760, #00d2ff);
+      border-radius: 22px;
+      background: linear-gradient(145deg, #f3f5f9, #b8beca);
+      border: 1px solid rgba(255, 255, 255, 0.55);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #041208;
+      color: #090a0d;
       font-size: 38px;
       font-weight: 900;
       flex-shrink: 0;
-      box-shadow: 0 10px 28px rgba(30, 215, 96, 0.35);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 #ffffff;
     }
     .app-title-box h1 {
       font-size: 24px;
@@ -58,7 +60,7 @@
     .dev-name {
       font-size: 13px;
       font-weight: 700;
-      color: #1ed760;
+      color: #d4d8e2;
       margin-bottom: 4px;
     }
     .verified-pill {
@@ -67,23 +69,23 @@
       gap: 4px;
       font-size: 11px;
       font-weight: 700;
-      padding: 2px 8px;
+      padding: 2px 9px;
       border-radius: 999px;
-      background: rgba(30, 215, 96, 0.14);
-      color: #1ed760;
-      border: 1px solid rgba(30, 215, 96, 0.35);
+      background: rgba(255, 255, 255, 0.10);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.26);
     }
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       padding: 12px 0;
       margin-bottom: 20px;
       text-align: center;
     }
     .stat-box {
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 1px solid rgba(255, 255, 255, 0.12);
     }
     .stat-box:last-child { border-right: none; }
     .stat-val {
@@ -93,7 +95,7 @@
     }
     .stat-lbl {
       font-size: 11px;
-      color: #9ca3bd;
+      color: #9da2ae;
       margin-top: 2px;
     }
     .btn {
@@ -114,32 +116,32 @@
     }
     .btn:hover { transform: translateY(-2px); filter: brightness(1.07); }
     .btn-install {
-      background: linear-gradient(135deg, #1ed760, #10b981);
-      color: #041208;
-      box-shadow: 0 8px 25px rgba(30, 215, 96, 0.35);
+      background: linear-gradient(135deg, #ffffff, #d6dae4);
+      color: #090a0d;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75), inset 0 1px 0 #ffffff;
     }
     .btn-secondary {
-      background: #191c29;
+      background: rgba(34, 36, 42, 0.78);
       color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.20);
       font-size: 13.5px;
       padding: 12px 16px;
     }
     .btn-ig {
-      background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.2));
-      color: #f9a8d4;
-      border: 1px solid rgba(236, 72, 153, 0.45);
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.22);
       font-size: 13px;
       padding: 11px 16px;
     }
     .info-section {
       margin-top: 16px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      border-radius: 16px;
+      background: rgba(20, 21, 25, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 18px;
       padding: 14px;
       font-size: 12.5px;
-      color: #cbd5e1;
+      color: #d1d5db;
       line-height: 1.5;
     }
     .info-section h3 {
@@ -154,16 +156,16 @@
       gap: 8px;
       margin-top: 10px;
       font-size: 11.5px;
-      color: #9ca3bd;
+      color: #9da2ae;
     }
     .meta-grid strong { color: #f7f8fc; display: block; }
     .qr-box {
       margin-top: 16px;
       padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
       text-align: center;
       font-size: 12px;
-      color: #9ca3bd;
+      color: #9da2ae;
     }
     .qr-box img {
       margin-top: 8px;
@@ -182,7 +184,7 @@
       <div class="app-title-box">
         <h1>Balu Beats</h1>
         <div class="dev-name">Balu • 𝔓𝔯𝔞𝔳𝔢𝔢𝔫 (@being_rebel__7)</div>
-        <span class="verified-pill">✓ Verified Android APK • Safe to Install</span>
+        <span class="verified-pill">✓ Verified Android APK • Smoked-Glass Edition</span>
       </div>
     </div>
 
@@ -192,7 +194,7 @@
         <div class="stat-lbl">Rating</div>
       </div>
       <div class="stat-box">
-        <div class="stat-val">140+ HD</div>
+        <div class="stat-val">151+ HD</div>
         <div class="stat-lbl">320kbps Songs</div>
       </div>
       <div class="stat-box">
@@ -202,17 +204,17 @@
     </div>
 
     <!-- Primary Direct Android APK Download Button -->
-    <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="btn btn-install">
+    <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2" download="Balu_Beats_v3.5.apk" class="btn btn-install">
       ⬇ Download APK v3.5.0 (Balu_Beats.apk)
     </a>
 
     <!-- Mirror APK Link -->
-    <a href="./Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="btn btn-secondary">
+    <a href="./Balu_Beats.apk?v=3.5.2" download="Balu_Beats_v3.5.apk" class="btn btn-secondary">
       📦 Direct Mirror Download (Balu_Beats.apk)
     </a>
 
     <!-- Launch Web / iOS Version -->
-    <a href="https://praveen-79.github.io/balu-beats/" class="btn btn-secondary" style="border-color:rgba(30,215,96,0.4);color:#1ed760;">
+    <a href="https://praveen-79.github.io/balu-beats/" class="btn btn-secondary" style="border-color:rgba(255,255,255,0.34);color:#ffffff;">
       ▶ Open Web App (No Vercel Login • Instant Access)
     </a>
 
@@ -223,10 +225,10 @@
     <div class="info-section">
       <h3>📲 What's New in v3.5.0 (.APK)</h3>
       <p>
+        • <strong>Dark Smoked-Glass & 3D Coverflow Theme:</strong> Deep obsidian & charcoal-ash glass UI, frosted silver-rim cards, pill-shaped mini-player dock, and 5-card 3D fanned coverflow stack.<br/>
         • <strong>Artist Search & Artist Profiles Fixed:</strong> Multi-field artist extraction + dedicated "🎤 Matching Artists" carousel in Search.<br/>
         • <strong>Custom Playlists in Library:</strong> Create playlists in Library and tap <code>📁+</code> on any song to add it to a playlist.<br/>
-        • <strong>APK Package Conflict Fix:</strong> Persistent RSA release signature so future APK updates install cleanly over existing builds.<br/>
-        • <strong>60–80+ Songs Search, Related Auto-Play & Clean Exit:</strong> Instant music stop when closing the app.
+        • <strong>APK Package Conflict Fix:</strong> Persistent RSA release signature so APK updates install cleanly over existing builds.
       </p>
       <div class="meta-grid">
         <div><strong>Package Name</strong>com.balubeats.music</div>

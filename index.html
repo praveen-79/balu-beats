@@ -14,26 +14,26 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
   <style>
     :root {
-      --bg-deep: #07080d;
-      --bg-surface: #11131c;
-      --bg-elevated: #191c29;
-      --bg-glass: rgba(20, 23, 34, 0.82);
-      --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-highlight: rgba(255, 255, 255, 0.16);
-      --text-primary: #f7f8fc;
-      --text-secondary: #9ca3bd;
-      --text-muted: #636b85;
+      --bg-deep: #060608;
+      --bg-surface: rgba(26, 27, 31, 0.74);
+      --bg-elevated: rgba(40, 42, 48, 0.72);
+      --bg-glass: rgba(28, 30, 35, 0.78);
+      --border-subtle: rgba(255, 255, 255, 0.14);
+      --border-highlight: rgba(255, 255, 255, 0.28);
+      --text-primary: #f5f6f8;
+      --text-secondary: #b0b4c0;
+      --text-muted: #717582;
       --accent-green: #1ed760;
       --accent-green-dark: #159e45;
-      --accent-cyan: #00d2ff;
-      --accent-purple: #8b5cf6;
-      --accent-pink: #ec4899;
-      --accent-amber: #f59e0b;
+      --accent-cyan: #d8dce6;
+      --accent-purple: #9ca3af;
+      --accent-pink: #f43f5e;
+      --accent-amber: #e5e7eb;
       --danger: #ef4444;
-      --dynamic-glow: rgba(30, 215, 96, 0.28);
-      --radius-sm: 10px;
-      --radius-md: 16px;
-      --radius-lg: 24px;
+      --dynamic-glow: rgba(220, 225, 235, 0.20);
+      --radius-sm: 12px;
+      --radius-md: 18px;
+      --radius-lg: 26px;
       --radius-full: 9999px;
       --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
@@ -65,9 +65,9 @@
       align-items: center;
       justify-content: center;
       background:
-        radial-gradient(circle at 20% 20%, var(--dynamic-glow), transparent 45%),
-        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.18), transparent 45%),
-        #05060a;
+        radial-gradient(ellipse at 75% 10%, rgba(220, 225, 236, 0.18), transparent 48%),
+        radial-gradient(circle at 20% 80%, rgba(90, 95, 110, 0.16), transparent 50%),
+        #040406;
       transition: background 0.6s ease;
     }
 
@@ -96,9 +96,9 @@
       font-size: 11px;
       padding: 3px 8px;
       border-radius: var(--radius-full);
-      background: rgba(30, 215, 96, 0.15);
-      color: var(--accent-green);
-      border: 1px solid rgba(30, 215, 96, 0.3);
+      background: rgba(255, 255, 255, 0.09);
+      color: #e5e7eb;
+      border: 1px solid rgba(255, 255, 255, 0.22);
       font-weight: 600;
     }
 
@@ -113,7 +113,9 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.07);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       color: var(--text-primary);
       border: 1px solid var(--border-subtle);
       padding: 7px 13px;
@@ -125,32 +127,46 @@
     }
 
     .util-btn:hover {
-      background: rgba(255, 255, 255, 0.13);
+      background: rgba(255, 255, 255, 0.15);
       border-color: var(--border-highlight);
       transform: translateY(-1px);
     }
 
     .util-btn.primary {
-      background: linear-gradient(135deg, var(--accent-green), #10b981);
-      color: #041208;
-      border-color: transparent;
-      font-weight: 700;
+      background: linear-gradient(135deg, #f8fafc, #cbd5e1);
+      color: #090a0d;
+      border-color: rgba(255, 255, 255, 0.5);
+      font-weight: 800;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
     }
 
     .util-btn.primary:hover {
-      filter: brightness(1.08);
+      filter: brightness(1.06);
     }
 
-    /* Mobile App Device Container */
+    /* Mobile App Device Container — Dark Smoked Charcoal-Ash & Silver Spotlight Theme */
     .phone-frame {
       position: relative;
       width: 100%;
       height: 100%;
-      background: var(--bg-deep);
+      background:
+        radial-gradient(ellipse at 82% 4%, rgba(235, 238, 245, 0.22) 0%, rgba(155, 160, 172, 0.09) 34%, transparent 64%),
+        radial-gradient(circle at 15% 38%, rgba(85, 89, 100, 0.15) 0%, transparent 55%),
+        linear-gradient(180deg, #17181c 0%, #0c0d10 46%, #050507 100%);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Subtle frosted matte grain overlay matching the reference image texture */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.04), transparent 70%);
+      pointer-events: none;
+      z-index: 1;
     }
 
     /* On larger screens, default to sleek mobile frame unless full-width mode is active */
@@ -159,19 +175,19 @@
         width: 420px;
         height: min(860px, calc(100dvh - 64px));
         border-radius: 42px;
-        border: 8px solid #1e2233;
+        border: 8px solid #1b1c20;
         box-shadow:
-          0 25px 70px rgba(0, 0, 0, 0.75),
-          0 0 0 1px rgba(255, 255, 255, 0.08),
-          0 0 60px var(--dynamic-glow);
+          0 30px 80px rgba(0, 0, 0, 0.88),
+          0 0 0 1px rgba(255, 255, 255, 0.16),
+          0 0 60px rgba(200, 205, 215, 0.12);
       }
 
       .workspace-shell.fullscreen-mode .phone-frame {
         width: min(1160px, 96vw);
         height: calc(100dvh - 64px);
         border-radius: 24px;
-        border: 1px solid var(--border-subtle);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+        border: 1px solid var(--border-highlight);
+        box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
       }
     }
 
@@ -196,7 +212,7 @@
       font-size: 11px;
       font-weight: 600;
       color: var(--text-secondary);
-      background: linear-gradient(180deg, rgba(7, 8, 13, 0.9), transparent);
+      background: linear-gradient(180deg, rgba(8, 8, 10, 0.75), transparent);
       z-index: 10;
       flex-shrink: 0;
     }
@@ -205,11 +221,13 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.06);
-      padding: 3px 9px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(12px);
+      padding: 3px 10px;
       border-radius: var(--radius-full);
       font-size: 10px;
-      color: var(--accent-green);
+      color: #e5e7eb;
     }
 
     .live-dot {
@@ -245,21 +263,22 @@
     .app-logo {
       width: 36px;
       height: 36px;
-      border-radius: 11px;
-      background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+      border-radius: 12px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(180, 186, 198, 0.85));
+      border: 1px solid rgba(255, 255, 255, 0.6);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #051409;
+      color: #090a0d;
       font-weight: 900;
-      box-shadow: 0 4px 16px rgba(30, 215, 96, 0.35);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
 
     .brand-title {
       font-size: 18px;
       font-weight: 800;
       letter-spacing: -0.4px;
-      background: linear-gradient(90deg, #fff, #cbd5e1);
+      background: linear-gradient(90deg, #ffffff, #d1d5db);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -281,7 +300,9 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: var(--bg-elevated);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
       display: flex;
@@ -292,7 +313,8 @@
     }
 
     .icon-btn:hover, .icon-btn:active {
-      background: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.16);
+      border-color: var(--border-highlight);
       transform: scale(1.04);
     }
 
@@ -302,9 +324,10 @@
       gap: 5px;
       padding: 6px 11px;
       border-radius: var(--radius-full);
-      background: rgba(30, 215, 96, 0.14);
-      border: 1px solid rgba(30, 215, 96, 0.35);
-      color: var(--accent-green);
+      background: rgba(255, 255, 255, 0.09);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #f3f4f6;
       font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
@@ -312,7 +335,7 @@
     }
 
     .spotify-pill-btn:hover {
-      background: rgba(30, 215, 96, 0.25);
+      background: rgba(255, 255, 255, 0.18);
     }
 
     /* Main Scrollable Viewport */
@@ -320,15 +343,16 @@
       flex: 1;
       overflow-y: auto;
       overflow-x: hidden;
-      padding: 0 16px 150px;
+      padding: 0 16px 155px;
       scroll-behavior: smooth;
+      z-index: 2;
     }
 
     .main-view::-webkit-scrollbar {
       width: 4px;
     }
     .main-view::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.18);
       border-radius: 4px;
     }
 
@@ -346,7 +370,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Source Filter Chips */
+    /* Source Filter Chips — Smoked Frosted Glass Pills */
     .chips-scroll {
       display: flex;
       gap: 8px;
@@ -360,8 +384,10 @@
       flex-shrink: 0;
       padding: 7px 14px;
       border-radius: var(--radius-full);
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
+      background: rgba(34, 36, 42, 0.68);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       color: var(--text-secondary);
       font-size: 12px;
       font-weight: 600;
@@ -370,22 +396,34 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .chip:hover {
+      border-color: rgba(255, 255, 255, 0.28);
+      color: #fff;
     }
 
     .chip.active {
-      background: var(--accent-green);
-      color: #041208;
-      border-color: var(--accent-green);
-      font-weight: 700;
+      background: linear-gradient(135deg, #ffffff, #d4d8e2);
+      color: #08090c;
+      border-color: #ffffff;
+      font-weight: 800;
+      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.18);
     }
 
-    /* Hero Banner */
+    /* Hero Banner — Smoked Frosted Titanium Glass Card */
     .hero-card {
       position: relative;
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 18px;
-      background: linear-gradient(135deg, #162a22 0%, #111827 55%, #1e1b4b 100%);
-      border: 1px solid rgba(30, 215, 96, 0.25);
+      background: linear-gradient(145deg, rgba(52, 55, 64, 0.62) 0%, rgba(22, 23, 28, 0.84) 60%, rgba(10, 11, 14, 0.94) 100%);
+      backdrop-filter: blur(28px) saturate(135%);
+      -webkit-backdrop-filter: blur(28px) saturate(135%);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow:
+        0 20px 45px rgba(0, 0, 0, 0.72),
+        inset 0 1px 0 rgba(255, 255, 255, 0.30);
       margin-bottom: 18px;
       overflow: hidden;
       display: flex;
@@ -397,11 +435,11 @@
     .hero-card::before {
       content: '';
       position: absolute;
-      top: -40%;
+      top: -45%;
       right: -10%;
-      width: 180px;
-      height: 180px;
-      background: radial-gradient(circle, rgba(30, 215, 96, 0.32), transparent 70%);
+      width: 210px;
+      height: 210px;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 70%);
       pointer-events: none;
     }
 
@@ -418,10 +456,11 @@
       text-transform: uppercase;
       letter-spacing: 0.8px;
       font-weight: 800;
-      color: var(--accent-green);
-      background: rgba(30, 215, 96, 0.14);
-      padding: 3px 8px;
-      border-radius: 6px;
+      color: #f3f4f6;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      padding: 3px 9px;
+      border-radius: 999px;
       margin-bottom: 8px;
     }
 
@@ -430,6 +469,7 @@
       font-weight: 800;
       line-height: 1.25;
       margin-bottom: 5px;
+      color: #ffffff;
     }
 
     .hero-sub {
@@ -449,14 +489,15 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--accent-green);
-      color: #051409;
+      background: linear-gradient(135deg, #ffffff, #d8dce6);
+      color: #07080a;
       border: none;
-      padding: 8px 15px;
+      padding: 8px 16px;
       border-radius: var(--radius-full);
       font-size: 12px;
       font-weight: 800;
       cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
       transition: transform 0.15s;
     }
 
@@ -468,9 +509,9 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.09);
       color: var(--text-primary);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       padding: 8px 12px;
       border-radius: var(--radius-full);
       font-size: 12px;
@@ -479,17 +520,17 @@
     }
 
     .hero-art {
-      width: 84px;
-      height: 84px;
-      border-radius: 16px;
+      width: 88px;
+      height: 88px;
+      border-radius: 18px;
       object-fit: cover;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75);
+      border: 1.5px solid rgba(255, 255, 255, 0.28);
       flex-shrink: 0;
       z-index: 1;
     }
 
-    /* Quick Mood Grid (Spotify-style 2-col compact cards) */
+    /* Quick Mood Grid (Smoked Frosted Glass 2-col compact cards) */
     .quick-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -506,9 +547,12 @@
     .quick-card {
       display: flex;
       align-items: center;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(42, 44, 50, 0.65), rgba(22, 23, 27, 0.78));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+      border-radius: 13px;
       overflow: hidden;
       cursor: pointer;
       transition: all 0.2s;
@@ -516,8 +560,9 @@
     }
 
     .quick-card:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: var(--border-highlight);
+      background: rgba(55, 58, 66, 0.78);
+      border-color: rgba(255, 255, 255, 0.30);
+      transform: translateY(-1px);
     }
 
     .quick-card-icon {
@@ -528,6 +573,7 @@
       justify-content: center;
       font-size: 20px;
       flex-shrink: 0;
+      border-right: 1px solid rgba(255, 255, 255, 0.1);
     }
 
     .quick-card-title {
@@ -551,52 +597,69 @@
       font-size: 16px;
       font-weight: 800;
       letter-spacing: -0.3px;
+      color: #f8fafc;
     }
 
     .section-link {
-      font-size: 12px;
-      color: var(--accent-green);
-      font-weight: 600;
+      font-size: 11.5px;
+      color: #e2e8f0;
+      font-weight: 700;
       cursor: pointer;
-      background: none;
-      border: none;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 4px 10px;
+      border-radius: 999px;
+      transition: all 0.18s;
     }
 
-    /* Horizontal Carousel Cards */
+    .section-link:hover {
+      background: rgba(255, 255, 255, 0.16);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Horizontal Carousel Cards — Frosted Smoked Glass Coverflow Cards (Matching Shared Image) */
     .horiz-scroll {
       display: flex;
-      gap: 12px;
+      gap: 13px;
       overflow-x: auto;
-      padding-bottom: 8px;
+      padding: 4px 2px 12px;
       scrollbar-width: none;
+      perspective: 900px;
     }
     .horiz-scroll::-webkit-scrollbar { display: none; }
 
     .album-card {
-      width: 136px;
+      width: 146px;
       flex-shrink: 0;
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 14px;
-      padding: 10px;
+      background: linear-gradient(180deg, rgba(48, 50, 57, 0.64) 0%, rgba(22, 23, 27, 0.88) 100%);
+      backdrop-filter: blur(24px) saturate(135%);
+      -webkit-backdrop-filter: blur(24px) saturate(135%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow:
+        0 14px 32px rgba(0, 0, 0, 0.68),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      border-radius: 18px;
+      padding: 9px 9px 11px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
     }
 
     .album-card:hover {
-      background: var(--bg-elevated);
-      transform: translateY(-2px);
+      background: linear-gradient(180deg, rgba(64, 67, 76, 0.75) 0%, rgba(28, 30, 35, 0.92) 100%);
+      border-color: rgba(255, 255, 255, 0.38);
+      transform: translateY(-4px) scale(1.02);
     }
 
     .album-art-wrap {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1;
-      border-radius: 10px;
+      aspect-ratio: 1 / 1.04;
+      border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 8px;
-      background: #1a1d2d;
+      margin-bottom: 9px;
+      background: #141519;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
     }
 
     .album-art-wrap img {
@@ -608,56 +671,59 @@
 
     .card-play-fab {
       position: absolute;
-      bottom: 6px;
-      right: 6px;
+      bottom: 7px;
+      right: 7px;
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      background: var(--accent-green);
-      color: #041208;
+      background: rgba(255, 255, 255, 0.92);
+      color: #060709;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-      opacity: 0.95;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65);
+      font-size: 12px;
       transition: transform 0.15s;
     }
 
     .album-card:hover .card-play-fab {
-      transform: scale(1.08);
+      transform: scale(1.1);
+      background: var(--accent-green);
     }
 
     .source-badge {
       position: absolute;
       top: 6px;
       left: 6px;
-      font-size: 9px;
+      font-size: 8.5px;
       font-weight: 800;
       padding: 2px 6px;
-      border-radius: 5px;
-      background: rgba(7, 8, 13, 0.82);
-      backdrop-filter: blur(4px);
-      color: var(--accent-green);
-      border: 1px solid rgba(30, 215, 96, 0.35);
+      border-radius: 6px;
+      background: rgba(8, 9, 12, 0.78);
+      backdrop-filter: blur(8px);
+      color: #f3f4f6;
+      border: 1px solid rgba(255, 255, 255, 0.22);
     }
 
     .source-badge.global {
-      color: var(--accent-cyan);
-      border-color: rgba(0, 210, 255, 0.35);
+      color: #e2e8f0;
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
     .source-badge.audius {
-      color: #c084fc;
-      border-color: rgba(192, 132, 252, 0.35);
+      color: #e5e7eb;
+      border-color: rgba(255, 255, 255, 0.25);
     }
 
     .album-name {
       font-size: 12.5px;
-      font-weight: 700;
+      font-weight: 800;
+      color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       margin-bottom: 2px;
+      padding: 0 2px;
     }
 
     .album-artist {
@@ -666,45 +732,55 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      padding: 0 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
     }
 
-    /* Track List Rows */
+    /* Track List Rows — Smoked Frosted Glass Strips */
     .track-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 7px;
     }
 
     .track-row {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 10px;
-      border-radius: 12px;
-      background: var(--bg-surface);
-      border: 1px solid transparent;
+      padding: 9px 11px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, rgba(34, 36, 42, 0.66), rgba(20, 21, 25, 0.78));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.11);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.10);
       cursor: pointer;
       transition: all 0.18s;
     }
 
     .track-row:hover {
-      background: var(--bg-elevated);
-      border-color: var(--border-subtle);
+      background: linear-gradient(135deg, rgba(48, 51, 59, 0.76), rgba(28, 30, 36, 0.86));
+      border-color: rgba(255, 255, 255, 0.24);
     }
 
     .track-row.playing {
-      background: rgba(30, 215, 96, 0.1);
-      border-color: rgba(30, 215, 96, 0.32);
+      background: linear-gradient(135deg, rgba(58, 62, 72, 0.82), rgba(25, 32, 29, 0.88));
+      border-color: rgba(255, 255, 255, 0.34);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.28);
     }
 
     .track-thumb-wrap {
       position: relative;
       width: 48px;
       height: 48px;
-      border-radius: 10px;
+      border-radius: 11px;
       overflow: hidden;
       flex-shrink: 0;
-      background: #1c2030;
+      background: #18191e;
+      border: 1px solid rgba(255, 255, 255, 0.16);
     }
 
     .track-thumb-wrap img {
@@ -731,7 +807,7 @@
     }
 
     .track-row.playing .track-title {
-      color: var(--accent-green);
+      color: #ffffff;
     }
 
     .track-sub {
@@ -748,16 +824,23 @@
     .quality-tag {
       font-size: 9px;
       font-weight: 800;
-      padding: 1px 5px;
-      border-radius: 4px;
-      background: rgba(30, 215, 96, 0.15);
-      color: var(--accent-green);
+      padding: 1px 6px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.11);
+      color: #e5e7eb;
+      border: 1px solid rgba(255, 255, 255, 0.16);
       flex-shrink: 0;
     }
 
+    .track-row.playing .quality-tag {
+      background: rgba(30, 215, 96, 0.18);
+      color: var(--accent-green);
+      border-color: rgba(30, 215, 96, 0.4);
+    }
+
     .quality-tag.preview {
-      background: rgba(0, 210, 255, 0.14);
-      color: var(--accent-cyan);
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-secondary);
     }
 
     .track-actions {
@@ -782,38 +865,41 @@
     }
 
     .row-icon-btn:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.10);
       color: var(--text-primary);
     }
 
     .row-icon-btn.liked {
-      color: var(--accent-pink);
+      color: var(--accent-green);
     }
 
-    /* Search Bar */
+    /* Search Bar — Frosted Smoked Glass */
     .search-box-wrap {
       position: sticky;
       top: 0;
       z-index: 8;
-      background: var(--bg-deep);
+      background: linear-gradient(180deg, rgba(14, 15, 18, 0.96) 75%, transparent);
+      backdrop-filter: blur(16px);
       padding: 4px 0 10px;
     }
 
     .search-bar {
       display: flex;
       align-items: center;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-highlight);
-      border-radius: 14px;
+      background: rgba(38, 40, 46, 0.75);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      border-radius: 16px;
       padding: 0 12px;
       height: 46px;
       gap: 8px;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .search-bar:focus-within {
-      border-color: var(--accent-green);
-      box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.15);
+      border-color: rgba(255, 255, 255, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
     }
 
     .search-bar input {
@@ -846,7 +932,7 @@
 
     .genre-card {
       height: 82px;
-      border-radius: 14px;
+      border-radius: 16px;
       padding: 12px;
       font-size: 14px;
       font-weight: 800;
@@ -856,6 +942,8 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22);
       transition: transform 0.18s;
     }
 
@@ -872,24 +960,26 @@
       opacity: 0.9;
     }
 
-    /* Mini Player Docked Above Bottom Nav */
+    /* Mini Player Docked Above Bottom Nav — Smoked Glass Floating Pill (Matching Shared Image) */
     .mini-player {
       position: absolute;
-      left: 10px;
-      right: 10px;
+      left: 12px;
+      right: 12px;
       bottom: 68px;
-      height: 62px;
-      background: rgba(22, 26, 40, 0.94);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 16px;
+      height: 64px;
+      background: linear-gradient(135deg, rgba(46, 48, 55, 0.82), rgba(24, 25, 30, 0.90));
+      backdrop-filter: blur(28px) saturate(140%);
+      -webkit-backdrop-filter: blur(28px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      border-radius: 999px;
       display: flex;
       align-items: center;
-      padding: 0 10px;
-      gap: 10px;
+      padding: 0 14px 0 10px;
+      gap: 11px;
       z-index: 20;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+      box-shadow:
+        0 18px 42px rgba(0, 0, 0, 0.82),
+        inset 0 1px 0 rgba(255, 255, 255, 0.28);
       cursor: pointer;
       overflow: hidden;
     }
@@ -897,30 +987,35 @@
     .mini-progress-track {
       position: absolute;
       bottom: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: rgba(255, 255, 255, 0.08);
+      left: 24px;
+      right: 24px;
+      height: 2.5px;
+      background: rgba(255, 255, 255, 0.14);
+      border-radius: 999px;
+      overflow: hidden;
     }
 
     .mini-progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+      background: #ffffff;
+      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
       transition: width 0.2s linear;
     }
 
     .mini-art {
       width: 44px;
       height: 44px;
-      border-radius: 10px;
+      border-radius: 12px;
       object-fit: cover;
       flex-shrink: 0;
-      background: #1e2235;
+      background: #18191e;
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
     }
 
     .mini-art.spinning {
-      animation: spinSlow 14s linear infinite;
+      animation: none;
     }
 
     @keyframes spinSlow {
@@ -935,7 +1030,8 @@
 
     .mini-title {
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
+      color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -960,13 +1056,14 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      background: var(--text-primary);
-      color: var(--bg-deep);
+      background: #ffffff;
+      color: #060709;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
       transition: transform 0.15s;
     }
 
@@ -974,7 +1071,7 @@
       transform: scale(0.92);
     }
 
-    /* Bottom Navigation Bar */
+    /* Bottom Navigation Bar — Dark Smoked Frosted Glass */
     .bottom-nav {
       position: absolute;
       bottom: 0;
@@ -982,9 +1079,10 @@
       right: 0;
       height: 62px;
       padding-bottom: env(safe-area-inset-bottom, 0px);
-      background: rgba(10, 12, 18, 0.95);
-      backdrop-filter: blur(18px);
-      border-top: 1px solid var(--border-subtle);
+      background: rgba(10, 11, 14, 0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
       display: flex;
       align-items: center;
       justify-content: space-around;
@@ -1009,7 +1107,8 @@
     }
 
     .nav-item.active {
-      color: var(--accent-green);
+      color: #ffffff;
+      text-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
     }
 
     .nav-item svg {
@@ -1017,13 +1116,14 @@
       height: 20px;
     }
 
-    /* Full-Screen Now Playing Sheet */
+    /* Full-Screen Now Playing Sheet — Smoked Charcoal-Ash & 3D Coverflow Glass Theme */
     .now-playing-sheet {
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at 50% 18%, var(--dynamic-glow), transparent 55%),
-        linear-gradient(180deg, #131726 0%, #07080d 100%);
+        radial-gradient(ellipse at 78% 6%, rgba(235, 238, 245, 0.25) 0%, rgba(150, 155, 168, 0.11) 36%, transparent 65%),
+        radial-gradient(circle at 50% 35%, rgba(95, 100, 112, 0.18), transparent 60%),
+        linear-gradient(180deg, #1b1c21 0%, #0d0e12 52%, #050507 100%);
       z-index: 40;
       display: flex;
       flex-direction: column;
@@ -1041,7 +1141,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       flex-shrink: 0;
     }
 
@@ -1052,23 +1152,26 @@
     .np-source-label small {
       font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--text-secondary);
+      letter-spacing: 1.2px;
+      color: #d1d5db;
+      font-weight: 700;
       display: block;
     }
 
     .np-source-label strong {
-      font-size: 12px;
-      color: var(--accent-green);
+      font-size: 11.5px;
+      color: var(--text-secondary);
     }
 
-    /* Mode Switcher inside Now Playing (Artwork / Lyrics / Queue / Spotify Embed) */
+    /* Mode Switcher inside Now Playing (Artwork / Lyrics / Queue) */
     .np-mode-tabs {
       display: flex;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(16px);
       border-radius: var(--radius-full);
       padding: 3px;
-      margin: 0 auto 14px;
+      margin: 0 auto 12px;
       width: fit-content;
       gap: 4px;
       flex-shrink: 0;
@@ -1087,53 +1190,169 @@
     }
 
     .np-mode-btn.active {
-      background: var(--accent-green);
-      color: #041208;
+      background: #ffffff;
+      color: #060709;
+      font-weight: 800;
     }
 
-    /* Artwork Stage */
+    /* Artwork Stage — 3D Fanned Coverflow Glass Stack (Matching Shared Image) */
     .np-stage {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 220px;
+      min-height: 250px;
       position: relative;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+    }
+
+    .np-coverflow-deck {
+      position: relative;
+      width: 100%;
+      height: 276px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1000px;
+    }
+
+    .np-side-card {
+      position: absolute;
+      width: 152px;
+      height: 222px;
+      border-radius: 18px;
+      padding: 7px 7px 10px;
+      background: linear-gradient(180deg, rgba(46, 48, 55, 0.62) 0%, rgba(18, 19, 23, 0.88) 100%);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.78);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .np-side-card img {
+      width: 100%;
+      height: 162px;
+      object-fit: cover;
+      border-radius: 12px;
+      filter: brightness(0.78) contrast(1.05);
+    }
+
+    .np-side-card-meta {
+      padding: 4px 3px 0;
+    }
+
+    .np-side-card-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.88);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .np-side-card-sub {
+      font-size: 9.5px;
+      color: rgba(255, 255, 255, 0.55);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .np-side-card.left-far {
+      transform: translateX(-118px) translateZ(-95px) rotateY(24deg) scale(0.84);
+      opacity: 0.62;
+      z-index: 1;
+    }
+
+    .np-side-card.left-near {
+      transform: translateX(-68px) translateZ(-45px) rotateY(16deg) scale(0.92);
+      opacity: 0.85;
+      z-index: 2;
+    }
+
+    .np-side-card.right-near {
+      transform: translateX(68px) translateZ(-45px) rotateY(-16deg) scale(0.92);
+      opacity: 0.85;
+      z-index: 2;
+    }
+
+    .np-side-card.right-far {
+      transform: translateX(118px) translateZ(-95px) rotateY(-24deg) scale(0.84);
+      opacity: 0.62;
+      z-index: 1;
     }
 
     .np-art-container {
       position: relative;
-      width: min(260px, 64vw);
-      height: min(260px, 64vw);
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      transition: border-radius 0.4s;
+      z-index: 5;
+      width: 196px;
+      height: 262px;
+      border-radius: 22px;
+      padding: 9px 9px 12px;
+      background: linear-gradient(180deg, rgba(64, 67, 76, 0.72) 0%, rgba(28, 30, 35, 0.90) 100%);
+      backdrop-filter: blur(28px) saturate(140%);
+      -webkit-backdrop-filter: blur(28px) saturate(140%);
+      box-shadow:
+        0 24px 55px rgba(0, 0, 0, 0.88),
+        inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
+      border: 1.5px solid rgba(255, 255, 255, 0.34);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.35s ease, border-radius 0.4s;
+      cursor: pointer;
     }
 
-    .np-art-container.vinyl-mode {
-      border-radius: 50%;
-      animation: spinSlow 18s linear infinite;
-    }
-
-    .np-art-container.vinyl-mode.paused {
-      animation-play-state: paused;
+    .np-art-container:hover {
+      transform: translateY(-2px) scale(1.01);
     }
 
     .np-art-container img {
       width: 100%;
-      height: 100%;
+      height: 190px;
+      border-radius: 15px;
       object-fit: cover;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    }
+
+    .np-card-glass-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 4px 0;
+    }
+
+    .np-card-glass-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .np-card-glass-artist {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.68);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     /* Visualizer Canvas */
     .visualizer-canvas {
       width: 100%;
-      height: 44px;
-      margin-top: 12px;
+      height: 36px;
+      margin-top: 8px;
     }
 
     /* Synced Lyrics View */
@@ -1143,9 +1362,10 @@
       height: 280px;
       overflow-y: auto;
       padding: 16px;
-      background: rgba(0, 0, 0, 0.28);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
+      background: rgba(18, 19, 23, 0.68);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
       text-align: center;
       scroll-behavior: smooth;
     }
@@ -1163,7 +1383,7 @@
       font-size: 18px;
       font-weight: 800;
       color: #ffffff;
-      text-shadow: 0 0 18px var(--accent-green);
+      text-shadow: 0 0 18px rgba(255, 255, 255, 0.65);
       transform: scale(1.03);
     }
 
@@ -1173,31 +1393,42 @@
       width: 100%;
       height: 280px;
       overflow-y: auto;
-      background: rgba(0, 0, 0, 0.28);
-      border: 1px solid var(--border-subtle);
-      border-radius: 18px;
+      background: rgba(18, 19, 23, 0.68);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 20px;
       padding: 10px;
     }
 
-    /* Track Info & Controls in Now Playing */
+    /* Track Info Pill Bar in Now Playing — Smoked Frosted Glass Pill (Matching Shared Image) */
     .np-track-info {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       margin-bottom: 12px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(46, 48, 55, 0.72), rgba(24, 25, 30, 0.85));
+      backdrop-filter: blur(26px) saturate(140%);
+      -webkit-backdrop-filter: blur(26px) saturate(140%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow:
+        0 14px 36px rgba(0, 0, 0, 0.68),
+        inset 0 1px 0 rgba(255, 255, 255, 0.26);
     }
 
     .np-title {
-      font-size: 19px;
+      font-size: 14.5px;
       font-weight: 800;
+      color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
 
     .np-artist {
-      font-size: 13.5px;
+      font-size: 11.5px;
       color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
@@ -1206,27 +1437,28 @@
 
     /* Seek Bar */
     .np-seek-wrap {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      padding: 0 6px;
     }
 
     .seek-slider {
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
-      height: 5px;
+      height: 4px;
       border-radius: 5px;
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.20);
       outline: none;
       cursor: pointer;
     }
 
     .seek-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
-      background: var(--accent-green);
-      box-shadow: 0 0 10px rgba(30, 215, 96, 0.8);
+      background: #ffffff;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
       cursor: pointer;
     }
 
@@ -1239,26 +1471,27 @@
       font-variant-numeric: tabular-nums;
     }
 
-    /* Main Transport Controls */
+    /* Main Transport Controls — Crisp Pure White Icons (Matching Shared Image) */
     .np-controls {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
+      padding: 0 8px;
     }
 
     .np-play-main {
-      width: 62px;
-      height: 62px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
-      background: var(--accent-green);
-      color: #041208;
+      background: #ffffff;
+      color: #060709;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(30, 215, 96, 0.4);
+      box-shadow: 0 10px 28px rgba(255, 255, 255, 0.25), 0 6px 20px rgba(0, 0, 0, 0.6);
       transition: transform 0.15s;
     }
 
@@ -1269,7 +1502,7 @@
     .np-ctrl-btn {
       background: none;
       border: none;
-      color: var(--text-primary);
+      color: #ffffff;
       cursor: pointer;
       padding: 8px;
       border-radius: 50%;
@@ -1290,7 +1523,7 @@
       justify-content: space-between;
       gap: 6px;
       padding-top: 8px;
-      border-top: 1px solid var(--border-subtle);
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
       flex-wrap: wrap;
     }
 
@@ -1298,8 +1531,9 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       color: var(--text-secondary);
       padding: 6px 11px;
       border-radius: var(--radius-full);
@@ -1310,14 +1544,17 @@
 
     .strip-pill:hover {
       color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.15);
     }
 
-    /* Connect & App Bridge Cards */
+    /* Connect & App Bridge Cards — Smoked Frosted Glass */
     .connect-card {
-      background: var(--bg-surface);
-      border: 1px solid var(--border-subtle);
-      border-radius: 16px;
+      background: linear-gradient(145deg, rgba(38, 40, 46, 0.68), rgba(20, 21, 25, 0.84));
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+      border-radius: 18px;
       padding: 16px;
       margin-bottom: 14px;
     }
@@ -1344,19 +1581,19 @@
       margin-bottom: 10px;
     }
 
-    .text-input {
+    .text-input, .connect-input {
       flex: 1;
-      background: var(--bg-elevated);
-      border: 1px solid var(--border-highlight);
-      border-radius: 10px;
+      background: rgba(18, 19, 23, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 11px;
       padding: 9px 12px;
       color: var(--text-primary);
       font-size: 12.5px;
       outline: none;
     }
 
-    .text-input:focus {
-      border-color: var(--accent-green);
+    .text-input:focus, .connect-input:focus {
+      border-color: #ffffff;
     }
 
     .app-bridge-grid {
@@ -1371,7 +1608,7 @@
       gap: 8px;
       padding: 10px 12px;
       border-radius: 12px;
-      background: var(--bg-elevated);
+      background: rgba(255, 255, 255, 0.07);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
       font-size: 12px;
@@ -1382,16 +1619,16 @@
     }
 
     .bridge-btn:hover {
-      border-color: var(--accent-green);
-      background: rgba(30, 215, 96, 0.1);
+      border-color: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.14);
     }
 
     /* Modal / Action Sheet */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.72);
-      backdrop-filter: blur(6px);
+      background: rgba(0, 0, 0, 0.78);
+      backdrop-filter: blur(10px);
       z-index: 60;
       display: none;
       align-items: center;
@@ -1406,11 +1643,12 @@
     .modal-box {
       width: 100%;
       max-width: 400px;
-      background: var(--bg-surface);
+      background: rgba(24, 25, 30, 0.94);
+      backdrop-filter: blur(26px);
       border: 1px solid var(--border-highlight);
       border-radius: 22px;
       padding: 20px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
     }
 
     /* Developer Admin Portal & Live Users Table */
@@ -1418,8 +1656,8 @@
       width: 100%;
       max-width: 680px;
       max-height: 90vh;
-      background: #0f131f;
-      border: 1px solid rgba(234, 179, 8, 0.4);
+      background: #101115;
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 22px;
       padding: 18px;
       box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
@@ -1449,9 +1687,9 @@
     }
 
     .admin-tab-btn.active {
-      background: rgba(234, 179, 8, 0.18);
-      color: #facc15;
-      border: 1px solid rgba(234, 179, 8, 0.4);
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .admin-table-container {
@@ -1476,8 +1714,8 @@
     .admin-table th {
       position: sticky;
       top: 0;
-      background: #151928;
-      color: #94a3b8;
+      background: #16171c;
+      color: #cbd5e1;
       font-weight: 700;
       padding: 10px 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.12);
@@ -1508,10 +1746,10 @@
     }
 
     .badge-signup { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
-    .badge-login { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-login { background: rgba(255, 255, 255, 0.14); color: #f3f4f6; border: 1px solid rgba(255, 255, 255, 0.3); }
     .badge-guest { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
     .badge-apk { background: rgba(16, 185, 129, 0.22); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); }
-    .badge-web { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+    .badge-web { background: rgba(255, 255, 255, 0.12); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.25); }
 
     /* Toast Notification */
     .toast {
@@ -1519,15 +1757,16 @@
       top: 18px;
       left: 50%;
       transform: translateX(-50%) translateY(-80px);
-      background: #181c2a;
+      background: rgba(28, 30, 35, 0.94);
+      backdrop-filter: blur(20px);
       color: #fff;
-      border: 1px solid var(--accent-green);
+      border: 1px solid rgba(255, 255, 255, 0.32);
       padding: 9px 18px;
       border-radius: var(--radius-full);
       font-size: 12.5px;
       font-weight: 700;
       z-index: 100;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
       transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
     }
@@ -1545,7 +1784,7 @@
     }
     .eq-bars span {
       width: 2.5px;
-      background: var(--accent-green);
+      background: #ffffff;
       border-radius: 2px;
       animation: eqBounce 0.8s ease-in-out infinite alternate;
     }
@@ -1562,10 +1801,9 @@
       inset: 0;
       z-index: 9999;
       background:
-        radial-gradient(circle at 20% 15%, rgba(30, 215, 96, 0.22), transparent 45%),
-        radial-gradient(circle at 80% 85%, rgba(0, 210, 255, 0.18), transparent 45%),
-        radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.10), transparent 60%),
-        #06070c;
+        radial-gradient(ellipse at 75% 10%, rgba(230, 234, 242, 0.20), transparent 48%),
+        radial-gradient(circle at 20% 85%, rgba(95, 100, 112, 0.16), transparent 50%),
+        #060608;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1581,12 +1819,12 @@
     .auth-card {
       width: 100%;
       max-width: 410px;
-      background: rgba(16, 18, 27, 0.94);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(160deg, rgba(44, 46, 53, 0.78), rgba(18, 19, 23, 0.94));
+      border: 1px solid rgba(255, 255, 255, 0.24);
       border-radius: 26px;
       padding: 24px 22px;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.85), 0 0 40px rgba(30, 215, 96, 0.12);
-      backdrop-filter: blur(22px);
+      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(28px);
     }
     .auth-brand {
       display: flex;
@@ -1599,12 +1837,12 @@
       width: 64px;
       height: 64px;
       border-radius: 20px;
-      background: linear-gradient(135deg, #1ed760, #00d2ff);
+      background: linear-gradient(145deg, #ffffff, #cbd5e1);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #041208;
-      box-shadow: 0 10px 28px rgba(30, 215, 96, 0.35);
+      color: #060709;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
       margin-bottom: 10px;
     }
     .auth-brand h1 {
@@ -1616,14 +1854,14 @@
     }
     .auth-brand p {
       font-size: 12px;
-      color: #9ca3bd;
+      color: #b0b4c0;
       font-weight: 600;
     }
     .auth-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       border-radius: 14px;
       padding: 4px;
       margin-bottom: 16px;
@@ -1631,7 +1869,7 @@
     .auth-tab-btn {
       background: transparent;
       border: none;
-      color: #9ca3bd;
+      color: #b0b4c0;
       font-size: 13px;
       font-weight: 800;
       padding: 9px 12px;
@@ -1640,9 +1878,9 @@
       transition: all 0.2s;
     }
     .auth-tab-btn.active {
-      background: linear-gradient(135deg, #1ed760, #10b981);
-      color: #041208;
-      box-shadow: 0 4px 14px rgba(30, 215, 96, 0.3);
+      background: linear-gradient(135deg, #ffffff, #d4d8e2);
+      color: #060709;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
     }
     .auth-field {
       margin-bottom: 12px;
@@ -1651,7 +1889,7 @@
       display: block;
       font-size: 11.5px;
       font-weight: 700;
-      color: #cbd5e1;
+      color: #d1d5db;
       margin-bottom: 5px;
     }
     .auth-input-wrap {
@@ -1661,8 +1899,8 @@
     }
     .auth-input {
       width: 100%;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       border-radius: 12px;
       padding: 11px 13px;
       color: #fff;
@@ -1671,15 +1909,15 @@
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     .auth-input:focus {
-      border-color: #1ed760;
-      box-shadow: 0 0 0 3px rgba(30, 215, 96, 0.18);
+      border-color: #ffffff;
+      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
     }
     .auth-eye-btn {
       position: absolute;
       right: 10px;
       background: none;
       border: none;
-      color: #9ca3bd;
+      color: #b0b4c0;
       cursor: pointer;
       font-size: 14px;
       padding: 4px;
@@ -1689,12 +1927,12 @@
       padding: 13px 18px;
       border-radius: 999px;
       border: none;
-      background: linear-gradient(135deg, #1ed760, #10b981);
-      color: #041208;
+      background: linear-gradient(135deg, #ffffff, #d4d8e2);
+      color: #060709;
       font-size: 14px;
       font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(30, 215, 96, 0.35);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
       margin-top: 4px;
       transition: transform 0.15s, filter 0.15s;
     }
@@ -1706,8 +1944,8 @@
       width: 100%;
       padding: 10px 14px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.05);
       color: #e2e8f0;
       font-size: 12.5px;
       font-weight: 700;
@@ -1716,7 +1954,7 @@
       transition: background 0.15s;
     }
     .auth-guest-btn:hover {
-      background: rgba(255, 255, 255, 0.09);
+      background: rgba(255, 255, 255, 0.10);
     }
     .auth-msg {
       font-size: 12px;
@@ -1745,20 +1983,20 @@
   <div id="toast" class="toast">Ready to play!</div>
 
   <!-- ================= CREATOR BROADCAST ANNOUNCEMENT BANNER ================= -->
-  <div id="creatorBroadcastBanner" style="display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:linear-gradient(135deg,#161b22,#0d1117);border:1.5px solid #1ed760;box-shadow:0 12px 35px rgba(0,0,0,0.8),0 0 25px rgba(30,215,96,0.3);border-radius:16px;padding:14px 16px;z-index:99999;color:#fff;">
+  <div id="creatorBroadcastBanner" style="display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:linear-gradient(135deg,#1b1c22,#0d0e12);border:1.5px solid rgba(255,255,255,0.35);box-shadow:0 12px 35px rgba(0,0,0,0.85);border-radius:16px;padding:14px 16px;z-index:99999;color:#fff;">
     <div style="display:flex;align-items:flex-start;gap:12px;">
-      <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1ed760,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">
+      <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#ffffff,#cbd5e1);color:#060709;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">
         📢
       </div>
       <div style="flex:1;min-width:0;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-          <span style="font-size:11px;font-weight:800;color:#1ed760;text-transform:uppercase;letter-spacing:0.5px;">👑 Balu Announcement (@being_rebel__7)</span>
+          <span style="font-size:11px;font-weight:800;color:#e5e7eb;text-transform:uppercase;letter-spacing:0.5px;">👑 Balu Announcement (@being_rebel__7)</span>
           <button onclick="dismissCreatorBroadcast()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:0 4px;">✕</button>
         </div>
         <h4 id="broadcastTitle" style="font-size:14px;font-weight:900;margin:0 0 4px 0;color:#fff;"></h4>
         <p id="broadcastMsg" style="font-size:12.5px;color:#cbd5e1;line-height:1.4;margin:0 0 10px 0;"></p>
         <div style="display:flex;gap:8px;" id="broadcastActions">
-          <a id="broadcastActionBtn" href="download.html" class="util-btn primary" style="padding:6px 14px;font-size:11.5px;text-decoration:none;font-weight:800;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;border-radius:8px;">⬇️ Update App Now</a>
+          <a id="broadcastActionBtn" href="download.html" class="util-btn primary" style="padding:6px 14px;font-size:11.5px;text-decoration:none;font-weight:800;border-radius:8px;">⬇️ Update App Now</a>
           <button onclick="dismissCreatorBroadcast()" class="util-btn" style="padding:6px 12px;font-size:11.5px;border-radius:8px;background:rgba(255,255,255,0.06);color:#fff;">Dismiss</button>
         </div>
       </div>
@@ -1773,10 +2011,10 @@
         <span class="desktop-brand-badge" id="desktopCreatorBadge" onclick="openCreatorModal()" style="cursor:pointer;">👑 Created by Balu • @being_rebel__7 ✓</span>
       </div>
       <div class="desktop-actions">
-        <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="util-btn" style="border-color:rgba(236,72,153,0.5);color:#f472b6;text-decoration:none;">
+        <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="util-btn" style="border-color:rgba(255,255,255,0.25);color:#f3f4f6;text-decoration:none;">
           📸 IG: @being_rebel__7
         </a>
-        <button class="util-btn" onclick="openCreatorModal()" style="border-color:rgba(30,215,96,0.45);color:var(--accent-green);">
+        <button class="util-btn" onclick="openCreatorModal()" style="border-color:rgba(255,255,255,0.28);color:#ffffff;">
           👑 Brand Studio
         </button>
         <button class="util-btn" onclick="toggleViewportMode()" id="viewportToggleBtn" title="Switch between Phone Frame and Wide View">
@@ -1810,19 +2048,19 @@
           <div>
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="brand-title" id="headerAppTitle">Balu Beats</div>
-              <span id="headerCreatorPill" style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(30,215,96,0.16);color:var(--accent-green);border:1px solid rgba(30,215,96,0.35);">by Balu ✓</span>
+              <span id="headerCreatorPill" style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,0.10);color:#e5e7eb;border:1px solid rgba(255,255,255,0.24);">by Balu ✓</span>
             </div>
             <span class="brand-subtitle" id="greetingText">IG: @being_rebel__7 • Praveen</span>
           </div>
         </div>
         <div class="header-actions">
-          <button onclick="switchTab('connect')" id="headerUserBtn" class="spotify-pill-btn" style="background:rgba(30,215,96,0.14);color:#1ed760;border-color:rgba(30,215,96,0.38);font-weight:800;" title="Account & Credentials">
+          <button onclick="switchTab('connect')" id="headerUserBtn" class="spotify-pill-btn" style="background:rgba(255,255,255,0.10);color:#ffffff;border-color:rgba(255,255,255,0.26);font-weight:800;" title="Account & Credentials">
             👤 Account
           </button>
-          <button onclick="openShareModal()" class="spotify-pill-btn" style="background:linear-gradient(135deg,#1ed760,#10b981);color:#041208;border:none;font-weight:800;" title="Download & Install Balu Beats App">
+          <button onclick="openShareModal()" class="spotify-pill-btn" style="background:linear-gradient(135deg,#ffffff,#d4d8e2);color:#060709;border:none;font-weight:800;" title="Download & Install Balu Beats App">
             📲 App
           </button>
-          <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="spotify-pill-btn" style="text-decoration:none;background:linear-gradient(135deg,rgba(236,72,153,0.2),rgba(139,92,246,0.2));border-color:rgba(236,72,153,0.45);color:#f9a8d4;" title="Follow @being_rebel__7 on Instagram">
+          <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="spotify-pill-btn" style="text-decoration:none;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.22);color:#e5e7eb;" title="Follow @being_rebel__7 on Instagram">
             📸 IG
           </a>
         </div>
@@ -1833,7 +2071,7 @@
         <!-- ================= TAB 1: HOME ================= -->
         <section id="tab-home" class="tab-pane active">
           <!-- Install Native App Banner -->
-          <div id="installAppBanner" style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,rgba(30,215,96,0.16),rgba(0,210,255,0.12));border:1px solid rgba(30,215,96,0.4);border-radius:14px;padding:10px 12px;margin-bottom:10px;">
+          <div id="installAppBanner" style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,rgba(48,50,58,0.68),rgba(22,23,28,0.85));backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.22);border-radius:16px;padding:10px 12px;margin-bottom:10px;box-shadow:0 10px 25px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.22);">
             <div style="min-width:0;flex:1;">
               <div style="font-size:12px;font-weight:800;color:#fff;">📲 Install Balu Beats Mobile App</div>
               <div style="font-size:10.5px;color:var(--text-secondary);">100% Full-Length 320kbps Songs • Android APK & Web App</div>
@@ -1868,7 +2106,7 @@
                 <button class="btn-play-hero" onclick="playHeroTrack()">
                   ▶ Play Full Song
                 </button>
-                <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn-secondary-hero" style="text-decoration:none;border-color:rgba(236,72,153,0.45);color:#f9a8d4;">
+                <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn-secondary-hero" style="text-decoration:none;border-color:rgba(255,255,255,0.24);color:#e5e7eb;">
                   📸 @being_rebel__7 ↗
                 </a>
               </div>
@@ -1876,30 +2114,30 @@
             <img id="heroArt" class="hero-art" src="https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg" onerror="this.src='https://picsum.photos/seed/pulsehero/300/300'" alt="Featured" />
           </div>
 
-          <!-- Quick Mood Grid -->
+          <!-- Quick Mood Grid — Smoked Charcoal-Glass Icons -->
           <div class="quick-grid">
             <div class="quick-card" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #f59e0b, #78350f);">🔥</div>
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #3f3f46, #18181b);">🔥</div>
               <div class="quick-card-title">Telugu Hits</div>
             </div>
             <div class="quick-card" onclick="openQuickCollection('english', 'The Weeknd Hits', 'the weeknd')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #ef4444, #7f1d1d);">🌙</div>
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #374151, #111827);">🌙</div>
               <div class="quick-card-title">The Weeknd</div>
             </div>
             <div class="quick-card" onclick="openQuickCollection('bollywood', 'Arijit Singh Hits', 'arijit singh')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #ec4899, #831843);">💖</div>
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #4b5563, #1f2937);">💖</div>
               <div class="quick-card-title">Arijit Singh</div>
             </div>
             <div class="quick-card" onclick="openQuickCollection('telugu', 'Anirudh Ravichander', 'anirudh')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #8b5cf6, #4c1d95);">⚡</div>
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #334155, #0f172a);">⚡</div>
               <div class="quick-card-title">Anirudh Hits</div>
             </div>
             <div class="quick-card" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #00d2ff, #0369a1);">🎧</div>
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #52525b, #18181b);">🎧</div>
               <div class="quick-card-title">Global Pop</div>
             </div>
             <div class="quick-card" onclick="openQuickCollection('hiphop', 'Hip-Hop & Rap', 'travis scott')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #10b981, #065f46);">🪐</div>
+              <div class="quick-card-icon" style="background: linear-gradient(135deg, #27272a, #09090b);">🪐</div>
               <div class="quick-card-title">Hip-Hop & Rap</div>
             </div>
           </div>
@@ -1983,7 +2221,7 @@
             <button class="chip" onclick="searchAndGo('Alan Walker')">🎧 Alan Walker</button>
             <button class="chip" onclick="searchAndGo('Telugu Lofi')">☕ Telugu Lo-Fi</button>
           </div>
-          <div id="searchStatus" style="font-size:12px;color:var(--accent-green);font-weight:700;margin-bottom:8px;"></div>
+          <div id="searchStatus" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-bottom:8px;"></div>
 
           <!-- Matching Artists Section in Search -->
           <div id="searchArtistsSection" style="display:none;margin-bottom:16px;">
@@ -2017,22 +2255,22 @@
             <h2 class="section-title">Browse Moods & Genres</h2>
           </div>
           <div class="genre-grid">
-            <div class="genre-card" style="background:linear-gradient(135deg,#f59e0b,#78350f)" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#27272a,#09090b)" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
               <span>Telugu Hits</span><span class="emoji">🎬</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#e11d48,#881337)" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#334155,#0f172a)" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
               <span>Pop Anthems</span><span class="emoji">🎤</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#059669,#064e3b)" onclick="openQuickCollection('bollywood', 'Bollywood Romantic Hits', 'arijit singh')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#3f3f46,#18181b)" onclick="openQuickCollection('bollywood', 'Bollywood Romantic Hits', 'arijit singh')">
               <span>Bollywood</span><span class="emoji">💖</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#7c3aed,#3b0764)" onclick="openQuickCollection('hiphop', 'Hip-Hop & Phonk', 'travis scott')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#1f2937,#090a0f)" onclick="openQuickCollection('hiphop', 'Hip-Hop & Phonk', 'travis scott')">
               <span>Hip-Hop & Phonk</span><span class="emoji">🔥</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#0284c7,#0c4a6e)" onclick="openQuickCollection('lofi', 'Lo-Fi Chill Beats', 'lofi chill')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#374151,#111827)" onclick="openQuickCollection('lofi', 'Lo-Fi Chill Beats', 'lofi chill')">
               <span>Lo-Fi Study</span><span class="emoji">☕</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#4f46e5,#1e1b4b)" onclick="openQuickCollection('english', 'Rock & EDM Classics', 'imagine dragons')">
+            <div class="genre-card" style="background:linear-gradient(135deg,#262626,#0a0a0a)" onclick="openQuickCollection('english', 'Rock & EDM Classics', 'imagine dragons')">
               <span>Rock & EDM</span><span class="emoji">⚡</span>
             </div>
           </div>
@@ -2064,7 +2302,7 @@
           <div class="section-header" style="margin-top:4px;">
             <h2 class="section-title">❤️ Your Music Library</h2>
             <div style="display:flex;gap:6px;">
-              <button class="section-link" style="background:rgba(30,215,96,0.16);border-color:rgba(30,215,96,0.4);color:#1ed760;" onclick="showLibraryView('playlists')">➕ New Playlist</button>
+              <button class="section-link" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.28);color:#ffffff;" onclick="showLibraryView('playlists')">➕ New Playlist</button>
               <button class="section-link" onclick="document.getElementById('localAudioInput').click()">+ Local MP3</button>
               <button class="section-link" onclick="exportLibraryData()">Export</button>
             </div>
@@ -2072,7 +2310,7 @@
 
           <input type="file" id="localAudioInput" accept="audio/*" multiple style="display:none" onchange="handleLocalFiles(event)" />
 
-          <div class="chips-scroll" id="libraryChipsBar">
+          <div class="chips-scroll" id="libraryViewChips">
             <button class="chip active" data-lib-view="liked" onclick="showLibraryView('liked', this)">❤️ Liked Songs (<span id="likedCount">0</span>)</button>
             <button class="chip" data-lib-view="playlists" onclick="showLibraryView('playlists', this)">🎵 Playlists (<span id="playlistCount">0</span>)</button>
             <button class="chip" data-lib-view="recent" onclick="showLibraryView('recent', this)">🕒 Recently Played</button>
@@ -2081,14 +2319,14 @@
 
           <!-- Custom Playlists Manager Panel -->
           <div id="libraryPlaylistsPanel" style="display:none;margin-bottom:14px;">
-            <div style="display:flex;gap:8px;margin-bottom:12px;background:rgba(255,255,255,0.04);padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);">
+            <div style="display:flex;gap:8px;margin-bottom:12px;background:rgba(255,255,255,0.05);padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,0.16);">
               <input type="text" id="newPlaylistNameInput" class="connect-input" style="margin:0;flex:1;" placeholder="Enter new playlist name (e.g. Gym Vibes, Telugu Melodies)..." />
               <button class="util-btn primary" style="white-space:nowrap;font-weight:800;padding:8px 14px;" onclick="createNewUserPlaylist()">
                 ➕ Create
               </button>
             </div>
-            <div id="userPlaylistsGrid" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
-            <div id="activePlaylistTracksHeader" style="display:none;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:rgba(30,215,96,0.12);border:1px solid rgba(30,215,96,0.35);align-items:center;justify-content:space-between;gap:8px;">
+            <div id="playlistsGridCards" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
+            <div id="activePlaylistHeaderBar" style="display:none;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);align-items:center;justify-content:space-between;gap:8px;">
               <div>
                 <div id="activePlaylistTitleText" style="font-size:13.5px;font-weight:800;color:#fff;">Playlist Songs</div>
                 <div id="activePlaylistSubText" style="font-size:11px;color:var(--text-secondary);">Tap any song to play</div>
@@ -2104,13 +2342,13 @@
         </section>
 
         <!-- Add Song to Playlist Picker Modal -->
-        <div id="playlistPickerModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,5,9,0.85);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closePlaylistPickerModal()">
-          <div style="width:100%;max-width:400px;background:#11131c;border:1px solid rgba(255,255,255,0.14);border-radius:22px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,0.85);">
+        <div id="playlistPickerModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,5,9,0.85);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closePlaylistPickerModal()">
+          <div style="width:100%;max-width:400px;background:rgba(24,25,30,0.95);border:1px solid rgba(255,255,255,0.24);border-radius:22px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,0.85);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
               <h3 style="margin:0;font-size:15px;font-weight:900;color:#fff;">🎵 Add Song to Playlist</h3>
               <button class="util-btn" style="padding:4px 9px;font-size:12px;" onclick="closePlaylistPickerModal()">✕</button>
             </div>
-            <div id="playlistPickerSongTitle" style="font-size:12px;color:#1ed760;font-weight:700;margin-bottom:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+            <div id="playlistPickerTrackName" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-bottom:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
             <div style="display:flex;gap:6px;margin-bottom:12px;">
               <input type="text" id="modalNewPlaylistInput" class="connect-input" style="margin:0;flex:1;" placeholder="Or create new playlist..." />
               <button class="util-btn primary" style="padding:7px 12px;font-size:11.5px;font-weight:800;" onclick="createAndAddFromModal()">➕ Create & Add</button>
@@ -2123,26 +2361,26 @@
         <section id="tab-connect" class="tab-pane">
           <div class="section-header" style="margin-top:4px;">
             <h2 class="section-title">👤 My Balu Beats Account</h2>
-            <button class="section-action" onclick="openAuthOverlay('login')">🔄 Switch Account</button>
+            <button class="section-link" onclick="openAuthOverlay('login')">🔄 Switch Account</button>
           </div>
 
           <!-- Active User Profile Card -->
-          <div class="connect-card" style="background:linear-gradient(135deg,rgba(30,215,96,0.14),rgba(0,210,255,0.10));border-color:rgba(30,215,96,0.4);">
+          <div class="connect-card">
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
-              <div id="accountAvatarCircle" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 20px rgba(30,215,96,0.3);">
+              <div id="accountAvatarCircle" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#ffffff,#cbd5e1);color:#060709;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 20px rgba(0,0,0,0.5);">
                 BB
               </div>
               <div style="min-width:0;flex:1;">
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                   <h3 id="accountDisplayName" style="font-size:17px;font-weight:900;margin:0;color:#fff;">Balu Beats Member</h3>
-                  <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.2);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">PRO 320kbps</span>
+                  <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,0.12);color:#ffffff;border:1px solid rgba(255,255,255,0.28);">PRO 320kbps</span>
                 </div>
-                <div id="accountHandleText" style="font-size:12px;color:#1ed760;font-weight:700;margin-top:2px;">@being_rebel__7</div>
+                <div id="accountHandleText" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-top:2px;">@being_rebel__7</div>
                 <div id="accountEmailText" style="font-size:11.5px;color:var(--text-secondary);margin-top:1px;">Logged in • Full HD Streaming Active</div>
               </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.28);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.38);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.08);">
               <div>
                 <div id="accountLikedStat" style="font-size:15px;font-weight:900;color:#fff;">0</div>
                 <div style="font-size:10.5px;color:var(--text-secondary);">Liked Songs</div>
@@ -2152,7 +2390,7 @@
                 <div style="font-size:10.5px;color:var(--text-secondary);">HD Catalog</div>
               </div>
               <div>
-                <div id="accountVibeStat" style="font-size:13px;font-weight:900;color:#00d2ff;">Telugu</div>
+                <div id="accountVibeStat" style="font-size:13px;font-weight:900;color:#e5e7eb;">Telugu</div>
                 <div style="font-size:10.5px;color:var(--text-secondary);">Home Vibe</div>
               </div>
             </div>
@@ -2185,12 +2423,12 @@
           </div>
 
           <!-- WhatsApp Group Testing & Live Users Analytics -->
-          <div class="connect-card" style="border-color:rgba(234,179,8,0.45);background:linear-gradient(135deg,rgba(234,179,8,0.12),rgba(30,215,96,0.08));">
+          <div class="connect-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
               <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
                 <span>👑</span> WhatsApp Group Testing & Live Users
               </h3>
-              <span id="telemetryStatusBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(234,179,8,0.2);color:#facc15;border:1px solid rgba(234,179,8,0.4);">
+              <span id="telemetryStatusBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
                 🟢 Live Tracking Active
               </span>
             </div>
@@ -2199,9 +2437,9 @@
             </p>
 
             <!-- Live Metrics Counter -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.35);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.06);">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.38);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.08);">
               <div>
-                <div id="statTotalUsers" style="font-size:18px;font-weight:900;color:#facc15;">1</div>
+                <div id="statTotalUsers" style="font-size:18px;font-weight:900;color:#ffffff;">1</div>
                 <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Total Testers</div>
               </div>
               <div>
@@ -2209,40 +2447,40 @@
                 <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Android APK</div>
               </div>
               <div>
-                <div id="statWebUsers" style="font-size:18px;font-weight:900;color:#00d2ff;">0</div>
+                <div id="statWebUsers" style="font-size:18px;font-weight:900;color:#d1d5db;">0</div>
                 <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Web Browser</div>
               </div>
             </div>
 
             <!-- Action Buttons -->
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
-              <button class="util-btn primary" onclick="openDeveloperAdminModal('users')" style="flex:1;min-width:140px;justify-content:center;background:linear-gradient(135deg,#f59e0b,#1ed760);color:#041208;font-weight:900;border:none;">
+              <button class="util-btn primary" onclick="openDeveloperAdminModal('users')" style="flex:1;min-width:140px;justify-content:center;">
                 👥 View Logged Users
               </button>
-              <button class="util-btn" onclick="openDeveloperAdminModal('cloud')" style="flex:1;min-width:140px;justify-content:center;border-color:rgba(56,189,248,0.5);color:#38bdf8;font-weight:800;">
+              <button class="util-btn" onclick="openDeveloperAdminModal('cloud')" style="flex:1;min-width:140px;justify-content:center;">
                 🌐 4G/5G Live Cloud
               </button>
-              <button class="util-btn" onclick="openDeveloperAdminModal('sheet')" style="flex:1;min-width:140px;justify-content:center;border-color:rgba(30,215,96,0.5);color:#1ed760;font-weight:800;">
+              <button class="util-btn" onclick="openDeveloperAdminModal('sheet')" style="flex:1;min-width:140px;justify-content:center;">
                 📊 Google Sheet
               </button>
             </div>
 
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-secondary);padding-top:4px;">
               <span id="lastUserSeenText">Last Activity: Just now (@being_rebel__7)</span>
-              <button onclick="refreshDeveloperTelemetry(true)" style="background:none;border:none;color:#facc15;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;">
+              <button onclick="refreshDeveloperTelemetry(true)" style="background:none;border:none;color:#ffffff;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;">
                 🔄 Refresh Now
               </button>
             </div>
           </div>
 
           <!-- App Updates & APK Download Center -->
-          <div class="connect-card" style="border-color:rgba(30,215,96,0.35);background:linear-gradient(135deg,rgba(30,215,96,0.08),rgba(0,210,255,0.05));">
+          <div class="connect-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
               <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
                 <span>🚀</span> App Version & Updates
               </h3>
               <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                v3.5.0 (Latest • Artists, Playlists & Conflict-Free APK)
+                v3.5.0 (Latest • Smoked Glass Theme, Artists & Playlists)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
@@ -2250,12 +2488,13 @@
             </p>
 
             <!-- Published Live v3.5 Update Status Box (Visible by default in Account section) -->
-            <div id="updateStatusBox" style="display:block;padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;line-height:1.5;background:rgba(30,215,96,0.14);border:1px solid rgba(30,215,96,0.45);color:#86efac;">
+            <div id="updateStatusBox" style="display:block;padding:12px;border-radius:14px;margin-bottom:12px;font-size:12px;line-height:1.5;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.22);color:#e2e8f0;">
               <div style="font-weight:800;margin-bottom:5px;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
                 <span>✓</span> Balu Beats <strong>v3.5 (v3.5.0)</strong> — Latest Official Update Published
               </div>
-              <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
+              <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.35);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
                 ✨ <strong>What's New in v3.5:</strong><br/>
+                • <strong>Dark Smoked-Glass 3D Coverflow Theme:</strong> Frosted charcoal-ash glass & 3D fanned album deck<br/>
                 • <strong>Artist Search & Profiles:</strong> Matching artists carousel + complete artist metadata on all songs<br/>
                 • <strong>Custom Playlists in Library:</strong> Create playlists & add any song in 1 tap (<code>📁+</code>)<br/>
                 • <strong>Permanent APK Signing Key:</strong> Eliminates Android package conflict errors on future updates
@@ -2270,13 +2509,13 @@
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
                 🔄 Check for Updates (v3.5)
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.0" download="Balu_Beats_v3.5.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(255,255,255,0.28);color:#ffffff;font-weight:800;">
                 ⬇ Download Latest APK (v3.5.0)
               </a>
             </div>
 
             <!-- Fast Store Link & Direct Share Link -->
-            <div style="display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.08);">
+            <div style="display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);">
               <span style="font-size:11px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">https://praveen-79.github.io/balu-beats/download.html</span>
               <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="padding:4px 9px;font-size:11px;text-decoration:none;">🏪 APK Store</a>
               <button class="util-btn" style="padding:4px 9px;font-size:11px;" onclick="navigator.clipboard?.writeText('https://praveen-79.github.io/balu-beats/download.html');showToast('Copied APK Store Link!')">📋 Copy</button>
@@ -2345,11 +2584,11 @@
             </svg>
           </button>
           <div class="np-source-label">
-            <small>BALU BEATS • @being_rebel__7</small>
+            <small>🎵 BALU BEATS • @being_rebel__7</small>
             <strong id="npSourceBadge">320kbps Full-Track Stream</strong>
           </div>
           <button class="icon-btn" onclick="shareCurrentSongNative()" title="Share Song">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1ed760" stroke-width="2.2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
               <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
               <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
             </svg>
@@ -2363,13 +2602,57 @@
           <button class="np-mode-btn" onclick="setNpView('queue', this)">📜 Queue (<span id="queueCountBadge">0</span>)</button>
         </div>
 
-        <!-- Stage: Artwork + Visualizer / Lyrics / Queue -->
+        <!-- Stage: 3D Fanned Coverflow Glass Stack + Visualizer / Lyrics / Queue -->
         <div class="np-stage">
           <div id="npArtView" style="display:flex;flex-direction:column;align-items:center;width:100%;">
-            <div class="np-art-container" id="npArtContainer" onclick="toggleVinylSpin()" title="Tap to toggle spinning vinyl">
-              <img id="npArt" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/np/500/500'" alt="Album Art" />
+            <div class="np-coverflow-deck">
+              <!-- Left Far Fanned Card -->
+              <div class="np-side-card left-far" id="npSideLeft2" onclick="playPrev()" title="Previous Track">
+                <img id="npSideLeft2Img" src="https://picsum.photos/seed/l2/300/300" alt="" />
+                <div class="np-side-card-meta">
+                  <div class="np-side-card-title" id="npSideLeft2Title">Previous</div>
+                  <div class="np-side-card-sub" id="npSideLeft2Artist">Balu Beats</div>
+                </div>
+              </div>
+              <!-- Left Near Fanned Card -->
+              <div class="np-side-card left-near" id="npSideLeft1" onclick="playPrev()" title="Previous Track">
+                <img id="npSideLeft1Img" src="https://picsum.photos/seed/l1/300/300" alt="" />
+                <div class="np-side-card-meta">
+                  <div class="np-side-card-title" id="npSideLeft1Title">Previous</div>
+                  <div class="np-side-card-sub" id="npSideLeft1Artist">Balu Beats</div>
+                </div>
+              </div>
+              <!-- Center Active Frosted Glass Card -->
+              <div class="np-art-container" id="npArtContainer" onclick="togglePlay()" title="Tap to Play / Pause">
+                <img id="npArt" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/np/500/500'" alt="Album Art" />
+                <div class="np-card-glass-footer">
+                  <div style="min-width:0;flex:1;">
+                    <div class="np-card-glass-title" id="npCardGlassTitle">Select a Track</div>
+                    <div class="np-card-glass-artist" id="npCardGlassArtist">Balu Beats</div>
+                  </div>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.2" stroke-linecap="round" style="flex-shrink:0;">
+                    <line x1="4" y1="10" x2="4" y2="14"/><line x1="8" y1="7" x2="8" y2="17"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="16" y1="7" x2="16" y2="17"/><line x1="20" y1="10" x2="20" y2="14"/>
+                  </svg>
+                </div>
+              </div>
+              <!-- Right Near Fanned Card -->
+              <div class="np-side-card right-near" id="npSideRight1" onclick="playNext()" title="Next Track">
+                <img id="npSideRight1Img" src="https://picsum.photos/seed/r1/300/300" alt="" />
+                <div class="np-side-card-meta">
+                  <div class="np-side-card-title" id="npSideRight1Title">Up Next</div>
+                  <div class="np-side-card-sub" id="npSideRight1Artist">Balu Beats</div>
+                </div>
+              </div>
+              <!-- Right Far Fanned Card -->
+              <div class="np-side-card right-far" id="npSideRight2" onclick="playNext()" title="Next Track">
+                <img id="npSideRight2Img" src="https://picsum.photos/seed/r2/300/300" alt="" />
+                <div class="np-side-card-meta">
+                  <div class="np-side-card-title" id="npSideRight2Title">Later</div>
+                  <div class="np-side-card-sub" id="npSideRight2Artist">Balu Beats</div>
+                </div>
+              </div>
             </div>
-            <canvas id="visualizerCanvas" class="visualizer-canvas" width="320" height="44"></canvas>
+            <canvas id="visualizerCanvas" class="visualizer-canvas" width="320" height="36"></canvas>
           </div>
 
           <div id="npLyricsView" class="np-lyrics-box">
@@ -2381,13 +2664,17 @@
           </div>
         </div>
 
-        <!-- Track Title & Like -->
+        <!-- Smoked-Glass Floating Pill Bar (Matching Shared Reference Image) -->
         <div class="np-track-info">
+          <img id="npPillArt" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/np/100/100'" style="width:38px;height:38px;border-radius:9px;object-fit:cover;border:1px solid rgba(255,255,255,0.22);flex-shrink:0;" alt="" />
           <div style="min-width:0;flex:1;">
             <div class="np-title" id="npTitle">Select a Track</div>
             <div class="np-artist" id="npArtist">Balu Beats • @being_rebel__7</div>
           </div>
-          <button class="icon-btn" id="npLikeBtn" onclick="toggleLikeCurrent()" title="Save to Liked Songs">
+          <button class="icon-btn" onclick="if(state.currentTrack)openPlaylistPickerForTrack(state.currentTrack)" title="Add to Playlist" style="width:32px;height:32px;font-size:12px;">
+            📁+
+          </button>
+          <button class="icon-btn" id="npLikeBtn" onclick="toggleLikeCurrent()" title="Save to Liked Songs" style="width:32px;height:32px;background:rgba(30,215,96,0.18);border-color:rgba(30,215,96,0.45);color:#1ed760;">
             ♡
           </button>
         </div>
@@ -5463,10 +5750,55 @@
             <span class="source-badge">320kbps • ${formatTime(track.duration)}</span>
             <div class="card-play-fab">▶</div>
           </div>
-          <div class="album-name">${escapeHtml(track.title)}</div>
-          <div class="album-artist">${escapeHtml(track.artist)}</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 2px;">
+            <div style="min-width:0;flex:1;">
+              <div class="album-name">${escapeHtml(track.title)}</div>
+              <div class="album-artist">${escapeHtml(track.artist)}</div>
+            </div>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.68)" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;">
+              <line x1="4" y1="9" x2="4" y2="15"></line>
+              <line x1="8" y1="6" x2="8" y2="18"></line>
+              <line x1="12" y1="3" x2="12" y2="21"></line>
+              <line x1="16" y1="7" x2="16" y2="17"></line>
+              <line x1="20" y1="10" x2="20" y2="14"></line>
+            </svg>
+          </div>
         `;
         carouselEl.appendChild(card);
+      });
+    }
+
+    function updateNowPlayingCoverflowDeck(track) {
+      if (!track) return;
+      const glassTitle = document.getElementById('npCardGlassTitle');
+      const glassArtist = document.getElementById('npCardGlassArtist');
+      const pillArt = document.getElementById('npPillArt');
+      if (glassTitle) glassTitle.textContent = track.title || 'Balu Beats';
+      if (glassArtist) glassArtist.textContent = track.artist || 'Featured Artist';
+      if (pillArt && track.artwork) pillArt.src = track.artwork;
+
+      const q = (state.queue && state.queue.length > 0) ? state.queue : BALU_CURATED_FULL_SONGS;
+      const len = q.length;
+      if (!len) return;
+      const curIdx = Math.max(0, state.currentIndex >= 0 ? state.currentIndex : 0);
+
+      const slots = [
+        { id: 'npSideLeft2',  offset: -2 },
+        { id: 'npSideLeft1',  offset: -1 },
+        { id: 'npSideRight1', offset: 1 },
+        { id: 'npSideRight2', offset: 2 }
+      ];
+      slots.forEach(slot => {
+        const cardEl = document.getElementById(slot.id);
+        if (!cardEl) return;
+        const t = q[(curIdx + slot.offset + len * 4) % len];
+        if (!t) return;
+        const img = cardEl.querySelector('img');
+        const tEl = cardEl.querySelector('.np-side-card-title');
+        const aEl = cardEl.querySelector('.np-side-card-sub');
+        if (img && t.artwork) img.src = t.artwork;
+        if (tEl) tEl.textContent = t.title || '';
+        if (aEl) aEl.textContent = t.artist || '';
       });
     }
 
@@ -5568,6 +5900,7 @@
         state.currentIndex = 0;
         state.currentTrack = initialFull[0];
         audio.src = initialFull[0].streamUrl;
+        updateNowPlayingCoverflowDeck(initialFull[0]);
         syncNativeAndroidNotification(true);
       }
 
@@ -5914,6 +6247,7 @@
       document.getElementById('npArtist').textContent = track.artist;
       document.getElementById('npArt').src = track.artwork;
       document.getElementById('npSourceBadge').textContent = `${track.source} (${formatTime(track.duration)})`;
+      updateNowPlayingCoverflowDeck(track);
 
       document.getElementById('miniProgressFill').style.width = '0%';
       document.getElementById('seekSlider').value = 0;
@@ -6330,10 +6664,10 @@
 
     function updateDynamicAmbientGlow(sourceKey) {
       const colors = {
-        saavn: 'rgba(30, 215, 96, 0.30)',
-        itunes: 'rgba(0, 210, 255, 0.28)',
-        audius: 'rgba(168, 85, 247, 0.30)',
-        radio: 'rgba(245, 158, 11, 0.28)'
+        saavn: 'rgba(225, 230, 240, 0.24)',
+        itunes: 'rgba(205, 212, 226, 0.22)',
+        audius: 'rgba(215, 220, 232, 0.22)',
+        radio: 'rgba(235, 238, 245, 0.24)'
       };
       document.documentElement.style.setProperty('--dynamic-glow', colors[sourceKey] || colors.saavn);
     }
