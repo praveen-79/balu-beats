@@ -2177,7 +2177,7 @@
                 <span>🚀</span> App Version & Updates
               </h3>
               <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                v3.2.0 (Latest • Smooth Multitasking)
+                v3.3.0 (Latest • Zero-Lag Notification & Smooth Lyrics)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
@@ -2192,8 +2192,8 @@
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
                 🔄 Check for Updates
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.2.0" download="Balu_Beats_v3.2.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
-                ⬇ Download Latest APK (v3.2.0)
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.3.0" download="Balu_Beats_v3.3.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
+                ⬇ Download Latest APK (v3.3.0)
               </a>
             </div>
 
@@ -4803,6 +4803,14 @@
     const state = {
       activeCategory: 'all',
       searchReqId: 0,
+      playReqId: 0,
+      lyricsReqId: 0,
+      isLoadingTrack: false,
+      activeLyricIdx: -1,
+      lastNotifTrackId: null,
+      lastNotifPlaying: null,
+      notifDebounceTimer: null,
+      queueDirty: true,
       queue: [],
       currentIndex: -1,
       currentTrack: null,
@@ -4825,13 +4833,18 @@
     };
 
     const audio = document.getElementById('audioPlayer');
+    const saavnSearchCache = new Map();
 
-    // Utility: Decode HTML entities from API responses (e.g., &quot;)
+    // Utility: Fast zero-DOM HTML entity decoder (eliminates DOM allocations during track parsing)
     function decodeEntities(str) {
-      if (!str) return '';
-      const txt = document.createElement('textarea');
-      txt.innerHTML = str;
-      return txt.value;
+      if (!str || typeof str !== 'string') return '';
+      if (!str.includes('&')) return str;
+      return str
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;|&apos;/g, "'")
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
     }
 
     function showToast(msg) {
@@ -4953,48 +4966,39 @@
       }).filter(t => t.streamUrl);
     }
 
-    // Engine A: Multi-Mirror 320kbps Full-Length Song Search
+    // Engine A: Multi-Mirror 320kbps Full-Length Song Search (Cached for zero CPU stutter)
     async function searchSaavnTracks(query, limit = 18) {
-      // 1. If running inside Android APK with native bridge, fetch directly with 0ms CORS!
-      if (window.AndroidBridge && typeof window.AndroidBridge.httpGet === 'function') {
-        try {
-          const directUrl = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&_marker=0&api_version=4&ctx=web6dot0&n=${limit}&p=1&q=${encodeURIComponent(query)}`;
-          const raw = window.AndroidBridge.httpGet(directUrl);
-          if (raw) {
-            const parsed = deduplicateTracks(parseSaavnDirectJson(JSON.parse(raw)));
-            if (parsed.length) return parsed;
-          }
-        } catch (e) {
-          console.warn('AndroidBridge direct fetch fallback:', e);
-        }
+      const cacheKey = `${query.toLowerCase().trim()}_${limit}`;
+      if (saavnSearchCache.has(cacheKey)) {
+        return saavnSearchCache.get(cacheKey);
       }
 
-      // 2. Use our fast Vercel Serverless Backend (https://balu-beats.vercel.app/api/saavn)!
-      try {
-        const apiEndpoint = (location.protocol.startsWith('http') && !location.hostname.includes('github.io'))
-          ? `/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`
-          : `https://balu-beats.vercel.app/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`;
-        const localRes = await fetch(apiEndpoint);
-        if (localRes.ok) {
-          const json = await localRes.json();
-          const parsedDirect = deduplicateTracks(parseSaavnDirectJson(json));
-          if (parsedDirect.length) return parsedDirect;
-          const parsedMirror = deduplicateTracks(parseSaavnMirrorJson(json));
-          if (parsedMirror.length) return parsedMirror;
-        }
-      } catch (_) {}
+      // 1. If running on local Python server (localhost), use fast local /api/saavn proxy
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        try {
+          const localRes = await fetch(`/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`);
+          if (localRes.ok) {
+            const json = await localRes.json();
+            const parsedDirect = deduplicateTracks(parseSaavnDirectJson(json));
+            if (parsedDirect.length) {
+              saavnSearchCache.set(cacheKey, parsedDirect);
+              return parsedDirect;
+            }
+          }
+        } catch (_) {}
+      }
 
-      // 3. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors IN PARALLEL!
+      // 2. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors IN PARALLEL!
       const mirrors = [
+        `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
         `https://saavnx.vercel.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
-        `https://akdev-jiosaavnapi.netlify.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
-        `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`
+        `https://akdev-jiosaavnapi.netlify.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`
       ];
 
       try {
         const fastResult = await Promise.any(mirrors.map(async (url) => {
           const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 4500);
+          const timer = setTimeout(() => controller.abort(), 3800);
           const res = await fetch(url, { signal: controller.signal });
           clearTimeout(timer);
           if (!res.ok) throw new Error('status ' + res.status);
@@ -5003,10 +5007,13 @@
           if (!tracks.length) throw new Error('empty');
           return tracks;
         }));
-        if (fastResult && fastResult.length) return fastResult;
+        if (fastResult && fastResult.length) {
+          saavnSearchCache.set(cacheKey, fastResult);
+          return fastResult;
+        }
       } catch (_) {}
 
-      // 4. Fallback to matching curated full 320kbps tracks if offline
+      // 3. Fallback to matching curated full 320kbps tracks if offline
       const qLow = query.toLowerCase();
       const matched = BALU_CURATED_FULL_SONGS.filter(t =>
         t.title.toLowerCase().includes(qLow) ||
@@ -5406,16 +5413,22 @@
     }
 
     function renderTrackList(container, tracks) {
+      if (!container) return;
       container.innerHTML = '';
       if (!tracks || !tracks.length) {
         container.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:13px;">No tracks found. Try another search or source tab!</div>`;
         return;
       }
+      const frag = document.createDocumentFragment();
+      const likedSet = new Set(state.likedTracks.map(t => t.id));
+      const curId = state.currentTrack?.id;
+
       tracks.forEach((track, idx) => {
-        const isCurrent = state.currentTrack && state.currentTrack.id === track.id;
-        const isLiked = state.likedTracks.some(t => t.id === track.id);
+        const isCurrent = curId && curId === track.id;
+        const isLiked = likedSet.has(track.id);
         const row = document.createElement('div');
         row.className = 'track-row' + (isCurrent ? ' playing' : '');
+        row.dataset.trackId = track.id || '';
         row.onclick = () => playFromList(tracks, idx);
 
         const durText = track.duration > 0 ? ` • ${formatTime(track.duration)}` : '';
@@ -5430,7 +5443,7 @@
           </div>
           <div class="track-meta">
             <div class="track-title">
-              ${isCurrent && state.isPlaying ? `<span class="eq-bars"><span></span><span></span><span></span></span>` : ''}
+              <span class="eq-bars" style="display:${isCurrent && state.isPlaying ? 'inline-flex' : 'none'}"><span></span><span></span><span></span></span>
               <span>${escapeHtml(track.title)}</span>
             </div>
             <div class="track-sub">
@@ -5442,7 +5455,7 @@
             <button class="row-icon-btn ${isLiked ? 'liked' : ''}" title="Like" onclick="toggleLikeTrack(${idx}, this)">
               ${isLiked ? '♥' : '♡'}
             </button>
-            <button class="row-icon-btn" title="Add to Queue" onclick="queueTrackNext(${idx})">
+            <button class="row-icon-btn" title="Add to Queue" onclick="queueTrackNext(${idx}, this)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
@@ -5450,7 +5463,18 @@
           </div>
         `;
         row.__trackData = track;
-        container.appendChild(row);
+        frag.appendChild(row);
+      });
+      container.appendChild(frag);
+    }
+
+    function updateActiveTrackHighlight() {
+      const curId = state.currentTrack?.id;
+      document.querySelectorAll('.track-row').forEach(row => {
+        const isMatch = Boolean(curId && row.dataset.trackId === curId);
+        row.classList.toggle('playing', isMatch);
+        const eq = row.querySelector('.eq-bars');
+        if (eq) eq.style.display = (isMatch && state.isPlaying) ? 'inline-flex' : 'none';
       });
     }
 
@@ -5461,24 +5485,27 @@
     function playFromList(list, index) {
       state.queue = [...list];
       state.currentIndex = index;
+      state.queueDirty = true;
       playCurrentIndex();
     }
 
     function playTrackImmediate(track) {
       state.queue.unshift(track);
       state.currentIndex = 0;
+      state.queueDirty = true;
       playCurrentIndex();
     }
 
     async function playCurrentIndex() {
-      let track = state.queue[state.currentIndex];
+      const track = state.queue[state.currentIndex];
       if (!track) return;
 
-      // Assign current track and sync notification IMMEDIATELY (0ms delay) so notification card is NEVER missing!
+      const reqId = ++state.playReqId;
+      state.isLoadingTrack = true;
       state.currentTrack = track;
       state.isPlaying = true;
 
-      // Update UI immediately
+      // 1. Update UI & Notification IMMEDIATELY (0ms delay, 0-song lag)
       document.getElementById('miniTitle').textContent = track.title;
       document.getElementById('miniArtist').textContent = `${track.artist} • ${track.source}`;
       document.getElementById('miniArt').src = track.artwork;
@@ -5488,31 +5515,43 @@
       document.getElementById('npArt').src = track.artwork;
       document.getElementById('npSourceBadge').textContent = `${track.source} (${formatTime(track.duration)})`;
 
+      document.getElementById('miniProgressFill').style.width = '0%';
+      document.getElementById('seekSlider').value = 0;
+      document.getElementById('currentTimeLabel').textContent = '0:00';
+      document.getElementById('durationLabel').textContent = track.duration > 0 ? formatTime(track.duration) : 'LIVE';
+
       updateLikeButtons();
       updateDynamicAmbientGlow(track.sourceKey);
       addToRecent(track);
-      updateQueueUI();
+      updateQueueUI(false); // Lazy update: only rebuilds DOM if queue tab is currently open!
       updatePlayIcons();
+      updateActiveTrackHighlight();
       updateMediaSession(track);
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true); // Immediate high-priority push for new song
 
-      // Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
+      // Start fetching karaoke lyrics in parallel without blocking playback
+      fetchSyncedLyrics(track);
+
+      // 2. Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
       if (!track.isFullTrack && track.sourceKey !== 'radio') {
         showToast(`Upgrading "${track.title}" to Full 320kbps Song...`);
         try {
           const fullMatches = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
+          if (state.playReqId !== reqId) return; // Cancelled by newer track skip
           if (fullMatches && fullMatches[0] && fullMatches[0].streamUrl) {
             track.streamUrl = fullMatches[0].streamUrl;
             track.urlsByQuality = fullMatches[0].urlsByQuality;
             track.duration = fullMatches[0].duration || track.duration;
             track.isFullTrack = true;
             track.source = 'Full 320kbps';
-            syncNativeAndroidNotification();
+            document.getElementById('npSourceBadge').textContent = `${track.source} (${formatTime(track.duration)})`;
           }
         } catch (_) {}
       }
 
-      // Resolve stream URL for selected quality if available
+      if (state.playReqId !== reqId) return;
+
+      // 3. Resolve stream URL for selected quality if available
       let url = track.streamUrl;
       if (track.urlsByQuality && track.urlsByQuality[state.quality]) {
         url = track.urlsByQuality[state.quality];
@@ -5522,23 +5561,36 @@
       audio.playbackRate = state.speed;
       try {
         await audio.play();
+        if (state.playReqId !== reqId) return;
         state.isPlaying = true;
       } catch (err) {
+        if (state.playReqId !== reqId) return;
         console.warn('Playback error, trying alternate full stream:', err);
         showToast('Loading alternate 320kbps stream...');
-        const backup = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
-        const alt = backup.find(b => b.streamUrl && b.streamUrl !== url) || backup[0];
-        if (alt && alt.streamUrl) {
-          audio.src = alt.streamUrl;
-          await audio.play().catch(() => {});
-          state.isPlaying = !audio.paused;
+        try {
+          const backup = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
+          if (state.playReqId !== reqId) return;
+          const alt = backup.find(b => b.streamUrl && b.streamUrl !== url) || backup[0];
+          if (alt && alt.streamUrl) {
+            track.streamUrl = alt.streamUrl;
+            track.urlsByQuality = alt.urlsByQuality || track.urlsByQuality;
+            audio.src = alt.streamUrl;
+            await audio.play().catch(() => {});
+            if (state.playReqId !== reqId) return;
+            state.isPlaying = !audio.paused;
+          }
+        } catch (_) {}
+      } finally {
+        if (state.playReqId === reqId) {
+          state.isLoadingTrack = false;
         }
       }
+
       updatePlayIcons();
+      updateActiveTrackHighlight();
       updateMediaSession(track);
-      syncNativeAndroidNotification();
-      fetchSyncedLyrics(track);
-      refreshSmartRecommendations(track);
+      syncNativeAndroidNotification(true);
+      if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
     }
 
     function togglePlay() {
@@ -5553,21 +5605,25 @@
         audio.play().then(() => {
           state.isPlaying = true;
           updatePlayIcons();
+          updateActiveTrackHighlight();
           if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
             navigator.mediaSession.playbackState = 'playing';
           }
           updateMediaPositionState();
-          syncNativeAndroidNotification();
+          syncNativeAndroidNotification(true);
+          if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
         }).catch(() => {});
       } else {
+        state.isLoadingTrack = false;
         audio.pause();
         state.isPlaying = false;
         updatePlayIcons();
+        updateActiveTrackHighlight();
         if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
           navigator.mediaSession.playbackState = 'paused';
         }
         updateMediaPositionState();
-        syncNativeAndroidNotification();
+        syncNativeAndroidNotification(true);
       }
     }
 
@@ -5613,7 +5669,7 @@
       if (audio.currentTime > 4) {
         audio.currentTime = 0;
         updateMediaPositionState();
-        syncNativeAndroidNotification();
+        syncNativeAndroidNotification(true);
         return;
       }
       state.currentIndex = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
@@ -5629,7 +5685,6 @@
 
     window.duckAudioFocusVolume = function() {
       if (audio) {
-        // Smoothly duck volume to 25% without jitter or robotic noise when notifications/clicks occur
         const targetVol = Math.max(0.18, (state.volume !== undefined ? state.volume : 1.0) * 0.25);
         audio.volume = targetVol;
       }
@@ -5637,10 +5692,12 @@
 
     window.pauseOnAudioFocusLoss = function() {
       if (audio && !audio.paused) {
+        state.isLoadingTrack = false;
         audio.pause();
         state.isPlaying = false;
         updatePlayIcons();
-        syncNativeAndroidNotification();
+        updateActiveTrackHighlight();
+        syncNativeAndroidNotification(true);
       }
     };
 
@@ -5649,9 +5706,9 @@
     audio.volume = 1.0;
 
     audio.addEventListener('timeupdate', () => {
-      if (state.isSeeking) return;
+      if (state.isSeeking || state.isLoadingTrack) return;
       const cur = audio.currentTime || 0;
-      const dur = audio.duration || state.currentTrack?.duration || 0;
+      const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
 
       document.getElementById('miniProgressFill').style.width = `${pct}%`;
@@ -5660,56 +5717,61 @@
       document.getElementById('durationLabel').textContent = dur > 0 ? formatTime(dur) : 'LIVE';
 
       syncLyricsScroll(cur);
-      // NOTE: Do NOT call nm.notify() inside timeupdate!
-      // Android MediaSession & Web MediaSession calculate live slider position automatically
-      // from (position + elapsed * playbackRate) without re-posting notifications or ducking volume!
     });
 
     audio.addEventListener('loadedmetadata', () => {
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('durationchange', () => {
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('play', () => {
       state.isPlaying = true;
       updatePlayIcons();
+      updateActiveTrackHighlight();
       if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true);
+      if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
     });
 
     audio.addEventListener('pause', () => {
-      // If background transition tried to pause while state.isPlaying is still true on mobile web, keep state synced
+      // Ignore transient browser pause events fired while switching audio.src or when track ends naturally
+      if (state.isLoadingTrack || audio.ended) return;
       state.isPlaying = !audio.paused;
       updatePlayIcons();
+      updateActiveTrackHighlight();
       if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
         navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
       }
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true);
     });
 
     audio.addEventListener('seeked', () => {
+      if (state.isLoadingTrack) return;
+      syncLyricsScroll(audio.currentTime || 0);
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('ratechange', () => {
+      if (state.isLoadingTrack) return;
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('ended', () => {
       if (state.repeat === 'one') {
         audio.currentTime = 0;
-        audio.play();
+        audio.play().catch(() => {});
+        syncNativeAndroidNotification(true);
       } else {
         playNext();
       }
@@ -5721,10 +5783,9 @@
     });
 
     audio.addEventListener('stalled', () => {
-      // If stalled due to background network throttling from another app
-      if (state.isPlaying && !audio.paused && audio.readyState < 2) {
+      if (state.isPlaying && !state.isLoadingTrack && !audio.paused && audio.readyState < 2) {
         setTimeout(() => {
-          if (state.isPlaying && audio.paused) {
+          if (state.isPlaying && !state.isLoadingTrack && audio.paused) {
             audio.play().catch(() => {});
           }
         }, 1200);
@@ -5732,40 +5793,42 @@
     });
 
     audio.addEventListener('error', (e) => {
+      if (state.isLoadingTrack) return; // Handled directly inside playCurrentIndex try/catch
       console.warn('[Audio Stream Recovery]', e);
       if (state.isPlaying && state.currentTrack) {
         setTimeout(() => {
-          if (state.isPlaying) playCurrentIndex();
+          if (state.isPlaying && !state.isLoadingTrack) playCurrentIndex();
         }, 1000);
       }
     });
 
     function onSeekInput(pct) {
       state.isSeeking = true;
-      const dur = audio.duration || state.currentTrack?.duration || 0;
+      const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       document.getElementById('currentTimeLabel').textContent = formatTime((pct / 100) * dur);
     }
 
     function onSeekCommit(pct) {
-      const dur = audio.duration || state.currentTrack?.duration || 0;
+      const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       if (dur > 0 && isFinite(dur)) {
         audio.currentTime = (pct / 100) * dur;
       }
       state.isSeeking = false;
+      syncLyricsScroll(audio.currentTime || 0);
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true);
     }
 
     function updateMediaPositionState() {
       if (location.protocol === 'file:') return; // Native APK uses BaluMediaService MediaSession directly
       if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
-        const dur = audio.duration || state.currentTrack?.duration || 0;
-        const cur = audio.currentTime || 0;
+        const dur = (!state.isLoadingTrack && audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
+        const cur = state.isLoadingTrack ? 0 : (audio.currentTime || 0);
         if (dur > 0 && isFinite(dur)) {
           try {
             navigator.mediaSession.setPositionState({
               duration: dur,
-              playbackRate: audio.paused ? 0 : (state.speed || 1.0),
+              playbackRate: (state.isPlaying && (state.isLoadingTrack || !audio.paused)) ? (state.speed || 1.0) : 0,
               position: Math.min(cur, dur)
             });
           } catch (_) {}
@@ -5773,69 +5836,116 @@
       }
     }
 
-    // Sync rich song state to Native Android APK Foreground Media Service (100% Play-Protect safe!)
-    function syncNativeAndroidNotification() {
+    function dispatchAndroidMediaPayload(payload) {
+      const json = JSON.stringify(payload);
+      if (json === state.lastNotifiedSignature) return;
+      state.lastNotifiedSignature = json;
+      state.lastNotifiedTrackId = payload.id;
+      state.lastNotifiedPlaying = payload.playing;
+
+      // Direct 0ms JavascriptInterface bridge if available in v3.3.0+ APK, with console fallback
+      if (window.AndroidMediaBridge && typeof window.AndroidMediaBridge.syncMedia === 'function') {
+        try {
+          window.AndroidMediaBridge.syncMedia(json);
+          return;
+        } catch (_) {}
+      }
+      console.log('BALU_MEDIA:' + json);
+    }
+
+    // Sync rich song state to Native Android APK Foreground Media Service with anti-rate-limit coalescing
+    function syncNativeAndroidNotification(forceImmediate = false) {
       const t = state.currentTrack;
       if (!t) return;
-      const curMs = Math.floor((audio.currentTime || 0) * 1000);
-      const durMs = Math.floor(((audio.duration && isFinite(audio.duration)) ? audio.duration : (t.duration || 210)) * 1000);
+      const trackId = String(t.id || t.title || 'balu_track');
+      const isPlayingNow = Boolean(state.isPlaying && (state.isLoadingTrack || !audio.paused));
+      const curSec = state.isLoadingTrack ? 0 : (audio.currentTime || 0);
+      const durSec = (!state.isLoadingTrack && audio.duration && isFinite(audio.duration) && audio.duration > 1)
+        ? audio.duration
+        : (t.duration || 210);
+
       const payload = {
+        id: trackId,
         title: t.title || 'Balu Beats',
         artist: t.artist || '@being_rebel__7',
         album: t.album || 'Balu Beats 320kbps',
         artwork: t.artwork || '',
-        playing: Boolean(state.isPlaying && !audio.paused),
-        pos: curMs,
-        dur: durMs,
+        playing: isPlayingNow,
+        pos: Math.floor(curSec * 1000),
+        dur: Math.floor(durSec * 1000),
         speed: Number(state.speed || 1.0)
       };
-      console.log('BALU_MEDIA:' + JSON.stringify(payload));
+
+      const trackOrPlayChanged = (trackId !== state.lastNotifiedTrackId) || (isPlayingNow !== state.lastNotifiedPlaying);
+
+      if (forceImmediate || trackOrPlayChanged) {
+        if (state.notifyDebounceTimer) {
+          clearTimeout(state.notifyDebounceTimer);
+          state.notifyDebounceTimer = null;
+        }
+        dispatchAndroidMediaPayload(payload);
+      } else {
+        if (state.notifyDebounceTimer) clearTimeout(state.notifyDebounceTimer);
+        state.notifyDebounceTimer = setTimeout(() => {
+          state.notifyDebounceTimer = null;
+          dispatchAndroidMediaPayload(payload);
+        }, 110);
+      }
     }
+
+    let mediaSessionHandlersBound = false;
 
     // Native Phone Lock-Screen, Notification Shade & Headphone MediaSession Controls + Seek Slider
     function updateMediaSession(track) {
-      // Always sync to Native Android APK Service
-      syncNativeAndroidNotification();
+      if (!track) return;
       // When running inside the Native Android APK (file://), let BaluMediaService own the single MediaSession
       // so Chromium WebView doesn't create a competing MediaSession that ducks audio!
       if (location.protocol === 'file:') return;
 
       if ('mediaSession' in navigator) {
+        const artUrl = track.artwork || 'icon-512.png';
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.title,
           artist: track.artist,
           album: track.album || 'Balu Beats (@being_rebel__7)',
           artwork: [
-            { src: track.artwork, sizes: '96x96', type: 'image/jpeg' },
-            { src: track.artwork, sizes: '192x192', type: 'image/jpeg' },
-            { src: track.artwork, sizes: '512x512', type: 'image/jpeg' }
+            { src: artUrl, sizes: '96x96', type: 'image/jpeg' },
+            { src: artUrl, sizes: '192x192', type: 'image/jpeg' },
+            { src: artUrl, sizes: '512x512', type: 'image/jpeg' }
           ]
         });
         navigator.mediaSession.playbackState = state.isPlaying ? 'playing' : 'paused';
-        navigator.mediaSession.setActionHandler('play', () => { if (audio.paused) togglePlay(); });
-        navigator.mediaSession.setActionHandler('pause', () => { if (!audio.paused) togglePlay(); });
-        navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
-        navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
-        try {
-          navigator.mediaSession.setActionHandler('seekto', (details) => {
-            if (details.seekTime != null && isFinite(details.seekTime)) {
-              audio.currentTime = details.seekTime;
+
+        if (!mediaSessionHandlersBound) {
+          mediaSessionHandlersBound = true;
+          navigator.mediaSession.setActionHandler('play', () => { if (audio.paused) togglePlay(); });
+          navigator.mediaSession.setActionHandler('pause', () => { if (!audio.paused) togglePlay(); });
+          navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
+          navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
+          try {
+            navigator.mediaSession.setActionHandler('seekto', (details) => {
+              if (details.seekTime != null && isFinite(details.seekTime)) {
+                audio.currentTime = details.seekTime;
+                syncLyricsScroll(audio.currentTime || 0);
+                updateMediaPositionState();
+                syncNativeAndroidNotification(true);
+              }
+            });
+            navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+              audio.currentTime = Math.max(0, (audio.currentTime || 0) - (details.seekOffset || 10));
+              syncLyricsScroll(audio.currentTime || 0);
               updateMediaPositionState();
-              syncNativeAndroidNotification();
-            }
-          });
-          navigator.mediaSession.setActionHandler('seekbackward', (details) => {
-            audio.currentTime = Math.max(0, (audio.currentTime || 0) - (details.seekOffset || 10));
-            updateMediaPositionState();
-            syncNativeAndroidNotification();
-          });
-          navigator.mediaSession.setActionHandler('seekforward', (details) => {
-            const dur = audio.duration || state.currentTrack?.duration || 300;
-            audio.currentTime = Math.min(dur, (audio.currentTime || 0) + (details.seekOffset || 10));
-            updateMediaPositionState();
-            syncNativeAndroidNotification();
-          });
-        } catch (_) {}
+              syncNativeAndroidNotification(true);
+            });
+            navigator.mediaSession.setActionHandler('seekforward', (details) => {
+              const dur = audio.duration || state.currentTrack?.duration || 300;
+              audio.currentTime = Math.min(dur, (audio.currentTime || 0) + (details.seekOffset || 10));
+              syncLyricsScroll(audio.currentTime || 0);
+              updateMediaPositionState();
+              syncNativeAndroidNotification(true);
+            });
+          } catch (_) {}
+        }
         updateMediaPositionState();
       }
     }
@@ -5851,63 +5961,108 @@
     }
 
     // =========================================================================
-    // 4. TIME-SYNCED KARAOKE LYRICS (LRCLIB API)
+    // 4. TIME-SYNCED KARAOKE LYRICS (LRCLIB API - CACHED & ZERO-REFLOW)
     // =========================================================================
 
+    const lyricsCache = new Map();
+
     async function fetchSyncedLyrics(track) {
+      if (!track) return;
+      const reqId = ++state.lyricsReqId;
       const box = document.getElementById('npLyricsView');
-      box.innerHTML = `<div class="lyric-line active">Searching synced lyrics for "${escapeHtml(track.title)}"...</div>`;
       state.lyrics = [];
+      state.activeLyricIdx = -1;
+
+      const cacheKey = `${track.title}__${track.artist}`.toLowerCase();
+      if (lyricsCache.has(cacheKey)) {
+        const cached = lyricsCache.get(cacheKey);
+        state.lyrics = cached.parsed;
+        box.innerHTML = cached.html;
+        syncLyricsScroll(audio.currentTime || 0);
+        return;
+      }
+
+      box.innerHTML = `<div class="lyric-line active">Searching synced lyrics for "${escapeHtml(track.title)}"...</div>`;
 
       try {
         const cleanTitle = track.title.replace(/\(.*?\)|\[.*?\]/g, '').trim();
-        const q = encodeURIComponent(`${cleanTitle} ${track.artist}`);
+        const firstArtist = (track.artist || '').split(',')[0].trim();
+        const q = encodeURIComponent(`${cleanTitle} ${firstArtist}`);
         const res = await fetch(`https://lrclib.net/api/search?q=${q}`);
+        if (state.lyricsReqId !== reqId) return;
         if (!res.ok) throw new Error('Lyrics fetch failed');
         const items = await res.json();
-        const match = items.find(i => i.syncedLyrics) || items.find(i => i.plainLyrics);
+        if (state.lyricsReqId !== reqId) return;
+
+        const match = Array.isArray(items) && (items.find(i => i.syncedLyrics) || items.find(i => i.plainLyrics));
+        let html = '';
+        let parsed = [];
 
         if (match && match.syncedLyrics) {
           const lines = match.syncedLyrics.split('\n');
-          const parsed = [];
           const timeExp = /\[(\d{2}):(\d{2})(?:\.(\d{2,3}))?\](.*)/;
           lines.forEach(line => {
             const m = timeExp.exec(line);
             if (m) {
-              const sec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + (parseInt(m[3] || '0', 10) / 1000);
+              const msStr = m[3] ? m[3].padEnd(3, '0') : '0';
+              const sec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + (parseInt(msStr, 10) / 1000);
               const text = m[4].trim();
               if (text) parsed.push({ time: sec, text });
             }
           });
           state.lyrics = parsed;
-          box.innerHTML = parsed.map((l, idx) =>
-            `<div class="lyric-line" id="lyric-${idx}" onclick="audio.currentTime=${l.time}">${escapeHtml(l.text)}</div>`
+          html = parsed.map((l, idx) =>
+            `<div class="lyric-line" id="lyric-${idx}" onclick="audio.currentTime=${l.time};syncLyricsScroll(${l.time});">${escapeHtml(l.text)}</div>`
           ).join('');
         } else if (match && match.plainLyrics) {
-          box.innerHTML = match.plainLyrics.split('\n').map(line =>
+          html = match.plainLyrics.split('\n').map(line =>
             `<div class="lyric-line active" style="font-size:14px;opacity:0.9;">${escapeHtml(line || '♪')}</div>`
           ).join('');
         } else {
-          box.innerHTML = `<div class="lyric-line active">♪ Instrumental / Synced lyrics unavailable for this track ♪</div>`;
+          html = `<div class="lyric-line active">♪ Instrumental / Synced lyrics unavailable for this track ♪</div>`;
+        }
+
+        lyricsCache.set(cacheKey, { parsed, html });
+        box.innerHTML = html;
+        if (parsed.length > 0) {
+          syncLyricsScroll(audio.currentTime || 0);
         }
       } catch (_) {
-        box.innerHTML = `<div class="lyric-line active">♪ Enjoy the music — "${escapeHtml(track.title)}" ♪</div>`;
+        if (state.lyricsReqId === reqId) {
+          box.innerHTML = `<div class="lyric-line active">♪ Enjoy the music — "${escapeHtml(track.title)}" ♪</div>`;
+        }
       }
     }
 
     function syncLyricsScroll(currentTime) {
-      if (!state.lyrics.length) return;
+      const len = state.lyrics.length;
+      if (!len) return;
+
+      // 150ms lookahead so lyric highlight lands right on the vocal beat
+      const targetTime = currentTime + 0.15;
       let activeIdx = 0;
-      for (let i = 0; i < state.lyrics.length; i++) {
-        if (currentTime >= state.lyrics[i].time) activeIdx = i;
+      for (let i = 0; i < len; i++) {
+        if (targetTime >= state.lyrics[i].time) activeIdx = i;
         else break;
       }
-      const prevActive = document.querySelector('#npLyricsView .lyric-line.active');
+
+      // O(1) early exit if lyric line has not changed — zero DOM queries!
+      if (activeIdx === state.activeLyricIdx) return;
+
+      const prevEl = state.activeLyricIdx >= 0 ? document.getElementById(`lyric-${state.activeLyricIdx}`) : null;
       const nextEl = document.getElementById(`lyric-${activeIdx}`);
-      if (nextEl && prevActive !== nextEl) {
-        if (prevActive) prevActive.classList.remove('active');
+      state.activeLyricIdx = activeIdx;
+
+      if (prevEl) prevEl.classList.remove('active');
+      if (nextEl) {
         nextEl.classList.add('active');
-        nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Only scroll container when Now Playing sheet & Lyrics view are actually visible on screen!
+        const sheet = document.getElementById('nowPlayingSheet');
+        const box = document.getElementById('npLyricsView');
+        if (sheet && sheet.classList.contains('open') && box && box.style.display !== 'none') {
+          const targetScroll = nextEl.offsetTop - (box.clientHeight / 2) + (nextEl.clientHeight / 2);
+          box.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+        }
       }
     }
 
@@ -6202,11 +6357,23 @@
     // =========================================================================
 
     function openNowPlaying() {
-      document.getElementById('nowPlayingSheet').classList.add('open');
+      const sheet = document.getElementById('nowPlayingSheet');
+      if (sheet) sheet.classList.add('open');
+      const lyricsView = document.getElementById('npLyricsView');
+      const queueView = document.getElementById('npQueueView');
+      if (lyricsView && lyricsView.style.display !== 'none') {
+        state.activeLyricIdx = -1;
+        syncLyricsScroll(audio.currentTime || 0);
+      }
+      if (queueView && queueView.style.display !== 'none' && state.queueDirty) {
+        updateQueueUI(true);
+      }
+      startVisualizerIfNeeded();
     }
 
     function closeNowPlaying() {
-      document.getElementById('nowPlayingSheet').classList.remove('open');
+      const sheet = document.getElementById('nowPlayingSheet');
+      if (sheet) sheet.classList.remove('open');
     }
 
     function setNpView(mode, btnEl) {
@@ -6215,10 +6382,31 @@
       document.getElementById('npArtView').style.display = mode === 'art' ? 'flex' : 'none';
       document.getElementById('npLyricsView').style.display = mode === 'lyrics' ? 'block' : 'none';
       document.getElementById('npQueueView').style.display = mode === 'queue' ? 'block' : 'none';
+
+      if (mode === 'lyrics') {
+        state.activeLyricIdx = -1;
+        syncLyricsScroll(audio.currentTime || 0);
+      } else if (mode === 'queue') {
+        if (state.queueDirty || !document.getElementById('npQueueList')?.children.length) {
+          updateQueueUI(true);
+        } else {
+          updateActiveTrackHighlight();
+        }
+      } else if (mode === 'art') {
+        startVisualizerIfNeeded();
+      }
     }
 
-    function updateQueueUI() {
-      document.getElementById('queueCountBadge').textContent = state.queue.length;
+    function updateQueueUI(forceRender = false) {
+      const badge = document.getElementById('queueCountBadge');
+      if (badge) badge.textContent = state.queue.length;
+      const sheetOpen = document.getElementById('nowPlayingSheet')?.classList.contains('open');
+      const queueVisible = sheetOpen && document.getElementById('npQueueView')?.style.display !== 'none';
+      if (!forceRender && !queueVisible) {
+        state.queueDirty = true;
+        return;
+      }
+      state.queueDirty = false;
       const qEl = document.getElementById('npQueueList');
       renderTrackList(qEl, state.queue);
     }
@@ -6246,6 +6434,8 @@
       state.speed = speeds[(speeds.indexOf(state.speed) + 1) % speeds.length];
       audio.playbackRate = state.speed;
       document.getElementById('speedBtn').textContent = `⚡ ${labels[state.speed]}`;
+      updateMediaPositionState();
+      syncNativeAndroidNotification(true);
       showToast(`Playback speed: ${labels[state.speed]}`);
     }
 
@@ -6262,9 +6452,12 @@
       clearTimeout(state.sleepTimeoutId);
       if (state.sleepMinutes > 0) {
         state.sleepTimeoutId = setTimeout(() => {
+          state.isLoadingTrack = false;
           audio.pause();
           state.isPlaying = false;
           updatePlayIcons();
+          updateActiveTrackHighlight();
+          syncNativeAndroidNotification(true);
           showToast('🌙 Sleep timer paused playback');
         }, state.sleepMinutes * 60 * 1000);
         document.getElementById('sleepTimerBtn').textContent = `🌙 Sleep: ${state.sleepMinutes}m`;
@@ -6283,35 +6476,32 @@
       window.open(state.currentTrack.streamUrl, '_blank');
     }
 
-    // Beat-Synced Audio Spectrum Visualizer (CPU-Optimized for zero background stutter/noise)
+    // Beat-Synced Audio Spectrum Visualizer (Zero-GC, sleeps when Now Playing sheet is closed or paused)
     const canvas = document.getElementById('visualizerCanvas');
     const ctx = canvas.getContext('2d');
     let visPhase = 0;
     let visualizerRunning = false;
+    let cachedVisGrad = null;
 
-    function drawVisualizer() {
-      if (document.hidden) {
-        visualizerRunning = false;
-        return; // Suspend canvas drawing when backgrounded to prevent audio crackle & buffer underruns
-      }
-      visualizerRunning = true;
-      requestAnimationFrame(drawVisualizer);
+    function renderVisualizerBars(isActive) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!cachedVisGrad) {
+        cachedVisGrad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+        cachedVisGrad.addColorStop(0, '#1ed760');
+        cachedVisGrad.addColorStop(1, '#00d2ff');
+      }
+      ctx.fillStyle = cachedVisGrad;
       const bars = 32;
       const barWidth = (canvas.width / bars) - 3;
-      visPhase += 0.12;
+      if (isActive) visPhase += 0.12;
       for (let i = 0; i < bars; i++) {
         let h = 4;
-        if (state.isPlaying && !audio.paused) {
+        if (isActive) {
           const wave1 = Math.sin(visPhase + i * 0.35) * 0.5 + 0.5;
           const wave2 = Math.cos(visPhase * 1.7 - i * 0.2) * 0.5 + 0.5;
           const centerBoost = 1 - Math.abs((i - bars / 2) / (bars / 2)) * 0.45;
           h = Math.max(4, (wave1 * 0.6 + wave2 * 0.4) * 38 * centerBoost);
         }
-        const grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
-        grad.addColorStop(0, '#1ed760');
-        grad.addColorStop(1, '#00d2ff');
-        ctx.fillStyle = grad;
         const x = i * (barWidth + 3);
         const y = (canvas.height - h) / 2;
         ctx.beginPath();
@@ -6320,13 +6510,32 @@
       }
     }
 
-    document.addEventListener('visibilitychange', () => {
-      if (!document.hidden && !visualizerRunning) {
+    function drawVisualizer() {
+      const sheetOpen = document.getElementById('nowPlayingSheet')?.classList.contains('open');
+      const artVisible = document.getElementById('npArtView')?.style.display !== 'none';
+      const shouldAnimate = !document.hidden && sheetOpen && artVisible && state.isPlaying && !audio.paused;
+
+      if (!shouldAnimate) {
+        visualizerRunning = false;
+        if (sheetOpen && artVisible) renderVisualizerBars(false);
+        return;
+      }
+      visualizerRunning = true;
+      renderVisualizerBars(true);
+      requestAnimationFrame(drawVisualizer);
+    }
+
+    function startVisualizerIfNeeded() {
+      if (!visualizerRunning) {
         drawVisualizer();
       }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) startVisualizerIfNeeded();
     });
 
-    drawVisualizer();
+    renderVisualizerBars(false);
 
     // Navigation & Modals
     function switchTab(tabId, skipAutoLoad = false) {
@@ -6590,9 +6799,9 @@
       setActiveUserSession(newUser);
       recordUserLoginTelemetry(newUser, 'SIGNUP');
       closeAuthOverlay();
-      if (vibe && CATEGORY_QUERIES[vibe]) {
+      if (vibe && CATEGORY_META[vibe]) {
         const chipBtn = document.querySelector(`.chip[data-cat="${vibe}"]`);
-        selectHomeCategory(vibe, chipBtn);
+        loadQuickCategory(vibe, chipBtn);
       }
       showToast(`🎉 Account created! Welcome, ${name}!`);
     }
@@ -6715,7 +6924,7 @@
       const editHandle = document.getElementById('profileEditHandle');
 
       if (likedStat) likedStat.textContent = String(state.likedTracks?.length || 0);
-      if (vibeStat) vibeStat.textContent = (state.currentCategory || 'telugu').toUpperCase();
+      if (vibeStat) vibeStat.textContent = (state.activeCategory || user?.vibe || 'telugu').toUpperCase();
 
       if (!user) {
         if (headerBtn) headerBtn.innerHTML = '🔑 Log In';
@@ -7304,12 +7513,12 @@ function doGet(e) {
       sheetBtn?.classList.toggle('active', tabName === 'sheet');
     }
 
-    function queueTrackNext(idx) {
-      const list = state.homeTracks || [];
-      const track = list[idx];
+    function queueTrackNext(idx, btnEl) {
+      const row = btnEl ? btnEl.closest('.track-row') : null;
+      const track = row?.__trackData || state.queue[idx];
       if (!track) return;
       state.queue.splice(state.currentIndex + 1, 0, track);
-      renderQueueList();
+      updateQueueUI();
       showToast(`➕ Added "${track.title}" to play next!`);
     }
 
@@ -7318,7 +7527,7 @@ function doGet(e) {
       const box = document.getElementById('updateStatusBox');
       if (!box) return;
 
-      const currentVersion = 'v3.2.0';
+      const currentVersion = 'v3.3.0';
       box.style.display = 'block';
       box.style.background = 'rgba(0, 210, 255, 0.12)';
       box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
@@ -7330,7 +7539,7 @@ function doGet(e) {
         const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
         const data = await res.json();
         const latestSha = (data.sha || '').slice(0, 7);
-        const commitMsg = data.commit?.message?.split('\n')[0] || 'Latest improvements, AudioFocus multitasking & background playback';
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'Latest improvements, zero-lag notification & smooth lyrics';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
 
         box.style.background = 'rgba(30, 215, 96, 0.14)';
@@ -7345,10 +7554,10 @@ function doGet(e) {
             • <em>${escapeHtml(commitMsg)}</em>
           </div>
           <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
-            ✨ What's New: AudioFocus smooth multitasking (no crackle/noise when using other apps), background keep-alive, Spotify lock screen notification, and 140+ HD 320kbps songs.
+            ✨ What's New: Zero-lag media notification card (always shows exact playing song), zero-stutter music & karaoke lyrics engine, and AudioFocus smooth multitasking.
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.2.0" download="Balu_Beats_v3.2.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Tap to Download / Update APK (v3.2.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.3.0" download="Balu_Beats_v3.3.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Tap to Download / Update APK (v3.3.0)
           </a>
         `;
         showToast(`✓ Balu Beats ${currentVersion} update is ready!`);
@@ -7363,8 +7572,8 @@ function doGet(e) {
           <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:10px;">
             Tap below to download and install the latest APK update directly onto your phone:
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.2.0" download="Balu_Beats_v3.2.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Download Latest APK (v3.2.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.3.0" download="Balu_Beats_v3.3.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Download Latest APK (v3.3.0)
           </a>
         `;
       } finally {

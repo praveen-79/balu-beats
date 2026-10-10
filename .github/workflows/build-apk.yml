@@ -32,6 +32,7 @@ jobs:
           mkdir -p build/gen build/obj build/apk/assets build/res/drawable-mdpi build/res/drawable-hdpi build/res/drawable-xhdpi build/res/drawable-xxhdpi build/res/drawable-xxxhdpi build/res/values
           cp index.html build/apk/assets/index.html
           cp download.html build/apk/assets/download.html
+          cp telemetry.html build/apk/assets/telemetry.html
           cp manifest.json build/apk/assets/manifest.json
 
           # Generate high-res multi-density launcher icons & bundled ambient graphic assets (~3.2 MB APK size)
@@ -95,8 +96,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="8"
-              android:versionName="3.2.0">
+              android:versionCode="9"
+              android:versionName="3.3.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
               <uses-permission android:name="android.permission.INTERNET" />
@@ -161,11 +162,14 @@ jobs:
           import android.media.session.PlaybackState;
           import android.net.wifi.WifiManager;
           import android.os.Build;
+          import android.os.Handler;
           import android.os.IBinder;
+          import android.os.Looper;
           import android.os.PowerManager;
           import java.io.InputStream;
           import java.net.HttpURLConnection;
           import java.net.URL;
+          import java.util.concurrent.ConcurrentHashMap;
           import org.json.JSONObject;
 
           public class BaluMediaService extends Service {
@@ -182,22 +186,34 @@ jobs:
               private MediaSession mediaSession;
               private PowerManager.WakeLock wakeLock;
               private WifiManager.WifiLock wifiLock;
+              private Handler mainHandler;
+              private boolean isForegroundStarted = false;
+              private long lastNotifPostTime = 0L;
 
               private AudioManager audioManager;
               private Object audioFocusRequestObj;
               private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
               private boolean resumeOnFocusGain = false;
 
-              private String currentTitle = "Fear Song (From \"Devara\")";
-              private String currentArtist = "Anirudh Ravichander, NTR";
-              private String currentAlbum = "Balu Beats • 320kbps HD";
-              private String currentArtworkUrl = "";
-              private Bitmap cachedArtworkBitmap = null;
+              private volatile String currentTrackId = "";
+              private volatile String currentTitle = "Fear Song (From \"Devara\")";
+              private volatile String currentArtist = "Anirudh Ravichander, NTR";
+              private volatile String currentAlbum = "Balu Beats • 320kbps HD";
+              private volatile String currentArtworkUrl = "";
+              private volatile Bitmap cachedArtworkBitmap = null;
               private Bitmap defaultCoverBitmap = null;
-              private boolean isPlaying = false;
-              private long currentPosition = 0L;
-              private long currentDuration = 214000L;
-              private float currentSpeed = 1.0f;
+              private final ConcurrentHashMap<String, Bitmap> artworkCache = new ConcurrentHashMap<>();
+              private volatile boolean isPlaying = false;
+              private volatile long currentPosition = 0L;
+              private volatile long currentDuration = 214000L;
+              private volatile float currentSpeed = 1.0f;
+
+              private final Runnable pendingNotifRunnable = new Runnable() {
+                  @Override
+                  public void run() {
+                      commitNotificationNow();
+                  }
+              };
 
               private final BroadcastReceiver actionReceiver = new BroadcastReceiver() {
                   @Override
@@ -211,7 +227,7 @@ jobs:
                           if (isPlaying) {
                               requestAudioFocus();
                           }
-                          refreshNotification();
+                          refreshNotification(true);
                           MainActivity.evalJs("if(typeof togglePlay==='function')togglePlay();");
                       } else if (ACTION_NEXT.equals(act)) {
                           MainActivity.evalJs("if(typeof playNext==='function')playNext();");
@@ -223,6 +239,7 @@ jobs:
               public void onCreate() {
                   super.onCreate();
                   instance = this;
+                  mainHandler = new Handler(Looper.getMainLooper());
                   defaultCoverBitmap = createDefaultCoverBitmap();
                   createProminentNotificationChannel();
                   setupMediaSession();
@@ -239,7 +256,7 @@ jobs:
                       registerReceiver(actionReceiver, filter);
                   }
 
-                  refreshNotification();
+                  refreshNotification(true);
               }
 
               private void setupAudioFocus() {
@@ -249,33 +266,28 @@ jobs:
                       public void onAudioFocusChange(int focusChange) {
                           switch (focusChange) {
                               case AudioManager.AUDIOFOCUS_GAIN:
-                                  // Regained full focus: smoothly restore 100% volume, resume if temporarily ducked/paused
                                   if (resumeOnFocusGain) {
                                       resumeOnFocusGain = false;
                                       isPlaying = true;
-                                      refreshNotification();
+                                      refreshNotification(true);
                                       MainActivity.evalJs("if(typeof restoreAudioFocusVolume==='function')restoreAudioFocusVolume();if(typeof audio!=='undefined'&&audio.paused)togglePlay();");
                                   } else {
                                       MainActivity.evalJs("if(typeof restoreAudioFocusVolume==='function')restoreAudioFocusVolume();");
                                   }
                                   break;
                               case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                                  // Notification sound, keyboard click, or short alert: smoothly duck to 20%
-                                  // Avoids buffer underruns, clicking, popping, and crackling noise!
                                   MainActivity.evalJs("if(typeof duckAudioFocusVolume==='function')duckAudioFocusVolume();");
                                   break;
                               case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                                  // Temporary loss (e.g. WhatsApp voice note, incoming ringtone, Instagram reel):
                                   resumeOnFocusGain = isPlaying;
                                   isPlaying = false;
-                                  refreshNotification();
+                                  refreshNotification(true);
                                   MainActivity.evalJs("if(typeof pauseOnAudioFocusLoss==='function')pauseOnAudioFocusLoss();");
                                   break;
                               case AudioManager.AUDIOFOCUS_LOSS:
-                                  // Permanent loss of audio focus:
                                   resumeOnFocusGain = false;
                                   isPlaying = false;
-                                  refreshNotification();
+                                  refreshNotification(true);
                                   MainActivity.evalJs("if(typeof pauseOnAudioFocusLoss==='function')pauseOnAudioFocusLoss();");
                                   break;
                           }
@@ -325,50 +337,41 @@ jobs:
 
               @Override
               public int onStartCommand(Intent intent, int flags, int startId) {
-                  if (intent != null) {
-                      if (ACTION_SYNC.equals(intent.getAction())) {
-                          String data = intent.getStringExtra("data");
-                          if (data != null) {
-                              try {
-                                  updateMediaData(new JSONObject(data));
-                              } catch (Exception ignored) {}
-                          } else {
-                              currentTitle = intent.getStringExtra("title") != null ? intent.getStringExtra("title") : currentTitle;
-                              currentArtist = intent.getStringExtra("artist") != null ? intent.getStringExtra("artist") : currentArtist;
-                              currentAlbum = intent.getStringExtra("album") != null ? intent.getStringExtra("album") : currentAlbum;
-                              boolean wasPlaying = isPlaying;
-                              isPlaying = intent.getBooleanExtra("playing", isPlaying);
-                              if (isPlaying && !wasPlaying) {
-                                  requestAudioFocus();
-                              }
-                              currentPosition = intent.getLongExtra("pos", currentPosition);
-                              long dur = intent.getLongExtra("dur", currentDuration);
-                              if (dur > 0) currentDuration = dur;
-                              currentSpeed = intent.getFloatExtra("speed", currentSpeed);
-
-                              String newArt = intent.getStringExtra("artwork");
-                              if (newArt != null && !newArt.isEmpty() && !newArt.equals(currentArtworkUrl)) {
-                                  currentArtworkUrl = newArt;
-                                  fetchArtworkAsync(newArt);
-                              }
-                              refreshNotification();
-                          }
+                  if (intent != null && ACTION_SYNC.equals(intent.getAction())) {
+                      String data = intent.getStringExtra("data");
+                      if (data != null) {
+                          try {
+                              updateMediaData(new JSONObject(data));
+                              return START_STICKY;
+                          } catch (Exception ignored) {}
                       }
                   }
-                  refreshNotification();
+                  if (!isForegroundStarted) {
+                      refreshNotification(true);
+                  }
                   return START_STICKY;
               }
 
               public void updateMediaData(JSONObject obj) {
                   if (obj == null) return;
-                  currentTitle = obj.optString("title", currentTitle);
-                  currentArtist = obj.optString("artist", currentArtist);
-                  currentAlbum = obj.optString("album", currentAlbum);
-                  boolean wasPlaying = isPlaying;
-                  isPlaying = obj.optBoolean("playing", isPlaying);
-                  if (isPlaying && !wasPlaying) {
+                  String newId = obj.optString("id", "");
+                  String newTitle = obj.optString("title", currentTitle);
+                  String newArtist = obj.optString("artist", currentArtist);
+                  String newAlbum = obj.optString("album", currentAlbum);
+                  boolean newPlaying = obj.optBoolean("playing", isPlaying);
+
+                  boolean trackChanged = (!newId.isEmpty() && !newId.equals(currentTrackId)) || !newTitle.equals(currentTitle);
+                  boolean playStateChanged = (newPlaying != isPlaying);
+
+                  currentTrackId = newId;
+                  currentTitle = newTitle;
+                  currentArtist = newArtist;
+                  currentAlbum = newAlbum;
+
+                  if (newPlaying && !isPlaying) {
                       requestAudioFocus();
                   }
+                  isPlaying = newPlaying;
                   currentPosition = obj.optLong("pos", currentPosition);
                   long dur = obj.optLong("dur", currentDuration);
                   if (dur > 0) currentDuration = dur;
@@ -377,9 +380,17 @@ jobs:
                   String newArt = obj.optString("artwork", "");
                   if (!newArt.isEmpty() && !newArt.equals(currentArtworkUrl)) {
                       currentArtworkUrl = newArt;
-                      fetchArtworkAsync(newArt);
+                      Bitmap cached = artworkCache.get(newArt);
+                      if (cached != null) {
+                          cachedArtworkBitmap = cached;
+                      } else {
+                          // Immediately clear previous song's bitmap so the notification NEVER shows stale artwork!
+                          cachedArtworkBitmap = null;
+                          fetchArtworkAsync(newArt);
+                      }
                   }
-                  refreshNotification();
+
+                  refreshNotification(trackChanged || playStateChanged);
               }
 
               private void acquireLocks() {
@@ -414,7 +425,7 @@ jobs:
                       NotificationChannel channel = new NotificationChannel(
                           CHANNEL_ID,
                           "Balu Beats Music Playback",
-                          NotificationManager.IMPORTANCE_DEFAULT
+                          NotificationManager.IMPORTANCE_LOW
                       );
                       channel.setDescription("Shows active music player card on lock screen and notification bar");
                       channel.setSound(null, null);
@@ -434,14 +445,14 @@ jobs:
                           public void onPlay() {
                               isPlaying = true;
                               requestAudioFocus();
-                              refreshNotification();
+                              refreshNotification(true);
                               MainActivity.evalJs("if(typeof audio!=='undefined'&&audio.paused)togglePlay();");
                           }
 
                           @Override
                           public void onPause() {
                               isPlaying = false;
-                              refreshNotification();
+                              refreshNotification(true);
                               MainActivity.evalJs("if(typeof audio!=='undefined'&&!audio.paused)togglePlay();");
                           }
 
@@ -459,8 +470,8 @@ jobs:
                           public void onSeekTo(long pos) {
                               currentPosition = pos;
                               final double sec = pos / 1000.0;
-                              MainActivity.evalJs("if(typeof audio!=='undefined'){audio.currentTime=" + sec + ";if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification();}");
-                              refreshNotification();
+                              MainActivity.evalJs("if(typeof audio!=='undefined'){audio.currentTime=" + sec + ";if(typeof syncLyricsScroll==='function')syncLyricsScroll(" + sec + ");if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification(true);}");
+                              refreshNotification(false);
                           }
                       });
                       mediaSession.setActive(true);
@@ -472,53 +483,53 @@ jobs:
                       try {
                           URL url = new URL(urlStr);
                           HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                          conn.setConnectTimeout(6000);
-                          conn.setReadTimeout(6000);
+                          conn.setConnectTimeout(5000);
+                          conn.setReadTimeout(5000);
                           conn.setDoInput(true);
                           conn.connect();
                           InputStream is = conn.getInputStream();
-                          Bitmap bmp = BitmapFactory.decodeStream(is);
+                          Bitmap rawBmp = BitmapFactory.decodeStream(is);
                           is.close();
-                          if (bmp != null && urlStr.equals(currentArtworkUrl)) {
-                              cachedArtworkBitmap = bmp;
-                              refreshNotification();
+                          if (rawBmp != null) {
+                              Bitmap scaled = Bitmap.createScaledBitmap(rawBmp, 256, 256, true);
+                              if (artworkCache.size() > 40) artworkCache.clear();
+                              artworkCache.put(urlStr, scaled);
+                              if (urlStr.equals(currentArtworkUrl)) {
+                                  cachedArtworkBitmap = scaled;
+                                  refreshNotification(true);
+                              }
                           }
                       } catch (Exception ignored) {}
                   }).start();
               }
 
               public void refreshNotification() {
-                  try {
-                      Notification notif = buildMediaNotification();
-                      if (Build.VERSION.SDK_INT >= 29) {
-                          startForeground(NOTIF_ID, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                  refreshNotification(true);
+              }
+
+              public void refreshNotification(final boolean immediate) {
+                  if (mainHandler == null) {
+                      commitNotificationNow();
+                      return;
+                  }
+                  mainHandler.post(() -> {
+                      // Always update MediaSession immediately in 0ms (Android 11+ Media Controls read directly from MediaSession!)
+                      updateMediaSessionStateNow();
+                      mainHandler.removeCallbacks(pendingNotifRunnable);
+                      long now = System.currentTimeMillis();
+                      long elapsed = now - lastNotifPostTime;
+                      if (immediate && elapsed >= 90L) {
+                          commitNotificationNow();
                       } else {
-                          startForeground(NOTIF_ID, notif);
+                          long delay = immediate ? Math.max(25L, 90L - elapsed) : 120L;
+                          mainHandler.postDelayed(pendingNotifRunnable, delay);
                       }
-                  } catch (Exception e) {
-                      try {
-                          NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-                          if (nm != null) {
-                              nm.notify(NOTIF_ID, buildMediaNotification());
-                          }
-                      } catch (Exception ignored) {}
-                  }
+                  });
               }
 
-              private PendingIntent buildBroadcastPi(String action, int reqCode) {
-                  Intent intent = new Intent(action);
-                  intent.setPackage(getPackageName());
-                  int flags = PendingIntent.FLAG_UPDATE_CURRENT;
-                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                      flags |= PendingIntent.FLAG_IMMUTABLE;
-                  }
-                  return PendingIntent.getBroadcast(this, reqCode, intent, flags);
-              }
-
-              private Notification buildMediaNotification() {
-                  Bitmap cover = cachedArtworkBitmap != null ? cachedArtworkBitmap : defaultCoverBitmap;
-
+              private void updateMediaSessionStateNow() {
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && mediaSession != null) {
+                      Bitmap cover = cachedArtworkBitmap != null ? cachedArtworkBitmap : defaultCoverBitmap;
                       MediaMetadata.Builder meta = new MediaMetadata.Builder()
                           .putString(MediaMetadata.METADATA_KEY_TITLE, currentTitle)
                           .putString(MediaMetadata.METADATA_KEY_ARTIST, currentArtist)
@@ -545,6 +556,48 @@ jobs:
                           .build();
                       mediaSession.setPlaybackState(state);
                   }
+              }
+
+              private void commitNotificationNow() {
+                  lastNotifPostTime = System.currentTimeMillis();
+                  try {
+                      updateMediaSessionStateNow();
+                      Notification notif = buildMediaNotification();
+                      if (!isForegroundStarted) {
+                          if (Build.VERSION.SDK_INT >= 29) {
+                              startForeground(NOTIF_ID, notif, ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
+                          } else {
+                              startForeground(NOTIF_ID, notif);
+                          }
+                          isForegroundStarted = true;
+                      } else {
+                          NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                          if (nm != null) {
+                              nm.notify(NOTIF_ID, notif);
+                          }
+                      }
+                  } catch (Exception e) {
+                      try {
+                          NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                          if (nm != null) {
+                              nm.notify(NOTIF_ID, buildMediaNotification());
+                          }
+                      } catch (Exception ignored) {}
+                  }
+              }
+
+              private PendingIntent buildBroadcastPi(String action, int reqCode) {
+                  Intent intent = new Intent(action);
+                  intent.setPackage(getPackageName());
+                  int flags = PendingIntent.FLAG_UPDATE_CURRENT;
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                      flags |= PendingIntent.FLAG_IMMUTABLE;
+                  }
+                  return PendingIntent.getBroadcast(this, reqCode, intent, flags);
+              }
+
+              private Notification buildMediaNotification() {
+                  Bitmap cover = cachedArtworkBitmap != null ? cachedArtworkBitmap : defaultCoverBitmap;
 
                   Intent openIntent = new Intent(this, MainActivity.class);
                   int openFlags = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ? PendingIntent.FLAG_IMMUTABLE : 0;
@@ -609,6 +662,7 @@ jobs:
               @Override
               public void onDestroy() {
                   if (instance == this) instance = null;
+                  if (mainHandler != null) mainHandler.removeCallbacksAndMessages(null);
                   abandonAudioFocus();
                   try { unregisterReceiver(actionReceiver); } catch (Exception ignored) {}
                   try { if (wakeLock != null && wakeLock.isHeld()) wakeLock.release(); } catch (Exception ignored) {}
@@ -640,6 +694,7 @@ jobs:
           import android.view.View;
           import android.view.Window;
           import android.webkit.ConsoleMessage;
+          import android.webkit.JavascriptInterface;
           import android.webkit.WebChromeClient;
           import android.webkit.WebSettings;
           import android.webkit.WebView;
@@ -648,6 +703,14 @@ jobs:
 
           public class MainActivity extends Activity {
               private static BackgroundWebView webView;
+
+              // Direct 0ms JS-to-Native Media Bridge (bypasses console buffering)
+              public class AndroidMediaBridge {
+                  @JavascriptInterface
+                  public void syncMedia(String jsonStr) {
+                      dispatchMediaSyncToService(jsonStr);
+                  }
+              }
 
               // Custom WebView that keeps playing audio in background & when screen is locked or multitasking!
               public static class BackgroundWebView extends WebView {
@@ -714,6 +777,8 @@ jobs:
                   settings.setMediaPlaybackRequiresUserGesture(false);
                   settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
+                  webView.addJavascriptInterface(new AndroidMediaBridge(), "AndroidMediaBridge");
+
                   webView.setWebChromeClient(new WebChromeClient() {
                       @Override
                       public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -748,7 +813,6 @@ jobs:
               @Override
               protected void onPause() {
                   super.onPause();
-                  // Keep timers and audio decoders active when using other apps in parallel
                   if (webView != null) {
                       webView.resumeTimers();
                   }
@@ -773,7 +837,6 @@ jobs:
               private void dispatchMediaSyncToService(String jsonStr) {
                   try {
                       final JSONObject obj = new JSONObject(jsonStr);
-                      // In-memory instant sync: 0ms delay, NEVER blocked by Android background restrictions!
                       if (BaluMediaService.instance != null) {
                           BaluMediaService.instance.updateMediaData(obj);
                       } else {
@@ -794,9 +857,9 @@ jobs:
                   super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                   if (requestCode == 1001 && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                       if (BaluMediaService.instance != null) {
-                          BaluMediaService.instance.refreshNotification();
+                          BaluMediaService.instance.refreshNotification(true);
                       }
-                      evalJs("if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification();");
+                      evalJs("if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification(true);");
                   }
               }
 
