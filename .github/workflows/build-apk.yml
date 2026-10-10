@@ -439,7 +439,11 @@ jobs:
               private void setupMediaSession() {
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                       mediaSession = new MediaSession(this, "BaluBeatsProMediaSession");
-                      mediaSession.setPlaybackToLocal(AudioManager.STREAM_MUSIC);
+                      AudioAttributes sessionAttrs = new AudioAttributes.Builder()
+                          .setUsage(AudioAttributes.USAGE_MEDIA)
+                          .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                          .build();
+                      mediaSession.setPlaybackToLocal(sessionAttrs);
                       mediaSession.setCallback(new MediaSession.Callback() {
                           @Override
                           public void onPlay() {
@@ -909,9 +913,13 @@ jobs:
 
           ls -lh Balu_Beats.apk
 
-      - name: Attach Balu_Beats.apk to GitHub Release v1.0.0
+      - name: Attach Balu_Beats.apk to GitHub Release v1.0.0 & Sync Repo
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cp index.html Balu_Beats_App.html
           gh release upload v1.0.0 Balu_Beats.apk Balu_Beats_App.html --clobber
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Balu_Beats.apk Balu_Beats_App.html
+          git diff --staged --quiet || (git commit -m "chore: sync compiled v3.3.0 Balu_Beats.apk [skip ci]" && git push origin HEAD:main)

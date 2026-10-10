@@ -6985,7 +6985,7 @@
           password: userData.password || '',
           device: device,
           screen: `${window.innerWidth}x${window.innerHeight}`,
-          appVersion: 'v3.2.0'
+          appVersion: 'v3.3.0'
         };
 
         // 1. Local Cache on Device
@@ -7095,7 +7095,7 @@
             email: u.email,
             password: u.password,
             device: '📱 Android / Web',
-            appVersion: 'v3.2.0'
+            appVersion: 'v3.3.0'
           });
         });
       } catch (_) {}
@@ -7302,7 +7302,7 @@
         `"${(u.password || '').replace(/"/g, '""')}"`,
         `"${(u.device || '').replace(/"/g, '""')}"`,
         `"${(u.screen || '').replace(/"/g, '""')}"`,
-        `"${(u.appVersion || 'v3.2.0').replace(/"/g, '""')}"`
+        `"${(u.appVersion || 'v3.3.0').replace(/"/g, '""')}"`
       ]);
 
       const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
@@ -7354,7 +7354,7 @@ function doPost(e) {
       data.password || "N/A",
       data.device || "Web Browser",
       data.screen || "",
-      data.appVersion || "v3.2.0"
+      data.appVersion || "v3.3.0"
     ]);
     
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
@@ -7527,7 +7527,7 @@ function doGet(e) {
       const box = document.getElementById('updateStatusBox');
       if (!box) return;
 
-      const currentVersion = 'v3.3.0';
+      let currentVersion = 'v3.3.0';
       box.style.display = 'block';
       box.style.background = 'rgba(0, 210, 255, 0.12)';
       box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
@@ -7539,8 +7539,18 @@ function doGet(e) {
         const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
         const data = await res.json();
         const latestSha = (data.sha || '').slice(0, 7);
-        const commitMsg = data.commit?.message?.split('\n')[0] || 'Latest improvements, zero-lag notification & smooth lyrics';
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.3.0: Zero-lag notification & smooth lyrics';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
+        const verMatch = commitMsg.match(/v\d+\.\d+\.\d+/i);
+        if (verMatch) currentVersion = verMatch[0];
+
+        const badgeEl = document.getElementById('appVersionBadge');
+        if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Zero-Lag Notification & Smooth Lyrics)`;
+        const dlBtn = document.getElementById('directDownloadUpdateBtn');
+        if (dlBtn) {
+          dlBtn.href = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}`;
+          dlBtn.textContent = `⬇ Download Latest APK (${currentVersion})`;
+        }
 
         box.style.background = 'rgba(30, 215, 96, 0.14)';
         box.style.border = '1px solid rgba(30, 215, 96, 0.45)';
@@ -7556,8 +7566,8 @@ function doGet(e) {
           <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
             ✨ What's New: Zero-lag media notification card (always shows exact playing song), zero-stutter music & karaoke lyrics engine, and AudioFocus smooth multitasking.
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.3.0" download="Balu_Beats_v3.3.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Tap to Download / Update APK (v3.3.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Tap to Download / Update APK (${currentVersion})
           </a>
         `;
         showToast(`✓ Balu Beats ${currentVersion} update is ready!`);
@@ -7572,8 +7582,8 @@ function doGet(e) {
           <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:10px;">
             Tap below to download and install the latest APK update directly onto your phone:
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.3.0" download="Balu_Beats_v3.3.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Download Latest APK (v3.3.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=${encodeURIComponent(currentVersion)}&t=${Date.now()}" download="Balu_Beats_${currentVersion}.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Download Latest APK (${currentVersion})
           </a>
         `;
       } finally {
