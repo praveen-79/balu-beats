@@ -146,11 +146,12 @@ class BaluBeatsHandler(http.server.SimpleHTTPRequestHandler):
             parsed = urllib.parse.urlparse(self.path)
             qs = urllib.parse.parse_qs(parsed.query)
             q = qs.get("q", ["top hits"])[0]
-            limit = qs.get("limit", ["20"])[0]
+            limit = qs.get("limit", ["40"])[0]
+            page = qs.get("page", ["1"])[0]
             target = (
                 "https://www.jiosaavn.com/api.php?__call=search.getResults"
                 "&_format=json&_marker=0&api_version=4&ctx=web6dot0"
-                f"&n={urllib.parse.quote(str(limit))}&p=1&q={urllib.parse.quote(q)}"
+                f"&n={urllib.parse.quote(str(limit))}&p={urllib.parse.quote(str(page))}&q={urllib.parse.quote(q)}"
             )
             try:
                 req = urllib.request.Request(target, headers={"User-Agent": "Mozilla/5.0"})
