@@ -2201,13 +2201,26 @@
               Check for new releases, unlimited search & related songs auto-play, or download the latest <code>Balu_Beats.apk</code> directly:
             </p>
 
-            <!-- Dynamic Live Update Status Box -->
-            <div id="updateStatusBox" style="display:none;padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;line-height:1.5;"></div>
+            <!-- Published Live v3.4 Update Status Box (Visible by default in Account section) -->
+            <div id="updateStatusBox" style="display:block;padding:12px;border-radius:12px;margin-bottom:12px;font-size:12px;line-height:1.5;background:rgba(30,215,96,0.14);border:1px solid rgba(30,215,96,0.45);color:#86efac;">
+              <div style="font-weight:800;margin-bottom:5px;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
+                <span>✓</span> Balu Beats <strong>v3.4 (v3.4.0)</strong> — Latest Official Update Published
+              </div>
+              <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
+                ✨ <strong>What's New in v3.4:</strong><br/>
+                • 60–80+ songs per search + "Load 40+ More Songs" multi-page button<br/>
+                • True Related Songs auto-play queue (same movie/album, artist & JioSaavn Radio)<br/>
+                • Music & notification stop immediately when closing the app
+              </div>
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.4.0" download="Balu_Beats_v3.4.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+                ⬇ Tap to Download / Install v3.4 APK Update
+              </a>
+            </div>
 
             <!-- Action Buttons: Check Updates & Download Latest APK -->
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
-                🔄 Check for Updates
+                🔄 Check for Updates (v3.4)
               </button>
               <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.4.0" download="Balu_Beats_v3.4.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
                 ⬇ Download Latest APK (v3.4.0)
@@ -6290,10 +6303,13 @@
       if (!val) return;
       // Check if user pasted a Spotify URL directly into search!
       if (val.includes('open.spotify.com/') || val.startsWith('spotify:')) {
-        document.getElementById('spotifyUrlInput').value = val;
-        loadCustomSpotifyEmbed();
-        switchTab('connect');
-        return;
+        const spInput = document.getElementById('spotifyUrlInput');
+        if (spInput) {
+          spInput.value = val;
+          loadCustomSpotifyEmbed();
+          switchTab('connect');
+          return;
+        }
       }
       searchDebounce = setTimeout(() => executeSearch(val), 380);
     });
@@ -6545,12 +6561,12 @@
 
     function setSpotifyPreset(path) {
       const iframe = document.getElementById('spotifyIframe');
-      iframe.src = `https://open.spotify.com/embed/${path}?utm_source=generator&theme=0`;
+      if (iframe) iframe.src = `https://open.spotify.com/embed/${path}?utm_source=generator&theme=0`;
       showToast('Loaded Spotify interactive player!');
     }
 
     function loadCustomSpotifyEmbed() {
-      const raw = document.getElementById('spotifyUrlInput').value.trim();
+      const raw = (document.getElementById('spotifyUrlInput')?.value || '').trim();
       if (!raw) {
         showToast('Paste a Spotify song or playlist link first');
         return;
@@ -6570,7 +6586,8 @@
       audio.pause();
       state.isPlaying = false;
       updatePlayIcons();
-      document.getElementById('spotifyIframe').src = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+      const iframe = document.getElementById('spotifyIframe');
+      if (iframe) iframe.src = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
       showToast(`Connected Spotify ${type}!`);
     }
 
@@ -6597,14 +6614,15 @@
     }
 
     function connectSpotifyApi() {
-      const val = document.getElementById('spotifyClientIdInput').value.trim();
+      const val = (document.getElementById('spotifyClientIdInput')?.value || '').trim();
       if (!val) {
         showToast('Enter a Spotify Token or Client ID');
         return;
       }
       state.spotifyToken = val;
       localStorage.setItem('pb_spotify_token', val);
-      document.getElementById('spotifyApiStatus').innerHTML = `<span style="color:var(--accent-green);">● Connected to Spotify API Bridge</span>`;
+      const statusEl = document.getElementById('spotifyApiStatus');
+      if (statusEl) statusEl.innerHTML = `<span style="color:var(--accent-green);">● Connected to Spotify API Bridge</span>`;
       showToast('Spotify API credential saved!');
     }
 
@@ -7241,7 +7259,7 @@
           password: userData.password || '',
           device: device,
           screen: `${window.innerWidth}x${window.innerHeight}`,
-          appVersion: 'v3.3.0'
+          appVersion: 'v3.4.0'
         };
 
         // 1. Local Cache on Device
@@ -7351,7 +7369,7 @@
             email: u.email,
             password: u.password,
             device: '📱 Android / Web',
-            appVersion: 'v3.3.0'
+            appVersion: 'v3.4.0'
           });
         });
       } catch (_) {}
@@ -7558,7 +7576,7 @@
         `"${(u.password || '').replace(/"/g, '""')}"`,
         `"${(u.device || '').replace(/"/g, '""')}"`,
         `"${(u.screen || '').replace(/"/g, '""')}"`,
-        `"${(u.appVersion || 'v3.3.0').replace(/"/g, '""')}"`
+        `"${(u.appVersion || 'v3.4.0').replace(/"/g, '""')}"`
       ]);
 
       const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
@@ -7610,7 +7628,7 @@ function doPost(e) {
       data.password || "N/A",
       data.device || "Web Browser",
       data.screen || "",
-      data.appVersion || "v3.3.0"
+      data.appVersion || "v3.4.0"
     ]);
     
     return ContentService.createTextOutput(JSON.stringify({ status: "success" }))
@@ -7798,7 +7816,9 @@ function doGet(e) {
         const commitMsg = data.commit?.message?.split('\n')[0] || 'v3.4.0: Unlimited search, related auto-play & clean exit';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
         const verMatch = commitMsg.match(/v\d+\.\d+\.\d+/i);
-        if (verMatch) currentVersion = verMatch[0];
+        if (verMatch && verMatch[0].localeCompare('v3.4.0', undefined, { numeric: true }) > 0) {
+          currentVersion = verMatch[0];
+        }
 
         const badgeEl = document.getElementById('appVersionBadge');
         if (badgeEl) badgeEl.textContent = `${currentVersion} (Latest • Related Auto-Play & Clean Exit)`;
@@ -7843,7 +7863,7 @@ function doGet(e) {
           </a>
         `;
       } finally {
-        if (btn) { btn.disabled = false; btn.textContent = '🔄 Check for Updates'; }
+        if (btn) { btn.disabled = false; btn.textContent = '🔄 Check for Updates (v3.4)'; }
       }
     }
 

