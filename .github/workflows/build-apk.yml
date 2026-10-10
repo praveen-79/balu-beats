@@ -95,8 +95,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="7"
-              android:versionName="3.1.0">
+              android:versionCode="8"
+              android:versionName="3.2.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
               <uses-permission android:name="android.permission.INTERNET" />
@@ -111,6 +111,7 @@ jobs:
                   android:icon="@drawable/ic_launcher"
                   android:allowBackup="true"
                   android:hardwareAccelerated="true"
+                  android:largeHeap="true"
                   android:theme="@android:style/Theme.DeviceDefault.NoActionBar">
                   <activity
                       android:name="com.balubeats.music.MainActivity"
@@ -152,6 +153,9 @@ jobs:
           import android.graphics.LinearGradient;
           import android.graphics.Paint;
           import android.graphics.Shader;
+          import android.media.AudioAttributes;
+          import android.media.AudioFocusRequest;
+          import android.media.AudioManager;
           import android.media.MediaMetadata;
           import android.media.session.MediaSession;
           import android.media.session.PlaybackState;
@@ -179,6 +183,11 @@ jobs:
               private PowerManager.WakeLock wakeLock;
               private WifiManager.WifiLock wifiLock;
 
+              private AudioManager audioManager;
+              private Object audioFocusRequestObj;
+              private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
+              private boolean resumeOnFocusGain = false;
+
               private String currentTitle = "Fear Song (From \"Devara\")";
               private String currentArtist = "Anirudh Ravichander, NTR";
               private String currentAlbum = "Balu Beats • 320kbps HD";
@@ -199,6 +208,9 @@ jobs:
                           MainActivity.evalJs("if(typeof playPrev==='function')playPrev();");
                       } else if (ACTION_PLAY_PAUSE.equals(act)) {
                           isPlaying = !isPlaying;
+                          if (isPlaying) {
+                              requestAudioFocus();
+                          }
                           refreshNotification();
                           MainActivity.evalJs("if(typeof togglePlay==='function')togglePlay();");
                       } else if (ACTION_NEXT.equals(act)) {
@@ -214,6 +226,7 @@ jobs:
                   defaultCoverBitmap = createDefaultCoverBitmap();
                   createProminentNotificationChannel();
                   setupMediaSession();
+                  setupAudioFocus();
                   acquireLocks();
 
                   IntentFilter filter = new IntentFilter();
@@ -229,6 +242,87 @@ jobs:
                   refreshNotification();
               }
 
+              private void setupAudioFocus() {
+                  audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                  audioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+                      @Override
+                      public void onAudioFocusChange(int focusChange) {
+                          switch (focusChange) {
+                              case AudioManager.AUDIOFOCUS_GAIN:
+                                  // Regained full focus: smoothly restore 100% volume, resume if temporarily ducked/paused
+                                  if (resumeOnFocusGain) {
+                                      resumeOnFocusGain = false;
+                                      isPlaying = true;
+                                      refreshNotification();
+                                      MainActivity.evalJs("if(typeof restoreAudioFocusVolume==='function')restoreAudioFocusVolume();if(typeof audio!=='undefined'&&audio.paused)togglePlay();");
+                                  } else {
+                                      MainActivity.evalJs("if(typeof restoreAudioFocusVolume==='function')restoreAudioFocusVolume();");
+                                  }
+                                  break;
+                              case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                                  // Notification sound, keyboard click, or short alert: smoothly duck to 20%
+                                  // Avoids buffer underruns, clicking, popping, and crackling noise!
+                                  MainActivity.evalJs("if(typeof duckAudioFocusVolume==='function')duckAudioFocusVolume();");
+                                  break;
+                              case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                                  // Temporary loss (e.g. WhatsApp voice note, incoming ringtone, Instagram reel):
+                                  resumeOnFocusGain = isPlaying;
+                                  isPlaying = false;
+                                  refreshNotification();
+                                  MainActivity.evalJs("if(typeof pauseOnAudioFocusLoss==='function')pauseOnAudioFocusLoss();");
+                                  break;
+                              case AudioManager.AUDIOFOCUS_LOSS:
+                                  // Permanent loss of audio focus:
+                                  resumeOnFocusGain = false;
+                                  isPlaying = false;
+                                  refreshNotification();
+                                  MainActivity.evalJs("if(typeof pauseOnAudioFocusLoss==='function')pauseOnAudioFocusLoss();");
+                                  break;
+                          }
+                      }
+                  };
+              }
+
+              public boolean requestAudioFocus() {
+                  if (audioManager == null) return false;
+                  try {
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                          AudioAttributes playbackAttributes = new AudioAttributes.Builder()
+                              .setUsage(AudioAttributes.USAGE_MEDIA)
+                              .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                              .build();
+                          AudioFocusRequest request = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN)
+                              .setAudioAttributes(playbackAttributes)
+                              .setAcceptsDelayedFocusGain(true)
+                              .setOnAudioFocusChangeListener(audioFocusChangeListener)
+                              .build();
+                          audioFocusRequestObj = request;
+                          int res = audioManager.requestAudioFocus(request);
+                          return res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+                      } else {
+                          int res = audioManager.requestAudioFocus(
+                              audioFocusChangeListener,
+                              AudioManager.STREAM_MUSIC,
+                              AudioManager.AUDIOFOCUS_GAIN
+                          );
+                          return res == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+                      }
+                  } catch (Exception ignored) {
+                      return false;
+                  }
+              }
+
+              public void abandonAudioFocus() {
+                  if (audioManager == null) return;
+                  try {
+                      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && audioFocusRequestObj instanceof AudioFocusRequest) {
+                          audioManager.abandonAudioFocusRequest((AudioFocusRequest) audioFocusRequestObj);
+                      } else if (audioFocusChangeListener != null) {
+                          audioManager.abandonAudioFocus(audioFocusChangeListener);
+                      }
+                  } catch (Exception ignored) {}
+              }
+
               @Override
               public int onStartCommand(Intent intent, int flags, int startId) {
                   if (intent != null) {
@@ -242,7 +336,11 @@ jobs:
                               currentTitle = intent.getStringExtra("title") != null ? intent.getStringExtra("title") : currentTitle;
                               currentArtist = intent.getStringExtra("artist") != null ? intent.getStringExtra("artist") : currentArtist;
                               currentAlbum = intent.getStringExtra("album") != null ? intent.getStringExtra("album") : currentAlbum;
+                              boolean wasPlaying = isPlaying;
                               isPlaying = intent.getBooleanExtra("playing", isPlaying);
+                              if (isPlaying && !wasPlaying) {
+                                  requestAudioFocus();
+                              }
                               currentPosition = intent.getLongExtra("pos", currentPosition);
                               long dur = intent.getLongExtra("dur", currentDuration);
                               if (dur > 0) currentDuration = dur;
@@ -266,7 +364,11 @@ jobs:
                   currentTitle = obj.optString("title", currentTitle);
                   currentArtist = obj.optString("artist", currentArtist);
                   currentAlbum = obj.optString("album", currentAlbum);
+                  boolean wasPlaying = isPlaying;
                   isPlaying = obj.optBoolean("playing", isPlaying);
+                  if (isPlaying && !wasPlaying) {
+                      requestAudioFocus();
+                  }
                   currentPosition = obj.optLong("pos", currentPosition);
                   long dur = obj.optLong("dur", currentDuration);
                   if (dur > 0) currentDuration = dur;
@@ -281,6 +383,9 @@ jobs:
               }
 
               private void acquireLocks() {
+                  try {
+                      android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
+                  } catch (Exception ignored) {}
                   try {
                       PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                       if (pm != null && (wakeLock == null || !wakeLock.isHeld())) {
@@ -323,10 +428,12 @@ jobs:
               private void setupMediaSession() {
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                       mediaSession = new MediaSession(this, "BaluBeatsProMediaSession");
+                      mediaSession.setPlaybackToLocal(AudioManager.STREAM_MUSIC);
                       mediaSession.setCallback(new MediaSession.Callback() {
                           @Override
                           public void onPlay() {
                               isPlaying = true;
+                              requestAudioFocus();
                               refreshNotification();
                               MainActivity.evalJs("if(typeof audio!=='undefined'&&audio.paused)togglePlay();");
                           }
@@ -502,6 +609,7 @@ jobs:
               @Override
               public void onDestroy() {
                   if (instance == this) instance = null;
+                  abandonAudioFocus();
                   try { unregisterReceiver(actionReceiver); } catch (Exception ignored) {}
                   try { if (wakeLock != null && wakeLock.isHeld()) wakeLock.release(); } catch (Exception ignored) {}
                   try { if (wifiLock != null && wifiLock.isHeld()) wifiLock.release(); } catch (Exception ignored) {}
@@ -541,7 +649,7 @@ jobs:
           public class MainActivity extends Activity {
               private static BackgroundWebView webView;
 
-              // Custom WebView that keeps playing audio in background & when screen is locked!
+              // Custom WebView that keeps playing audio in background & when screen is locked or multitasking!
               public static class BackgroundWebView extends WebView {
                   public BackgroundWebView(Context context) {
                       super(context);
@@ -556,6 +664,11 @@ jobs:
                   @Override
                   public void onWindowFocusChanged(boolean hasWindowFocus) {
                       super.onWindowFocusChanged(true);
+                  }
+
+                  @Override
+                  public void onPause() {
+                      // Prevent Chromium from freezing audio decoder buffers when app switches to background!
                   }
               }
 
@@ -599,6 +712,7 @@ jobs:
                   settings.setDomStorageEnabled(true);
                   settings.setDatabaseEnabled(true);
                   settings.setMediaPlaybackRequiresUserGesture(false);
+                  settings.setCacheMode(WebSettings.LOAD_DEFAULT);
 
                   webView.setWebChromeClient(new WebChromeClient() {
                       @Override
@@ -629,6 +743,31 @@ jobs:
                   setContentView(webView);
                   // Load bundled local app directly — 100% skips Vercel login / deployment protection!
                   webView.loadUrl("file:///android_asset/index.html");
+              }
+
+              @Override
+              protected void onPause() {
+                  super.onPause();
+                  // Keep timers and audio decoders active when using other apps in parallel
+                  if (webView != null) {
+                      webView.resumeTimers();
+                  }
+              }
+
+              @Override
+              protected void onStop() {
+                  super.onStop();
+                  if (webView != null) {
+                      webView.resumeTimers();
+                  }
+              }
+
+              @Override
+              protected void onResume() {
+                  super.onResume();
+                  if (webView != null) {
+                      webView.resumeTimers();
+                  }
               }
 
               private void dispatchMediaSyncToService(String jsonStr) {

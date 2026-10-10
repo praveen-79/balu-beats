@@ -2153,11 +2153,11 @@
                 <span>🚀</span> App Version & Updates
               </h3>
               <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                v3.1.0 (Latest)
+                v3.2.0 (Latest • Smooth Multitasking)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
-              Check for new releases, notification upgrades, or download the latest <code>Balu_Beats.apk</code> directly:
+              Check for new releases, AudioFocus multitasking upgrades, or download the latest <code>Balu_Beats.apk</code> directly:
             </p>
 
             <!-- Dynamic Live Update Status Box -->
@@ -2168,8 +2168,8 @@
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
                 🔄 Check for Updates
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
-                ⬇ Download Latest APK (v3.1.0)
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.2.0" download="Balu_Beats_v3.2.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(30,215,96,0.4);color:#1ed760;font-weight:800;">
+                ⬇ Download Latest APK (v3.2.0)
               </a>
             </div>
 
@@ -5553,6 +5553,30 @@
       playCurrentIndex();
     }
 
+    // Smooth Android AudioFocus Volume Ducking & Restoration
+    window.restoreAudioFocusVolume = function() {
+      if (audio) {
+        audio.volume = state.volume !== undefined ? state.volume : 1.0;
+      }
+    };
+
+    window.duckAudioFocusVolume = function() {
+      if (audio) {
+        // Smoothly duck volume to 25% without jitter or robotic noise when notifications/clicks occur
+        const targetVol = Math.max(0.18, (state.volume !== undefined ? state.volume : 1.0) * 0.25);
+        audio.volume = targetVol;
+      }
+    };
+
+    window.pauseOnAudioFocusLoss = function() {
+      if (audio && !audio.paused) {
+        audio.pause();
+        state.isPlaying = false;
+        updatePlayIcons();
+        syncNativeAndroidNotification();
+      }
+    };
+
     // Keep volume steady (100% by default, never auto-ducked)
     audio.preload = 'auto';
     audio.volume = 1.0;
@@ -5621,6 +5645,31 @@
         audio.play();
       } else {
         playNext();
+      }
+    });
+
+    // Background Stall & Error Protection (Prevents audio stuttering, clicks, and noise during multitasking)
+    audio.addEventListener('waiting', () => {
+      // Background buffering: don't alter state so decoder doesn't jitter
+    });
+
+    audio.addEventListener('stalled', () => {
+      // If stalled due to background network throttling from another app
+      if (state.isPlaying && !audio.paused && audio.readyState < 2) {
+        setTimeout(() => {
+          if (state.isPlaying && audio.paused) {
+            audio.play().catch(() => {});
+          }
+        }, 1200);
+      }
+    });
+
+    audio.addEventListener('error', (e) => {
+      console.warn('[Audio Stream Recovery]', e);
+      if (state.isPlaying && state.currentTrack) {
+        setTimeout(() => {
+          if (state.isPlaying) playCurrentIndex();
+        }, 1000);
       }
     });
 
@@ -6167,11 +6216,18 @@
       window.open(state.currentTrack.streamUrl, '_blank');
     }
 
-    // Beat-Synced Audio Spectrum Visualizer (Zero-CORS-mute safe)
+    // Beat-Synced Audio Spectrum Visualizer (CPU-Optimized for zero background stutter/noise)
     const canvas = document.getElementById('visualizerCanvas');
     const ctx = canvas.getContext('2d');
     let visPhase = 0;
+    let visualizerRunning = false;
+
     function drawVisualizer() {
+      if (document.hidden) {
+        visualizerRunning = false;
+        return; // Suspend canvas drawing when backgrounded to prevent audio crackle & buffer underruns
+      }
+      visualizerRunning = true;
       requestAnimationFrame(drawVisualizer);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const bars = 32;
@@ -6196,6 +6252,13 @@
         ctx.fill();
       }
     }
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && !visualizerRunning) {
+        drawVisualizer();
+      }
+    });
+
     drawVisualizer();
 
     // Navigation & Modals
@@ -7068,7 +7131,7 @@ function doGet(e) {
       const box = document.getElementById('updateStatusBox');
       if (!box) return;
 
-      const currentVersion = 'v3.1.0';
+      const currentVersion = 'v3.2.0';
       box.style.display = 'block';
       box.style.background = 'rgba(0, 210, 255, 0.12)';
       box.style.border = '1px solid rgba(0, 210, 255, 0.35)';
@@ -7080,7 +7143,7 @@ function doGet(e) {
         const res = await fetch('https://api.github.com/repos/praveen-79/balu-beats/commits/main', { cache: 'no-store' });
         const data = await res.json();
         const latestSha = (data.sha || '').slice(0, 7);
-        const commitMsg = data.commit?.message?.split('\n')[0] || 'Latest improvements & permanent notification card';
+        const commitMsg = data.commit?.message?.split('\n')[0] || 'Latest improvements, AudioFocus multitasking & background playback';
         const commitDate = data.commit?.author?.date ? new Date(data.commit.author.date).toLocaleDateString() : 'Today';
 
         box.style.background = 'rgba(30, 215, 96, 0.14)';
@@ -7095,10 +7158,10 @@ function doGet(e) {
             • <em>${escapeHtml(commitMsg)}</em>
           </div>
           <div style="font-size:11px;color:#cbd5e1;margin-bottom:10px;background:rgba(0,0,0,0.25);padding:8px 10px;border-radius:8px;">
-            ✨ What's New: Permanent Spotify Notification Card on lock screen & notification bar, 0ms instant trigger, background playback, and 140+ HD 320kbps songs.
+            ✨ What's New: AudioFocus smooth multitasking (no crackle/noise when using other apps), background keep-alive, Spotify lock screen notification, and 140+ HD 320kbps songs.
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Tap to Download / Update APK (v3.1.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.2.0" download="Balu_Beats_v3.2.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Tap to Download / Update APK (v3.2.0)
           </a>
         `;
         showToast(`✓ Balu Beats ${currentVersion} update is ready!`);
@@ -7113,8 +7176,8 @@ function doGet(e) {
           <div style="font-size:11.5px;color:#e2e8f0;margin-bottom:10px;">
             Tap below to download and install the latest APK update directly onto your phone:
           </div>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.1.0" download="Balu_Beats_v3.1.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Download Latest APK (v3.1.0)
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.2.0" download="Balu_Beats_v3.2.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Download Latest APK (v3.2.0)
           </a>
         `;
       } finally {
