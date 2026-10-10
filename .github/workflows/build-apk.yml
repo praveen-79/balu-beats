@@ -96,7 +96,7 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="14"
+              android:versionCode="15"
               android:versionName="3.5.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
@@ -643,6 +643,7 @@ jobs:
           import android.app.PendingIntent;
           import android.content.Context;
           import android.content.Intent;
+          import android.content.SharedPreferences;
           import android.content.pm.PackageManager;
           import android.graphics.Color;
           import android.net.Uri;
@@ -795,8 +796,8 @@ jobs:
                                       JSONObject uObj = new JSONObject(msg.substring(18));
                                       showNativeUpdateNotification(
                                           uObj.optString("title", "Balu Beats v3.5.0 Update Live!"),
-                                          uObj.optString("message", "New Dark Smoked-Glass 3D Theme, Artist Search & Custom Playlists!"),
-                                          uObj.optString("url", "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2")
+                                          uObj.optString("message", "New: Auto-Refresh Home Suggestions on Every Open, Dark Smoked-Glass 3D Theme, Artist Search & Custom Playlists!"),
+                                          uObj.optString("url", "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.3")
                                       );
                                   } catch (Exception ignored) {}
                                   return true;
@@ -824,6 +825,7 @@ jobs:
                       public void onPageFinished(WebView view, String url) {
                           super.onPageFinished(view, url);
                           handleAccountDeepLink(getIntent());
+                          maybePostStartupUpdateNotification();
                       }
                   });
 
@@ -844,6 +846,25 @@ jobs:
                       intent.removeExtra("open_account");
                       evalJs("if(typeof switchTab==='function')switchTab('connect', true);");
                   }
+              }
+
+              private void maybePostStartupUpdateNotification() {
+                  try {
+                      if (Build.VERSION.SDK_INT >= 33) {
+                          if (checkSelfPermission("android.permission.POST_NOTIFICATIONS") != PackageManager.PERMISSION_GRANTED) {
+                              return;
+                          }
+                      }
+                      SharedPreferences prefs = getSharedPreferences("balu_prefs", MODE_PRIVATE);
+                      if (!prefs.getBoolean("notified_build_15", false)) {
+                          prefs.edit().putBoolean("notified_build_15", true).apply();
+                          showNativeUpdateNotification(
+                              "🚀 Balu Beats v3.5.0 Update Live!",
+                              "New: Auto-Refresh Home Suggestions on Every Open, Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel & Custom Playlists (📁+)!",
+                              "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.3"
+                          );
+                      }
+                  } catch (Exception ignored) {}
               }
 
               private void createUpdateNotificationChannel() {
@@ -881,7 +902,7 @@ jobs:
 
                       String safeUrl = (downloadUrl != null && downloadUrl.startsWith("http"))
                           ? downloadUrl
-                          : "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2";
+                          : "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.3";
                       Intent dlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
                       PendingIntent dlPi = PendingIntent.getActivity(this, 302, dlIntent, flags);
 
@@ -971,6 +992,7 @@ jobs:
                       if (BaluMediaService.instance != null) {
                           BaluMediaService.instance.refreshNotification(true);
                       }
+                      maybePostStartupUpdateNotification();
                       evalJs("if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification(true);");
                   }
               }
