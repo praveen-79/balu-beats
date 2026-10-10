@@ -4921,6 +4921,10 @@
         state.queue = [...initialFull];
         updateQueueUI();
       }
+      if (!state.currentTrack && initialFull.length > 0) {
+        state.currentTrack = initialFull[0];
+        syncNativeAndroidNotification();
+      }
     }
 
     async function refreshSmartRecommendations(seedTrack = null) {
@@ -5134,22 +5138,9 @@
       let track = state.queue[state.currentIndex];
       if (!track) return;
 
-      // Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
-      if (!track.isFullTrack && track.sourceKey !== 'radio') {
-        showToast(`Upgrading "${track.title}" to Full 320kbps Song...`);
-        try {
-          const fullMatches = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
-          if (fullMatches && fullMatches[0] && fullMatches[0].streamUrl) {
-            track.streamUrl = fullMatches[0].streamUrl;
-            track.urlsByQuality = fullMatches[0].urlsByQuality;
-            track.duration = fullMatches[0].duration || track.duration;
-            track.isFullTrack = true;
-            track.source = 'Full 320kbps';
-          }
-        } catch (_) {}
-      }
-
+      // Assign current track and sync notification IMMEDIATELY (0ms delay) so notification card is NEVER missing!
       state.currentTrack = track;
+      state.isPlaying = true;
 
       // Update UI immediately
       document.getElementById('miniTitle').textContent = track.title;
@@ -5165,6 +5156,25 @@
       updateDynamicAmbientGlow(track.sourceKey);
       addToRecent(track);
       updateQueueUI();
+      updatePlayIcons();
+      updateMediaSession(track);
+      syncNativeAndroidNotification();
+
+      // Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
+      if (!track.isFullTrack && track.sourceKey !== 'radio') {
+        showToast(`Upgrading "${track.title}" to Full 320kbps Song...`);
+        try {
+          const fullMatches = await searchSaavnTracks(`${track.title} ${track.artist}`, 3);
+          if (fullMatches && fullMatches[0] && fullMatches[0].streamUrl) {
+            track.streamUrl = fullMatches[0].streamUrl;
+            track.urlsByQuality = fullMatches[0].urlsByQuality;
+            track.duration = fullMatches[0].duration || track.duration;
+            track.isFullTrack = true;
+            track.source = 'Full 320kbps';
+            syncNativeAndroidNotification();
+          }
+        } catch (_) {}
+      }
 
       // Resolve stream URL for selected quality if available
       let url = track.streamUrl;
