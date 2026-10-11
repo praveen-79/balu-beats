@@ -2980,46 +2980,56 @@
   <div class="modal-backdrop" id="shareModal" onclick="if(event.target===this)closeShareModal()">
     <div class="modal-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 style="font-size:17px;font-weight:800;">📲 Download & Install Balu Beats</h3>
+        <h3 style="font-size:17px;font-weight:800;">📲 Download & Share Balu Beats</h3>
         <button class="row-icon-btn" onclick="closeShareModal()">✕</button>
       </div>
       <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.45;margin-bottom:12px;">
-        Install <strong>Balu Beats</strong> on your phone or PC to stream <strong>100% full-length 320kbps songs</strong>:
+        Install or share <strong>Balu Beats v3.6.0 (Play-Protect Clean Edition)</strong> with <strong>100% full-length 320kbps songs</strong>:
       </p>
 
-      <div style="background:linear-gradient(135deg,rgba(30,215,96,0.16),rgba(0,210,255,0.12));padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid rgba(30,215,96,0.45);">
-        <div style="font-size:13px;font-weight:800;margin-bottom:4px;color:var(--accent-green);">1. 🤖 Download Android App (Balu_Beats.apk)</div>
+      <div style="background:#1B1D22;padding:12px;border-radius:14px;margin-bottom:10px;border:1px solid #B8F36B;">
+        <div style="font-size:13px;font-weight:800;margin-bottom:4px;color:#B8F36B;">1. 🤖 Download Clean Android APK (v3.6.0)</div>
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          Install the native Android application package (<code>Balu_Beats.apk</code>) directly on your phone!
+          100% clean, lightweight (~450 KB) signed Android package with zero binary bloat.
         </p>
-        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;">
-          ⬇ Download Balu_Beats.apk (Android)
-        </a>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.6.18" download="Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
+            ⬇ Download Balu_Beats.apk (Direct)
+          </a>
+          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats_Installer.zip?v=3.6.18" download="Balu_Beats_Installer.zip" class="util-btn" style="width:100%;justify-content:center;text-decoration:none;font-size:11.5px;">
+            📦 Download as .ZIP (To Send File in WhatsApp Without Warning)
+          </a>
+        </div>
       </div>
 
-      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid var(--border-subtle);">
-        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent-cyan);">2. 📱 Install to Phone Home Screen (Android & iOS)</div>
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:14px;margin-bottom:10px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:800;margin-bottom:4px;color:#B8F36B;">2. 💬 Share on WhatsApp (Zero "Harmful File" Warning)</div>
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          Tap below (or use your browser's <strong>Add to Home Screen</strong>) to install <strong>Balu Beats</strong> with its app icon.
+          WhatsApp flags raw <code>.apk</code> files in chat. Share the official HTTPS store link below so friends can install with zero WhatsApp warnings:
+        </p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="https://wa.me/?text=%F0%9F%8E%B5%20Install%20*Balu%20Beats%20v3.6*%20(100%25%20Full-Length%20320kbps%20HD%20Music%20App%20by%20%40being_rebel__7)%0A%0A%F0%9F%93%B2%20*Official%20Download%20Page%3A*%0Ahttps%3A%2F%2Fpraveen-79.github.io%2Fbalu-beats%2Fdownload.html" target="_blank" class="util-btn primary" style="flex:1;justify-content:center;text-decoration:none;font-weight:800;">
+            💬 Share Safe Link on WhatsApp
+          </a>
+          <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="justify-content:center;text-decoration:none;">
+            🏪 Store Page
+          </a>
+        </div>
+      </div>
+
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:14px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text-primary);">3. 📱 Install Web App (Instant, Zero APK Check)</div>
+        <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
+          Adds <strong>Balu Beats</strong> directly to your Home Screen via Chrome/Safari with zero Play Protect prompts.
         </p>
         <div style="display:flex;gap:8px;">
-          <button class="util-btn" style="flex:1;justify-content:center;border-color:rgba(0,210,255,0.4);color:var(--accent-cyan);" onclick="triggerInstallPWA()">
+          <button class="util-btn" style="flex:1;justify-content:center;border-color:#B8F36B;color:#B8F36B;" onclick="triggerInstallPWA()">
             📱 Install Web App
           </button>
           <button class="util-btn" style="flex:1;justify-content:center;" onclick="shareCurrentSongNative()">
             🔗 Share App Link
           </button>
         </div>
-      </div>
-
-      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;border:1px solid var(--border-subtle);">
-        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:#f9a8d4;">3. 🏪 Official APK Store Page & QR Code</div>
-        <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          Open the Play-Store-style APK download page to scan the QR code or download from the mirror.
-        </p>
-        <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="width:100%;justify-content:center;text-decoration:none;">
-          🏪 Open Balu Beats APK Store Page
-        </a>
       </div>
     </div>
   </div>
@@ -6917,13 +6927,6 @@
       state.lastNotifiedTrackId = payload.id;
       state.lastNotifiedPlaying = payload.playing;
 
-      // Direct 0ms JavascriptInterface bridge if available in v3.3.0+ APK, with console fallback
-      if (window.AndroidMediaBridge && typeof window.AndroidMediaBridge.syncMedia === 'function') {
-        try {
-          window.AndroidMediaBridge.syncMedia(json);
-          return;
-        } catch (_) {}
-      }
       console.log('BALU_MEDIA:' + json);
     }
 
@@ -9105,16 +9108,10 @@ function doGet(e) {
       const safeTitle = title || '🚀 Balu Beats v3.6.0 Update Live!';
       const safeMsg = message || 'New Minimal Charcoal & Lime UI (#101114 / #B8F36B), Jump Back In & Library Grid, Tappable Artists, Custom Playlists (📁+) & Mobile Dock Fix!';
 
-      // 1. Native Android APK Notification Bridge (0ms direct call + console fallback)
-      if (window.AndroidMediaBridge && typeof window.AndroidMediaBridge.postUpdateNotification === 'function') {
-        try {
-          window.AndroidMediaBridge.postUpdateNotification(safeTitle, safeMsg, url);
-        } catch (_) {}
-      } else {
-        try {
-          console.log('BALU_UPDATE_NOTIF:' + JSON.stringify({ title: safeTitle, message: safeMsg, url }));
-        } catch (_) {}
-      }
+      // 1. Native Android APK Notification Bridge via zero-reflection console message
+      try {
+        console.log('BALU_UPDATE_NOTIF:' + JSON.stringify({ title: safeTitle, message: safeMsg, url }));
+      } catch (_) {}
 
       // 2. Web / PWA System Notification if granted
       if ('Notification' in window && Notification.permission === 'granted') {

@@ -31,13 +31,11 @@ jobs:
 
           mkdir -p build/gen build/obj build/apk/assets build/res/drawable-mdpi build/res/drawable-hdpi build/res/drawable-xhdpi build/res/drawable-xxhdpi build/res/drawable-xxxhdpi build/res/values
           cp index.html build/apk/assets/index.html
-          cp download.html build/apk/assets/download.html
-          cp telemetry.html build/apk/assets/telemetry.html
           cp manifest.json build/apk/assets/manifest.json
 
-          # Generate high-res multi-density launcher icons & bundled ambient graphic assets (~3.2 MB APK size)
+          # Generate clean multi-density launcher icons (zero random binary blobs)
           python3 - << 'EOF'
-          import zlib, struct, math, os
+          import zlib, struct, math
 
           def make_icon_png(w, h):
               raw = bytearray()
@@ -48,21 +46,21 @@ jobs:
                       dx, dy = (x - cx) / (w / 2.0), (y - cy) / (h / 2.0)
                       dist = math.sqrt(dx*dx + dy*dy)
                       if dist < 0.78:
-                          # Neon gradient disc
+                          # Charcoal & Electric Lime disc (#B8F36B)
                           t = (dx + dy + 1.5) / 3.0
-                          r = int(20 + 10 * t)
-                          g = int(215 - 45 * t)
-                          b = int(96 + 150 * t)
+                          r = int(184 - 30 * t)
+                          g = int(243 - 20 * t)
+                          b = int(107 - 30 * t)
                           # Inner equalizer bars / play emblem
                           if abs(dx) < 0.08 and abs(dy) < 0.32:
-                              r, g, b = 7, 8, 13
+                              r, g, b = 16, 17, 20
                           elif abs(dx - 0.18) < 0.07 and abs(dy) < 0.22:
-                              r, g, b = 7, 8, 13
+                              r, g, b = 16, 17, 20
                           elif abs(dx + 0.18) < 0.07 and abs(dy) < 0.25:
-                              r, g, b = 7, 8, 13
+                              r, g, b = 16, 17, 20
                           raw.extend((max(0,min(255,r)), max(0,min(255,g)), max(0,min(255,b)), 255))
                       else:
-                          raw.extend((11, 13, 20, 255))
+                          raw.extend((16, 17, 20, 255))
               def chunk(tag, data):
                   return struct.pack("!I", len(data)) + tag + data + struct.pack("!I", zlib.crc32(tag + data) & 0xffffffff)
               ihdr = struct.pack("!IIBBBBB", w, h, 8, 6, 0, 0, 0)
@@ -78,11 +76,6 @@ jobs:
           for folder, sz in sizes.items():
               with open(f"build/res/{folder}/ic_launcher.png", "wb") as f:
                   f.write(make_icon_png(sz, sz))
-
-          # Generate high-res splash & offline acoustic waveform bank (~3 MB uncompressed / ~2.8 MB in APK)
-          # so APK has standard standalone mobile app size (~3 MB) and never triggers tiny-stub heuristics
-          with open("build/apk/assets/acoustic_impulse_hd.bin", "wb") as f:
-              f.write(os.urandom(2850000))
           EOF
 
           cat << 'EOF' > build/res/values/strings.xml
@@ -96,7 +89,7 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="17"
+              android:versionCode="18"
               android:versionName="3.6.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
@@ -237,7 +230,6 @@ jobs:
                   defaultCoverBitmap = createDefaultCoverBitmap();
                   createProminentNotificationChannel();
                   setupMediaSession();
-                  acquireLocks();
 
                   IntentFilter filter = new IntentFilter();
                   filter.addAction(ACTION_PREV);
@@ -295,6 +287,10 @@ jobs:
                   if (dur > 0) currentDuration = dur;
                   currentSpeed = (float) obj.optDouble("speed", currentSpeed);
 
+                  if (playStateChanged) {
+                      syncPlaybackLocks();
+                  }
+
                   String newArt = obj.optString("artwork", "");
                   if (!newArt.isEmpty() && !newArt.equals(currentArtworkUrl)) {
                       currentArtworkUrl = newArt;
@@ -316,22 +312,36 @@ jobs:
                   }
               }
 
-              private void acquireLocks() {
+              private void syncPlaybackLocks() {
                   try {
-                      android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_URGENT_AUDIO);
-                  } catch (Exception ignored) {}
-                  try {
-                      PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                      if (pm != null && (wakeLock == null || !wakeLock.isHeld())) {
-                          wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BaluBeats::MediaWakeLock");
-                          wakeLock.setReferenceCounted(false);
-                          wakeLock.acquire();
-                      }
-                      WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                      if (wm != null && (wifiLock == null || !wifiLock.isHeld())) {
-                          wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "BaluBeats::MediaWifiLock");
-                          wifiLock.setReferenceCounted(false);
-                          wifiLock.acquire();
+                      if (isPlaying) {
+                          PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                          if (pm != null) {
+                              if (wakeLock == null) {
+                                  wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "BaluBeats::MediaWakeLock");
+                                  wakeLock.setReferenceCounted(false);
+                              }
+                              if (!wakeLock.isHeld()) {
+                                  wakeLock.acquire(3 * 60 * 60 * 1000L);
+                              }
+                          }
+                          WifiManager wm = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                          if (wm != null) {
+                              if (wifiLock == null) {
+                                  wifiLock = wm.createWifiLock(WifiManager.WIFI_MODE_FULL_HIGH_PERF, "BaluBeats::MediaWifiLock");
+                                  wifiLock.setReferenceCounted(false);
+                              }
+                              if (!wifiLock.isHeld()) {
+                                  wifiLock.acquire();
+                              }
+                          }
+                      } else {
+                          if (wakeLock != null && wakeLock.isHeld()) {
+                              wakeLock.release();
+                          }
+                          if (wifiLock != null && wifiLock.isHeld()) {
+                              wifiLock.release();
+                          }
                       }
                   } catch (Exception ignored) {}
               }
@@ -667,7 +677,6 @@ jobs:
           import android.view.View;
           import android.view.Window;
           import android.webkit.ConsoleMessage;
-          import android.webkit.JavascriptInterface;
           import android.webkit.WebChromeClient;
           import android.webkit.WebSettings;
           import android.webkit.WebView;
@@ -678,19 +687,6 @@ jobs:
               private static BackgroundWebView webView;
               private static final String UPDATE_CHANNEL_ID = "balu_beats_updates_v35";
               private static final int UPDATE_NOTIF_ID = 205;
-
-              // Direct 0ms JS-to-Native Media & Update Notification Bridge
-              public class AndroidMediaBridge {
-                  @JavascriptInterface
-                  public void syncMedia(final String jsonStr) {
-                      runOnUiThread(() -> dispatchMediaSyncToService(jsonStr));
-                  }
-
-                  @JavascriptInterface
-                  public void postUpdateNotification(final String title, final String message, final String url) {
-                      runOnUiThread(() -> showNativeUpdateNotification(title, message, url));
-                  }
-              }
 
               // Custom WebView that keeps playing audio in background when minimized, but stops cleanly when closed!
               public static class BackgroundWebView extends WebView {
@@ -799,8 +795,6 @@ jobs:
                   settings.setDatabaseEnabled(true);
                   settings.setMediaPlaybackRequiresUserGesture(false);
                   settings.setCacheMode(WebSettings.LOAD_DEFAULT);
-
-                  webView.addJavascriptInterface(new AndroidMediaBridge(), "AndroidMediaBridge");
 
                   webView.setWebChromeClient(new WebChromeClient() {
                       @Override
@@ -1038,7 +1032,6 @@ jobs:
             --manifest build/AndroidManifest.xml \
             --java build/gen \
             -A build/apk/assets \
-            -0 .bin \
             build/resources.zip
 
           # 2. Compile Java sources
@@ -1066,14 +1059,17 @@ jobs:
             --v1-signing-enabled true --v2-signing-enabled true --v3-signing-enabled true \
             --out Balu_Beats.apk build/aligned.apk
 
-          ls -lh Balu_Beats.apk
+          # 6. Also create a ZIP archive for direct file sharing without WhatsApp raw-APK filter
+          zip -9 -j Balu_Beats_Installer.zip Balu_Beats.apk
+
+          ls -lh Balu_Beats.apk Balu_Beats_Installer.zip
 
       - name: Attach Balu_Beats.apk to GitHub Release v1.0.0 & Sync Repo
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cp index.html Balu_Beats_App.html
-          gh release upload v1.0.0 Balu_Beats.apk Balu_Beats_App.html --clobber
+          gh release upload v1.0.0 Balu_Beats.apk Balu_Beats_Installer.zip Balu_Beats_App.html --clobber
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Balu_Beats.apk Balu_Beats_App.html release.keystore

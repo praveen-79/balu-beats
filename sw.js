@@ -1,4 +1,4 @@
-const CACHE_NAME = 'balu-beats-v19';
+const CACHE_NAME = 'balu-beats-v20';
 const ASSETS = ['./', './manifest.json'];
 
 self.addEventListener('install', (event) => {
