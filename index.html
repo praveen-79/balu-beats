@@ -3,39 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <meta name="theme-color" content="#090a0f" />
+  <meta name="theme-color" content="#101114" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Balu Beats" />
   <meta name="description" content="Balu Beats — Official Free Full-Track Music Player by Balu (@being_rebel__7)" />
   <title>Balu Beats — Official Music Player by @being_rebel__7</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%231db954'/%3E%3Cstop offset='100%25' stop-color='%2300d4ff'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='%23090a0f'/%3E%3Ccircle cx='50' cy='50' r='36' fill='url(%23g)' opacity='0.18'/%3E%3Cpath d='M36 66V34l34 16-34 16z' fill='url(%23g)'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23101114'/%3E%3Ccircle cx='50' cy='50' r='36' fill='%23B8F36B' opacity='0.18'/%3E%3Cpath d='M36 66V34l34 16-34 16z' fill='%23B8F36B'/%3E%3C/svg%3E" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
   <style>
     :root {
-      --bg-deep: #060608;
-      --bg-surface: rgba(26, 27, 31, 0.74);
-      --bg-elevated: rgba(40, 42, 48, 0.72);
-      --bg-glass: rgba(28, 30, 35, 0.78);
-      --border-subtle: rgba(255, 255, 255, 0.14);
-      --border-highlight: rgba(255, 255, 255, 0.28);
-      --text-primary: #f5f6f8;
-      --text-secondary: #b0b4c0;
-      --text-muted: #717582;
-      --accent-green: #1ed760;
-      --accent-green-dark: #159e45;
-      --accent-cyan: #d8dce6;
-      --accent-purple: #9ca3af;
-      --accent-pink: #f43f5e;
-      --accent-amber: #e5e7eb;
+      --bg-deep: #101114;
+      --bg-surface: #1B1D22;
+      --bg-elevated: #22252C;
+      --bg-glass: rgba(27, 29, 34, 0.92);
+      --border-subtle: #34363D;
+      --border-highlight: rgba(184, 243, 107, 0.45);
+      --text-primary: #F5F5F5;
+      --text-secondary: #A1A4AE;
+      --text-muted: #6E717C;
+      --accent-green: #B8F36B;
+      --accent-green-dark: #97D846;
+      --accent-cyan: #B8F36B;
+      --accent-purple: #A1A4AE;
+      --accent-pink: #B8F36B;
+      --accent-amber: #F5F5F5;
       --danger: #ef4444;
-      --dynamic-glow: rgba(220, 225, 235, 0.20);
+      --dynamic-glow: rgba(184, 243, 107, 0.08);
       --radius-sm: 12px;
-      --radius-md: 18px;
-      --radius-lg: 26px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
       --radius-full: 9999px;
-      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     * {
@@ -70,9 +70,8 @@
       align-items: center;
       justify-content: center;
       background:
-        radial-gradient(ellipse at 75% 10%, rgba(220, 225, 236, 0.18), transparent 48%),
-        radial-gradient(circle at 20% 80%, rgba(90, 95, 110, 0.16), transparent 50%),
-        #040406;
+        radial-gradient(ellipse at 50% 0%, rgba(184, 243, 107, 0.06), transparent 55%),
+        #0B0C0E;
       transition: background 0.6s ease;
     }
 
@@ -101,9 +100,9 @@
       font-size: 11px;
       padding: 3px 8px;
       border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.09);
-      color: #e5e7eb;
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: #1B1D22;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
       font-weight: 600;
     }
 
@@ -118,9 +117,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: #1B1D22;
       color: var(--text-primary);
       border: 1px solid var(--border-subtle);
       padding: 7px 13px;
@@ -132,46 +129,42 @@
     }
 
     .util-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
+      background: #24272E;
       border-color: var(--border-highlight);
       transform: translateY(-1px);
     }
 
     .util-btn.primary {
-      background: linear-gradient(135deg, #f8fafc, #cbd5e1);
-      color: #090a0d;
-      border-color: rgba(255, 255, 255, 0.5);
+      background: var(--accent-green);
+      color: #101114;
+      border-color: var(--accent-green);
       font-weight: 800;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 6px 18px rgba(184, 243, 107, 0.22);
     }
 
     .util-btn.primary:hover {
-      filter: brightness(1.06);
+      filter: brightness(1.05);
     }
 
-    /* Mobile App Device Container — Dark Smoked Charcoal-Ash & Silver Spotlight Theme */
+    /* Mobile App Device Container — Minimal Charcoal & Electric Lime Theme */
     .phone-frame {
       position: relative;
       width: 100%;
       height: 100%;
       max-height: 100%;
       min-height: 0;
-      background:
-        radial-gradient(ellipse at 82% 4%, rgba(235, 238, 245, 0.22) 0%, rgba(155, 160, 172, 0.09) 34%, transparent 64%),
-        radial-gradient(circle at 15% 38%, rgba(85, 89, 100, 0.15) 0%, transparent 55%),
-        linear-gradient(180deg, #17181c 0%, #0c0d10 46%, #050507 100%);
+      background: var(--bg-deep);
       display: flex;
       flex-direction: column;
       overflow: hidden;
       transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Subtle frosted matte grain overlay matching the reference image texture */
     .phone-frame::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.04), transparent 70%);
+      background: radial-gradient(circle at 50% 0%, rgba(184, 243, 107, 0.05), transparent 60%);
       pointer-events: none;
       z-index: 1;
     }
@@ -182,12 +175,11 @@
         width: 420px;
         height: min(860px, calc(100vh - 64px));
         height: min(860px, calc(100dvh - 64px));
-        border-radius: 42px;
-        border: 8px solid #1b1c20;
+        border-radius: 40px;
+        border: 7px solid #1B1D22;
         box-shadow:
-          0 30px 80px rgba(0, 0, 0, 0.88),
-          0 0 0 1px rgba(255, 255, 255, 0.16),
-          0 0 60px rgba(200, 205, 215, 0.12);
+          0 30px 80px rgba(0, 0, 0, 0.85),
+          0 0 0 1px #34363D;
       }
 
       .workspace-shell.fullscreen-mode .phone-frame {
@@ -195,7 +187,7 @@
         height: calc(100vh - 64px);
         height: calc(100dvh - 64px);
         border-radius: 24px;
-        border: 1px solid var(--border-highlight);
+        border: 1px solid var(--border-subtle);
         box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8);
       }
     }
@@ -253,7 +245,7 @@
       font-size: 11px;
       font-weight: 600;
       color: var(--text-secondary);
-      background: linear-gradient(180deg, rgba(8, 8, 10, 0.75), transparent);
+      background: var(--bg-deep);
       z-index: 10;
       flex-shrink: 0;
     }
@@ -262,13 +254,12 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      backdrop-filter: blur(12px);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       padding: 3px 10px;
       border-radius: var(--radius-full);
       font-size: 10px;
-      color: #e5e7eb;
+      color: var(--text-primary);
     }
 
     .live-dot {
@@ -305,23 +296,21 @@
       width: 36px;
       height: 36px;
       border-radius: 12px;
-      background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(180, 186, 198, 0.85));
-      border: 1px solid rgba(255, 255, 255, 0.6);
+      background: var(--accent-green);
+      border: 1px solid var(--accent-green);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #090a0d;
+      color: #101114;
       font-weight: 900;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 14px rgba(184, 243, 107, 0.22);
     }
 
     .brand-title {
       font-size: 18px;
       font-weight: 800;
       letter-spacing: -0.4px;
-      background: linear-gradient(90deg, #ffffff, #d1d5db);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text-primary);
     }
 
     .brand-subtitle {
@@ -341,9 +330,7 @@
       width: 36px;
       height: 36px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: var(--bg-surface);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
       display: flex;
@@ -354,8 +341,8 @@
     }
 
     .icon-btn:hover, .icon-btn:active {
-      background: rgba(255, 255, 255, 0.16);
-      border-color: var(--border-highlight);
+      background: var(--bg-elevated);
+      border-color: var(--accent-green);
       transform: scale(1.04);
     }
 
@@ -365,10 +352,9 @@
       gap: 5px;
       padding: 6px 11px;
       border-radius: var(--radius-full);
-      background: rgba(255, 255, 255, 0.09);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: #f3f4f6;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
       font-size: 11.5px;
       font-weight: 700;
       cursor: pointer;
@@ -376,7 +362,8 @@
     }
 
     .spotify-pill-btn:hover {
-      background: rgba(255, 255, 255, 0.18);
+      background: var(--bg-elevated);
+      border-color: var(--accent-green);
     }
 
     /* Main Scrollable Viewport */
@@ -393,7 +380,7 @@
       width: 4px;
     }
     .main-view::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.18);
+      background: #34363D;
       border-radius: 4px;
     }
 
@@ -411,7 +398,166 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Source Filter Chips — Smoked Frosted Glass Pills */
+    /* Home Greeting & Search Trigger */
+    .home-greeting-wrap {
+      margin: 2px 0 12px;
+    }
+
+    .home-greeting-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.4px;
+      line-height: 1.2;
+    }
+
+    .home-greeting-sub {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .home-search-trigger {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 11px 14px;
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 14px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .home-search-trigger:hover, .home-search-trigger:active {
+      border-color: var(--accent-green);
+      background: var(--bg-elevated);
+      color: var(--text-primary);
+    }
+
+    /* Jump Back In Cards (Recently Played & Your Favourites) */
+    .jump-back-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .jump-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      cursor: pointer;
+      transition: border-color 0.2s, transform 0.18s;
+    }
+
+    .jump-card:hover, .jump-card:active {
+      border-color: var(--accent-green);
+      transform: translateY(-1px);
+    }
+
+    .jump-card-art {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: #24272F;
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent-green);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .jump-card-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .jump-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .jump-card-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Your Library 2x2 Grid on Home */
+    .library-grid-home {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    @media (min-width: 768px) {
+      .workspace-shell.fullscreen-mode .library-grid-home {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .lib-home-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 13px;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .lib-home-card:hover, .lib-home-card:active {
+      border-color: var(--accent-green);
+      background: var(--bg-elevated);
+    }
+
+    .lib-home-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      background: rgba(184, 243, 107, 0.12);
+      color: var(--accent-green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .lib-home-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .lib-home-sub {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    /* Source Filter Chips — Minimal Charcoal & Lime Pills */
     .chips-scroll {
       display: flex;
       gap: 8px;
@@ -425,10 +571,8 @@
       flex-shrink: 0;
       padding: 7px 14px;
       border-radius: var(--radius-full);
-      background: rgba(34, 36, 42, 0.68);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       color: var(--text-secondary);
       font-size: 12px;
       font-weight: 600;
@@ -437,51 +581,34 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
     }
 
     .chip:hover {
-      border-color: rgba(255, 255, 255, 0.28);
-      color: #fff;
+      border-color: var(--accent-green);
+      color: var(--text-primary);
     }
 
     .chip.active {
-      background: linear-gradient(135deg, #ffffff, #d4d8e2);
-      color: #08090c;
-      border-color: #ffffff;
+      background: var(--accent-green);
+      color: #101114;
+      border-color: var(--accent-green);
       font-weight: 800;
-      box-shadow: 0 6px 18px rgba(255, 255, 255, 0.18);
     }
 
-    /* Hero Banner — Smoked Frosted Titanium Glass Card */
+    /* Hero Banner — Minimal Charcoal Card */
     .hero-card {
       position: relative;
-      border-radius: 22px;
-      padding: 18px;
-      background: linear-gradient(145deg, rgba(52, 55, 64, 0.62) 0%, rgba(22, 23, 28, 0.84) 60%, rgba(10, 11, 14, 0.94) 100%);
-      backdrop-filter: blur(28px) saturate(135%);
-      -webkit-backdrop-filter: blur(28px) saturate(135%);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      box-shadow:
-        0 20px 45px rgba(0, 0, 0, 0.72),
-        inset 0 1px 0 rgba(255, 255, 255, 0.30);
+      border-radius: 18px;
+      padding: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
       margin-bottom: 18px;
       overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-    }
-
-    .hero-card::before {
-      content: '';
-      position: absolute;
-      top: -45%;
-      right: -10%;
-      width: 210px;
-      height: 210px;
-      background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 70%);
-      pointer-events: none;
     }
 
     .hero-info {
@@ -495,22 +622,22 @@
       gap: 5px;
       font-size: 10px;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.7px;
       font-weight: 800;
-      color: #f3f4f6;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      color: var(--accent-green);
+      background: rgba(184, 243, 107, 0.12);
+      border: 1px solid rgba(184, 243, 107, 0.3);
       padding: 3px 9px;
       border-radius: 999px;
       margin-bottom: 8px;
     }
 
     .hero-title {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
       line-height: 1.25;
       margin-bottom: 5px;
-      color: #ffffff;
+      color: var(--text-primary);
     }
 
     .hero-sub {
@@ -530,15 +657,14 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: linear-gradient(135deg, #ffffff, #d8dce6);
-      color: #07080a;
+      background: var(--accent-green);
+      color: #101114;
       border: none;
       padding: 8px 16px;
       border-radius: var(--radius-full);
       font-size: 12px;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
       transition: transform 0.15s;
     }
 
@@ -550,9 +676,9 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: rgba(255, 255, 255, 0.09);
+      background: var(--bg-elevated);
       color: var(--text-primary);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid var(--border-subtle);
       padding: 8px 12px;
       border-radius: var(--radius-full);
       font-size: 12px;
@@ -561,17 +687,16 @@
     }
 
     .hero-art {
-      width: 88px;
-      height: 88px;
-      border-radius: 18px;
+      width: 84px;
+      height: 84px;
+      border-radius: 14px;
       object-fit: cover;
-      box-shadow: 0 14px 32px rgba(0, 0, 0, 0.75);
-      border: 1.5px solid rgba(255, 255, 255, 0.28);
+      border: 1px solid var(--border-subtle);
       flex-shrink: 0;
       z-index: 1;
     }
 
-    /* Quick Mood Grid (Smoked Frosted Glass 2-col compact cards) */
+    /* Quick Mood Grid (2-col compact cards) */
     .quick-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -588,33 +713,30 @@
     .quick-card {
       display: flex;
       align-items: center;
-      background: linear-gradient(135deg, rgba(42, 44, 50, 0.65), rgba(22, 23, 27, 0.78));
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.16);
-      border-radius: 13px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
       overflow: hidden;
       cursor: pointer;
       transition: all 0.2s;
-      height: 52px;
+      height: 50px;
     }
 
     .quick-card:hover {
-      background: rgba(55, 58, 66, 0.78);
-      border-color: rgba(255, 255, 255, 0.30);
+      background: var(--bg-elevated);
+      border-color: var(--accent-green);
       transform: translateY(-1px);
     }
 
     .quick-card-icon {
-      width: 52px;
-      height: 52px;
+      width: 50px;
+      height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
+      font-size: 18px;
       flex-shrink: 0;
-      border-right: 1px solid rgba(255, 255, 255, 0.1);
+      border-right: 1px solid var(--border-subtle);
     }
 
     .quick-card-title {
@@ -638,69 +760,62 @@
       font-size: 16px;
       font-weight: 800;
       letter-spacing: -0.3px;
-      color: #f8fafc;
+      color: var(--text-primary);
     }
 
     .section-link {
       font-size: 11.5px;
-      color: #e2e8f0;
+      color: var(--accent-green);
       font-weight: 700;
       cursor: pointer;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       padding: 4px 10px;
       border-radius: 999px;
       transition: all 0.18s;
     }
 
     .section-link:hover {
-      background: rgba(255, 255, 255, 0.16);
-      border-color: rgba(255, 255, 255, 0.3);
+      background: var(--bg-elevated);
+      border-color: var(--accent-green);
     }
 
-    /* Horizontal Carousel Cards — Frosted Smoked Glass Coverflow Cards (Matching Shared Image) */
+    /* Horizontal Carousel Cards — Minimal Charcoal Cards */
     .horiz-scroll {
       display: flex;
-      gap: 13px;
+      gap: 12px;
       overflow-x: auto;
       padding: 4px 2px 12px;
       scrollbar-width: none;
-      perspective: 900px;
     }
     .horiz-scroll::-webkit-scrollbar { display: none; }
 
     .album-card {
-      width: 146px;
+      width: 144px;
       flex-shrink: 0;
-      background: linear-gradient(180deg, rgba(48, 50, 57, 0.64) 0%, rgba(22, 23, 27, 0.88) 100%);
-      backdrop-filter: blur(24px) saturate(135%);
-      -webkit-backdrop-filter: blur(24px) saturate(135%);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow:
-        0 14px 32px rgba(0, 0, 0, 0.68),
-        inset 0 1px 0 rgba(255, 255, 255, 0.28);
-      border-radius: 18px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
       padding: 9px 9px 11px;
       cursor: pointer;
-      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.2s ease;
       position: relative;
     }
 
     .album-card:hover {
-      background: linear-gradient(180deg, rgba(64, 67, 76, 0.75) 0%, rgba(28, 30, 35, 0.92) 100%);
-      border-color: rgba(255, 255, 255, 0.38);
-      transform: translateY(-4px) scale(1.02);
+      background: var(--bg-elevated);
+      border-color: var(--accent-green);
+      transform: translateY(-2px);
     }
 
     .album-art-wrap {
       position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1.04;
+      aspect-ratio: 1 / 1;
       border-radius: 12px;
       overflow: hidden;
-      margin-bottom: 9px;
+      margin-bottom: 8px;
       background: #141519;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.55);
     }
 
     .album-art-wrap img {
@@ -714,22 +829,22 @@
       position: absolute;
       bottom: 7px;
       right: 7px;
-      width: 32px;
-      height: 32px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.92);
-      color: #060709;
+      background: var(--accent-green);
+      color: #101114;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.65);
-      font-size: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+      font-size: 11px;
+      font-weight: 900;
       transition: transform 0.15s;
     }
 
     .album-card:hover .card-play-fab {
-      transform: scale(1.1);
-      background: var(--accent-green);
+      transform: scale(1.08);
     }
 
     .source-badge {
@@ -740,26 +855,19 @@
       font-weight: 800;
       padding: 2px 6px;
       border-radius: 6px;
-      background: rgba(8, 9, 12, 0.78);
-      backdrop-filter: blur(8px);
-      color: #f3f4f6;
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(16, 17, 20, 0.85);
+      color: var(--text-primary);
+      border: 1px solid var(--border-subtle);
     }
 
-    .source-badge.global {
-      color: #e2e8f0;
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    .source-badge.audius {
-      color: #e5e7eb;
-      border-color: rgba(255, 255, 255, 0.25);
+    .source-badge.global, .source-badge.audius {
+      color: var(--accent-green);
     }
 
     .album-name {
       font-size: 12.5px;
-      font-weight: 800;
-      color: #ffffff;
+      font-weight: 700;
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -780,48 +888,44 @@
       gap: 4px;
     }
 
-    /* Track List Rows — Smoked Frosted Glass Strips */
+    /* Track List Rows — Compact Minimal Charcoal Rows */
     .track-list {
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 6px;
     }
 
     .track-row {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 9px 11px;
-      border-radius: 15px;
-      background: linear-gradient(135deg, rgba(34, 36, 42, 0.66), rgba(20, 21, 25, 0.78));
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.11);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.10);
+      padding: 8px 11px;
+      border-radius: 14px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       cursor: pointer;
-      transition: all 0.18s;
+      transition: all 0.16s;
     }
 
     .track-row:hover {
-      background: linear-gradient(135deg, rgba(48, 51, 59, 0.76), rgba(28, 30, 36, 0.86));
-      border-color: rgba(255, 255, 255, 0.24);
+      background: var(--bg-elevated);
+      border-color: #464953;
     }
 
     .track-row.playing {
-      background: linear-gradient(135deg, rgba(58, 62, 72, 0.82), rgba(25, 32, 29, 0.88));
-      border-color: rgba(255, 255, 255, 0.34);
-      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      background: rgba(184, 243, 107, 0.08);
+      border-color: var(--accent-green);
     }
 
     .track-thumb-wrap {
       position: relative;
-      width: 48px;
-      height: 48px;
-      border-radius: 11px;
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
       overflow: hidden;
       flex-shrink: 0;
-      background: #18191e;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #141519;
+      border: 1px solid var(--border-subtle);
     }
 
     .track-thumb-wrap img {
@@ -838,17 +942,18 @@
     .track-title {
       font-size: 13.5px;
       font-weight: 700;
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
     .track-row.playing .track-title {
-      color: #ffffff;
+      color: var(--accent-green);
     }
 
     .track-sub {
@@ -867,20 +972,20 @@
       font-weight: 800;
       padding: 1px 6px;
       border-radius: 5px;
-      background: rgba(255, 255, 255, 0.11);
-      color: #e5e7eb;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #24272F;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
       flex-shrink: 0;
     }
 
     .track-row.playing .quality-tag {
-      background: rgba(30, 215, 96, 0.18);
+      background: rgba(184, 243, 107, 0.16);
       color: var(--accent-green);
-      border-color: rgba(30, 215, 96, 0.4);
+      border-color: rgba(184, 243, 107, 0.4);
     }
 
     .quality-tag.preview {
-      background: rgba(255, 255, 255, 0.08);
+      background: #24272F;
       color: var(--text-secondary);
     }
 
@@ -906,7 +1011,7 @@
     }
 
     .row-icon-btn:hover {
-      background: rgba(255, 255, 255, 0.10);
+      background: rgba(255, 255, 255, 0.08);
       color: var(--text-primary);
     }
 
@@ -914,24 +1019,21 @@
       color: var(--accent-green);
     }
 
-    /* Search Bar — Frosted Smoked Glass */
+    /* Search Bar — Fast & Forgiving Minimal Input */
     .search-box-wrap {
       position: sticky;
       top: 0;
       z-index: 8;
-      background: linear-gradient(180deg, rgba(14, 15, 18, 0.96) 75%, transparent);
-      backdrop-filter: blur(16px);
+      background: var(--bg-deep);
       padding: 4px 0 10px;
     }
 
     .search-bar {
       display: flex;
       align-items: center;
-      background: rgba(38, 40, 46, 0.75);
-      backdrop-filter: blur(22px);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-      border-radius: 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
       padding: 0 12px;
       height: 46px;
       gap: 8px;
@@ -939,8 +1041,8 @@
     }
 
     .search-bar:focus-within {
-      border-color: rgba(255, 255, 255, 0.55);
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.12);
+      border-color: var(--accent-green);
+      box-shadow: 0 0 0 2px rgba(184, 243, 107, 0.18);
     }
 
     .search-bar input {
@@ -972,7 +1074,7 @@
     }
 
     .genre-card {
-      height: 82px;
+      height: 78px;
       border-radius: 16px;
       padding: 12px;
       font-size: 14px;
@@ -983,44 +1085,40 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.22);
-      transition: transform 0.18s;
+      background: var(--bg-surface) !important;
+      border: 1px solid var(--border-subtle);
+      transition: transform 0.18s, border-color 0.18s;
     }
 
     .genre-card:hover {
-      transform: scale(1.02);
+      transform: translateY(-2px);
+      border-color: var(--accent-green);
     }
 
     .genre-card span.emoji {
       position: absolute;
       right: 10px;
       bottom: 6px;
-      font-size: 32px;
-      transform: rotate(12deg);
+      font-size: 28px;
       opacity: 0.9;
     }
 
-    /* Mini Player Docked Above Bottom Nav — Smoked Glass Floating Pill (Matching Shared Image) */
+    /* Persistent Mini-Player Docked Above Bottom Nav */
     .mini-player {
       position: absolute;
       left: 12px;
       right: 12px;
       bottom: 68px;
-      height: 64px;
-      background: linear-gradient(135deg, rgba(46, 48, 55, 0.82), rgba(24, 25, 30, 0.90));
-      backdrop-filter: blur(28px) saturate(140%);
-      -webkit-backdrop-filter: blur(28px) saturate(140%);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 999px;
+      height: 62px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 16px;
       display: flex;
       align-items: center;
-      padding: 0 14px 0 10px;
+      padding: 0 12px 0 10px;
       gap: 11px;
       z-index: 20;
-      box-shadow:
-        0 18px 42px rgba(0, 0, 0, 0.82),
-        inset 0 1px 0 rgba(255, 255, 255, 0.28);
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.75);
       cursor: pointer;
       overflow: hidden;
     }
@@ -1028,10 +1126,10 @@
     .mini-progress-track {
       position: absolute;
       bottom: 0;
-      left: 24px;
-      right: 24px;
+      left: 14px;
+      right: 14px;
       height: 2.5px;
-      background: rgba(255, 255, 255, 0.14);
+      background: #2A2D35;
       border-radius: 999px;
       overflow: hidden;
     }
@@ -1039,29 +1137,22 @@
     .mini-progress-fill {
       height: 100%;
       width: 0%;
-      background: #ffffff;
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+      background: var(--accent-green);
       transition: width 0.2s linear;
     }
 
     .mini-art {
       width: 44px;
       height: 44px;
-      border-radius: 12px;
+      border-radius: 10px;
       object-fit: cover;
       flex-shrink: 0;
-      background: #18191e;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.55);
+      background: #141519;
+      border: 1px solid var(--border-subtle);
     }
 
     .mini-art.spinning {
       animation: none;
-    }
-
-    @keyframes spinSlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
     }
 
     .mini-info {
@@ -1071,8 +1162,8 @@
 
     .mini-title {
       font-size: 13px;
-      font-weight: 800;
-      color: #ffffff;
+      font-weight: 700;
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -1097,14 +1188,13 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      background: #ffffff;
-      color: #060709;
+      background: var(--accent-green);
+      color: #101114;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
       transition: transform 0.15s;
     }
 
@@ -1112,7 +1202,7 @@
       transform: scale(0.92);
     }
 
-    /* Bottom Navigation Bar — Dark Smoked Frosted Glass */
+    /* Bottom Navigation Bar — Minimal Charcoal Dock with Lime Active State */
     .bottom-nav {
       position: absolute;
       bottom: 0;
@@ -1120,10 +1210,8 @@
       right: 0;
       height: 62px;
       padding-bottom: env(safe-area-inset-bottom, 0px);
-      background: rgba(10, 11, 14, 0.92);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      background: var(--bg-deep);
+      border-top: 1px solid var(--border-subtle);
       display: flex;
       align-items: center;
       justify-content: space-around;
@@ -1137,7 +1225,7 @@
       align-items: center;
       justify-content: center;
       gap: 3px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
       background: none;
       border: none;
       font-size: 10.5px;
@@ -1148,8 +1236,8 @@
     }
 
     .nav-item.active {
-      color: #ffffff;
-      text-shadow: 0 0 12px rgba(255, 255, 255, 0.45);
+      color: var(--accent-green);
+      font-weight: 700;
     }
 
     .nav-item svg {
@@ -1157,20 +1245,19 @@
       height: 20px;
     }
 
-    /* Full-Screen Now Playing Sheet — Smoked Charcoal-Ash & 3D Coverflow Glass Theme */
+    /* Full-Screen Now Playing Sheet — Minimal Dark Charcoal & Large Square Artwork */
     .now-playing-sheet {
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(ellipse at 78% 6%, rgba(235, 238, 245, 0.25) 0%, rgba(150, 155, 168, 0.11) 36%, transparent 65%),
-        radial-gradient(circle at 50% 35%, rgba(95, 100, 112, 0.18), transparent 60%),
-        linear-gradient(180deg, #1b1c21 0%, #0d0e12 52%, #050507 100%);
+        radial-gradient(circle at 50% 18%, var(--dynamic-glow, rgba(184, 243, 107, 0.08)), transparent 60%),
+        var(--bg-deep);
       z-index: 40;
       display: flex;
       flex-direction: column;
-      padding: 14px 20px 22px;
+      padding: 14px 22px 20px;
       transform: translateY(105%);
-      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+      transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
       overflow-y: auto;
     }
 
@@ -1191,25 +1278,25 @@
     }
 
     .np-source-label small {
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
-      color: #d1d5db;
-      font-weight: 700;
+      letter-spacing: 1.4px;
+      color: var(--text-primary);
+      font-weight: 800;
       display: block;
     }
 
     .np-source-label strong {
-      font-size: 11.5px;
+      font-size: 11px;
       color: var(--text-secondary);
+      font-weight: 600;
     }
 
     /* Mode Switcher inside Now Playing (Artwork / Lyrics / Queue) */
     .np-mode-tabs {
       display: flex;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      backdrop-filter: blur(16px);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-full);
       padding: 3px;
       margin: 0 auto 12px;
@@ -1231,181 +1318,88 @@
     }
 
     .np-mode-btn.active {
-      background: #ffffff;
-      color: #060709;
+      background: var(--accent-green);
+      color: #101114;
       font-weight: 800;
     }
 
-    /* Artwork Stage — 3D Fanned Coverflow Glass Stack (Matching Shared Image) */
+    /* Artwork Stage — Clean Large Square Album Cover (68-74% Width) */
     .np-stage {
       flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 250px;
+      min-height: 220px;
       position: relative;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .np-coverflow-deck {
       position: relative;
       width: 100%;
-      height: 276px;
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 1000px;
     }
 
     .np-side-card {
-      position: absolute;
-      width: 152px;
-      height: 222px;
-      border-radius: 18px;
-      padding: 7px 7px 10px;
-      background: linear-gradient(180deg, rgba(46, 48, 55, 0.62) 0%, rgba(18, 19, 23, 0.88) 100%);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.78);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow: hidden;
-      user-select: none;
-    }
-
-    .np-side-card img {
-      width: 100%;
-      height: 162px;
-      object-fit: cover;
-      border-radius: 12px;
-      filter: brightness(0.78) contrast(1.05);
-    }
-
-    .np-side-card-meta {
-      padding: 4px 3px 0;
-    }
-
-    .np-side-card-title {
-      font-size: 10.5px;
-      font-weight: 800;
-      color: rgba(255, 255, 255, 0.88);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .np-side-card-sub {
-      font-size: 9.5px;
-      color: rgba(255, 255, 255, 0.55);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .np-side-card.left-far {
-      transform: translateX(-118px) translateZ(-95px) rotateY(24deg) scale(0.84);
-      opacity: 0.62;
-      z-index: 1;
-    }
-
-    .np-side-card.left-near {
-      transform: translateX(-68px) translateZ(-45px) rotateY(16deg) scale(0.92);
-      opacity: 0.85;
-      z-index: 2;
-    }
-
-    .np-side-card.right-near {
-      transform: translateX(68px) translateZ(-45px) rotateY(-16deg) scale(0.92);
-      opacity: 0.85;
-      z-index: 2;
-    }
-
-    .np-side-card.right-far {
-      transform: translateX(118px) translateZ(-95px) rotateY(-24deg) scale(0.84);
-      opacity: 0.62;
-      z-index: 1;
+      display: none !important;
     }
 
     .np-art-container {
       position: relative;
       z-index: 5;
-      width: 196px;
-      height: 262px;
+      width: min(72vw, 272px);
+      height: min(72vw, 272px);
       border-radius: 22px;
-      padding: 9px 9px 12px;
-      background: linear-gradient(180deg, rgba(64, 67, 76, 0.72) 0%, rgba(28, 30, 35, 0.90) 100%);
-      backdrop-filter: blur(28px) saturate(140%);
-      -webkit-backdrop-filter: blur(28px) saturate(140%);
-      box-shadow:
-        0 24px 55px rgba(0, 0, 0, 0.88),
-        inset 0 1.5px 0 rgba(255, 255, 255, 0.42);
-      border: 1.5px solid rgba(255, 255, 255, 0.34);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.35s ease, border-radius 0.4s;
+      padding: 0;
+      background: var(--bg-surface);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.72);
+      border: 1px solid var(--border-subtle);
+      overflow: hidden;
+      transition: transform 0.3s ease, opacity 0.25s ease;
       cursor: pointer;
     }
 
-    .np-art-container:hover {
-      transform: translateY(-2px) scale(1.01);
+    @media (max-height: 700px) {
+      .np-art-container {
+        width: min(56vw, 210px);
+        height: min(56vw, 210px);
+      }
     }
 
     .np-art-container img {
       width: 100%;
-      height: 190px;
-      border-radius: 15px;
+      height: 100%;
+      border-radius: 22px;
       object-fit: cover;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+      display: block;
+      transition: opacity 0.25s ease;
     }
 
     .np-card-glass-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      padding: 6px 4px 0;
-    }
-
-    .np-card-glass-title {
-      font-size: 13px;
-      font-weight: 800;
-      color: #ffffff;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .np-card-glass-artist {
-      font-size: 11px;
-      color: rgba(255, 255, 255, 0.68);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: none;
     }
 
     /* Visualizer Canvas */
     .visualizer-canvas {
       width: 100%;
-      height: 36px;
-      margin-top: 8px;
+      max-width: 260px;
+      height: 28px;
+      margin-top: 10px;
+      opacity: 0.85;
     }
 
     /* Synced Lyrics View */
     .np-lyrics-box {
       display: none;
       width: 100%;
-      height: 280px;
+      height: 270px;
       overflow-y: auto;
       padding: 16px;
-      background: rgba(18, 19, 23, 0.68);
-      backdrop-filter: blur(22px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: 20px;
       text-align: center;
       scroll-behavior: smooth;
@@ -1421,65 +1415,67 @@
     }
 
     .lyric-line.active {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
-      color: #ffffff;
-      text-shadow: 0 0 18px rgba(255, 255, 255, 0.65);
-      transform: scale(1.03);
+      color: var(--accent-green);
+      transform: scale(1.02);
     }
 
     /* Queue View inside Now Playing */
     .np-queue-box {
       display: none;
       width: 100%;
-      height: 280px;
+      height: 270px;
       overflow-y: auto;
-      background: rgba(18, 19, 23, 0.68);
-      backdrop-filter: blur(22px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: 20px;
       padding: 10px;
     }
 
-    /* Track Info Pill Bar in Now Playing — Smoked Frosted Glass Pill (Matching Shared Image) */
+    /* Song Information Row in Now Playing */
     .np-track-info {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 12px;
-      padding: 9px 14px;
-      border-radius: 999px;
-      background: linear-gradient(135deg, rgba(46, 48, 55, 0.72), rgba(24, 25, 30, 0.85));
-      backdrop-filter: blur(26px) saturate(140%);
-      -webkit-backdrop-filter: blur(26px) saturate(140%);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      box-shadow:
-        0 14px 36px rgba(0, 0, 0, 0.68),
-        inset 0 1px 0 rgba(255, 255, 255, 0.26);
+      gap: 12px;
+      margin-bottom: 14px;
+      padding: 4px 2px;
+      background: transparent;
+      border: none;
+      box-shadow: none;
     }
 
     .np-title {
-      font-size: 14.5px;
+      font-size: 18px;
       font-weight: 800;
-      color: #ffffff;
+      color: var(--text-primary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      letter-spacing: -0.3px;
     }
 
     .np-artist {
-      font-size: 11.5px;
+      font-size: 13.5px;
       color: var(--text-secondary);
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      margin-top: 2px;
+      cursor: pointer;
+      transition: color 0.15s;
     }
 
-    /* Seek Bar */
+    .np-artist:hover, .np-artist:active {
+      color: var(--accent-green);
+      text-decoration: underline;
+    }
+
+    /* High-Contrast Lime Seek Bar */
     .np-seek-wrap {
-      margin-bottom: 10px;
-      padding: 0 6px;
+      margin-bottom: 12px;
+      padding: 0 2px;
     }
 
     .seek-slider {
@@ -1487,8 +1483,8 @@
       appearance: none;
       width: 100%;
       height: 4px;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.20);
+      border-radius: 999px;
+      background: #2C2F37;
       outline: none;
       cursor: pointer;
     }
@@ -1498,62 +1494,66 @@
       width: 13px;
       height: 13px;
       border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.9);
+      background: var(--accent-green);
+      box-shadow: 0 0 8px rgba(184, 243, 107, 0.65);
       cursor: pointer;
     }
 
     .seek-times {
       display: flex;
       justify-content: space-between;
-      font-size: 11px;
+      font-size: 11.5px;
       color: var(--text-secondary);
-      margin-top: 5px;
+      margin-top: 6px;
       font-variant-numeric: tabular-nums;
     }
 
-    /* Main Transport Controls — Crisp Pure White Icons (Matching Shared Image) */
+    /* Primary Playback Controls */
     .np-controls {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
-      padding: 0 8px;
+      margin-bottom: 14px;
+      padding: 0 6px;
     }
 
     .np-play-main {
-      width: 60px;
-      height: 60px;
+      width: 64px;
+      height: 64px;
       border-radius: 50%;
-      background: #ffffff;
-      color: #060709;
+      background: var(--accent-green);
+      color: #101114;
       border: none;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 10px 28px rgba(255, 255, 255, 0.25), 0 6px 20px rgba(0, 0, 0, 0.6);
-      transition: transform 0.15s;
+      box-shadow: 0 8px 24px rgba(184, 243, 107, 0.28);
+      transition: transform 0.12s;
     }
 
     .np-play-main:active {
-      transform: scale(0.93);
+      transform: scale(0.94);
     }
 
     .np-ctrl-btn {
       background: none;
       border: none;
-      color: #ffffff;
+      color: var(--text-primary);
       cursor: pointer;
       padding: 8px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: all 0.15s;
+      transition: color 0.15s;
     }
 
-    .np-ctrl-btn.active {
+    #shuffleBtn, #repeatBtn {
+      color: var(--text-secondary);
+    }
+
+    .np-ctrl-btn.active, #shuffleBtn.active, #repeatBtn.active {
       color: var(--accent-green);
     }
 
@@ -1563,8 +1563,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 6px;
-      padding-top: 8px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 10px;
+      border-top: 1px solid var(--border-subtle);
       flex-wrap: wrap;
     }
 
@@ -1572,9 +1572,8 @@
       display: inline-flex;
       align-items: center;
       gap: 5px;
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       color: var(--text-secondary);
       padding: 6px 11px;
       border-radius: var(--radius-full);
@@ -1585,16 +1584,13 @@
 
     .strip-pill:hover {
       color: var(--text-primary);
-      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--accent-green);
     }
 
-    /* Connect & App Bridge Cards — Smoked Frosted Glass */
+    /* Connect & Account Cards */
     .connect-card {
-      background: linear-gradient(145deg, rgba(38, 40, 46, 0.68), rgba(20, 21, 25, 0.84));
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: 18px;
       padding: 16px;
       margin-bottom: 14px;
@@ -1624,8 +1620,8 @@
 
     .text-input, .connect-input {
       flex: 1;
-      background: rgba(18, 19, 23, 0.78);
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: var(--bg-deep);
+      border: 1px solid var(--border-subtle);
       border-radius: 11px;
       padding: 9px 12px;
       color: var(--text-primary);
@@ -1634,7 +1630,7 @@
     }
 
     .text-input:focus, .connect-input:focus {
-      border-color: #ffffff;
+      border-color: var(--accent-green);
     }
 
     .app-bridge-grid {
@@ -1649,7 +1645,7 @@
       gap: 8px;
       padding: 10px 12px;
       border-radius: 12px;
-      background: rgba(255, 255, 255, 0.07);
+      background: var(--bg-deep);
       border: 1px solid var(--border-subtle);
       color: var(--text-primary);
       font-size: 12px;
@@ -1660,8 +1656,8 @@
     }
 
     .bridge-btn:hover {
-      border-color: rgba(255, 255, 255, 0.35);
-      background: rgba(255, 255, 255, 0.14);
+      border-color: var(--accent-green);
+      background: var(--bg-elevated);
     }
 
     /* Modal / Action Sheet */
@@ -1684,9 +1680,8 @@
     .modal-box {
       width: 100%;
       max-width: 400px;
-      background: rgba(24, 25, 30, 0.94);
-      backdrop-filter: blur(26px);
-      border: 1px solid var(--border-highlight);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       border-radius: 22px;
       padding: 20px;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85);
@@ -1697,8 +1692,8 @@
       width: 100%;
       max-width: 680px;
       max-height: 90vh;
-      background: #101115;
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: var(--bg-deep);
+      border: 1px solid var(--border-subtle);
       border-radius: 22px;
       padding: 18px;
       box-shadow: 0 25px 70px rgba(0, 0, 0, 0.9);
@@ -1711,7 +1706,7 @@
       display: flex;
       gap: 8px;
       margin-bottom: 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid var(--border-subtle);
       padding-bottom: 8px;
     }
 
@@ -1728,9 +1723,8 @@
     }
 
     .admin-tab-btn.active {
-      background: rgba(255, 255, 255, 0.14);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      background: var(--accent-green);
+      color: #101114;
     }
 
     .admin-table-container {
@@ -1739,8 +1733,8 @@
       overflow-x: auto;
       margin-bottom: 12px;
       border-radius: 12px;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
       min-height: 220px;
     }
 
@@ -1755,11 +1749,11 @@
     .admin-table th {
       position: sticky;
       top: 0;
-      background: #16171c;
-      color: #cbd5e1;
+      background: #16181D;
+      color: var(--text-secondary);
       font-weight: 700;
       padding: 10px 12px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-bottom: 1px solid var(--border-subtle);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -1769,7 +1763,7 @@
     .admin-table td {
       padding: 9px 12px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      color: #e2e8f0;
+      color: var(--text-primary);
     }
 
     .admin-table tr:hover td {
@@ -1786,11 +1780,11 @@
       letter-spacing: 0.3px;
     }
 
-    .badge-signup { background: rgba(34, 197, 94, 0.2); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
-    .badge-login { background: rgba(255, 255, 255, 0.14); color: #f3f4f6; border: 1px solid rgba(255, 255, 255, 0.3); }
+    .badge-signup { background: rgba(184, 243, 107, 0.18); color: var(--accent-green); border: 1px solid rgba(184, 243, 107, 0.4); }
+    .badge-login { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); border: 1px solid var(--border-subtle); }
     .badge-guest { background: rgba(234, 179, 8, 0.2); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.4); }
-    .badge-apk { background: rgba(16, 185, 129, 0.22); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.45); }
-    .badge-web { background: rgba(255, 255, 255, 0.12); color: #e2e8f0; border: 1px solid rgba(255, 255, 255, 0.25); }
+    .badge-apk { background: rgba(184, 243, 107, 0.18); color: var(--accent-green); border: 1px solid rgba(184, 243, 107, 0.4); }
+    .badge-web { background: rgba(255, 255, 255, 0.1); color: var(--text-secondary); border: 1px solid var(--border-subtle); }
 
     /* Toast Notification */
     .toast {
@@ -1798,10 +1792,9 @@
       top: 18px;
       left: 50%;
       transform: translateX(-50%) translateY(-80px);
-      background: rgba(28, 30, 35, 0.94);
-      backdrop-filter: blur(20px);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.32);
+      background: var(--bg-surface);
+      color: var(--text-primary);
+      border: 1px solid var(--accent-green);
       padding: 9px 18px;
       border-radius: var(--radius-full);
       font-size: 12.5px;
@@ -1825,7 +1818,7 @@
     }
     .eq-bars span {
       width: 2.5px;
-      background: #ffffff;
+      background: var(--accent-green);
       border-radius: 2px;
       animation: eqBounce 0.8s ease-in-out infinite alternate;
     }
@@ -1841,10 +1834,7 @@
       position: fixed;
       inset: 0;
       z-index: 9999;
-      background:
-        radial-gradient(ellipse at 75% 10%, rgba(230, 234, 242, 0.20), transparent 48%),
-        radial-gradient(circle at 20% 85%, rgba(95, 100, 112, 0.16), transparent 50%),
-        #060608;
+      background: var(--bg-deep);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1860,12 +1850,11 @@
     .auth-card {
       width: 100%;
       max-width: 410px;
-      background: linear-gradient(160deg, rgba(44, 46, 53, 0.78), rgba(18, 19, 23, 0.94));
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 26px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 24px;
       padding: 24px 22px;
-      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-      backdrop-filter: blur(28px);
+      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.85);
     }
     .auth-brand {
       display: flex;
@@ -1875,34 +1864,34 @@
       margin-bottom: 18px;
     }
     .auth-logo-disc {
-      width: 64px;
-      height: 64px;
-      border-radius: 20px;
-      background: linear-gradient(145deg, #ffffff, #cbd5e1);
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: var(--accent-green);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #060709;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+      color: #101114;
+      box-shadow: 0 8px 22px rgba(184, 243, 107, 0.25);
       margin-bottom: 10px;
     }
     .auth-brand h1 {
       font-size: 24px;
       font-weight: 900;
       letter-spacing: -0.5px;
-      color: #fff;
+      color: var(--text-primary);
       margin-bottom: 3px;
     }
     .auth-brand p {
       font-size: 12px;
-      color: #b0b4c0;
+      color: var(--text-secondary);
       font-weight: 600;
     }
     .auth-tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: var(--bg-deep);
+      border: 1px solid var(--border-subtle);
       border-radius: 14px;
       padding: 4px;
       margin-bottom: 16px;
@@ -1910,7 +1899,7 @@
     .auth-tab-btn {
       background: transparent;
       border: none;
-      color: #b0b4c0;
+      color: var(--text-secondary);
       font-size: 13px;
       font-weight: 800;
       padding: 9px 12px;
@@ -1919,9 +1908,8 @@
       transition: all 0.2s;
     }
     .auth-tab-btn.active {
-      background: linear-gradient(135deg, #ffffff, #d4d8e2);
-      color: #060709;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+      background: var(--accent-green);
+      color: #101114;
     }
     .auth-field {
       margin-bottom: 12px;
@@ -1930,7 +1918,7 @@
       display: block;
       font-size: 11.5px;
       font-weight: 700;
-      color: #d1d5db;
+      color: var(--text-secondary);
       margin-bottom: 5px;
     }
     .auth-input-wrap {
@@ -1940,25 +1928,25 @@
     }
     .auth-input {
       width: 100%;
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: var(--bg-deep);
+      border: 1px solid var(--border-subtle);
       border-radius: 12px;
       padding: 11px 13px;
-      color: #fff;
+      color: var(--text-primary);
       font-size: 13.5px;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     .auth-input:focus {
-      border-color: #ffffff;
-      box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.14);
+      border-color: var(--accent-green);
+      box-shadow: 0 0 0 2px rgba(184, 243, 107, 0.16);
     }
     .auth-eye-btn {
       position: absolute;
       right: 10px;
       background: none;
       border: none;
-      color: #b0b4c0;
+      color: var(--text-secondary);
       cursor: pointer;
       font-size: 14px;
       padding: 4px;
@@ -1968,34 +1956,34 @@
       padding: 13px 18px;
       border-radius: 999px;
       border: none;
-      background: linear-gradient(135deg, #ffffff, #d4d8e2);
-      color: #060709;
+      background: var(--accent-green);
+      color: #101114;
       font-size: 14px;
       font-weight: 900;
       cursor: pointer;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+      box-shadow: 0 8px 24px rgba(184, 243, 107, 0.22);
       margin-top: 4px;
       transition: transform 0.15s, filter 0.15s;
     }
     .auth-submit-btn:hover {
       transform: translateY(-1px);
-      filter: brightness(1.06);
+      filter: brightness(1.05);
     }
     .auth-guest-btn {
       width: 100%;
       padding: 10px 14px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(255, 255, 255, 0.05);
-      color: #e2e8f0;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-deep);
+      color: var(--text-primary);
       font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
       margin-top: 10px;
-      transition: background 0.15s;
+      transition: border-color 0.15s;
     }
     .auth-guest-btn:hover {
-      background: rgba(255, 255, 255, 0.10);
+      border-color: var(--accent-green);
     }
     .auth-msg {
       font-size: 12px;
@@ -2013,9 +2001,9 @@
     }
     .auth-msg.success {
       display: block;
-      background: rgba(30, 215, 96, 0.16);
-      border: 1px solid rgba(30, 215, 96, 0.4);
-      color: #86efac;
+      background: rgba(184, 243, 107, 0.16);
+      border: 1px solid rgba(184, 243, 107, 0.4);
+      color: var(--accent-green);
     }
 
   </style>
@@ -2090,21 +2078,18 @@
           <div>
             <div style="display:flex;align-items:center;gap:6px;">
               <div class="brand-title" id="headerAppTitle">Balu Beats</div>
-              <span id="headerCreatorPill" style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,0.10);color:#e5e7eb;border:1px solid rgba(255,255,255,0.24);">by Balu ✓</span>
+              <span id="headerCreatorPill" style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(184,243,107,0.12);color:var(--accent-green);border:1px solid rgba(184,243,107,0.3);">by Balu ✓</span>
             </div>
             <span class="brand-subtitle" id="greetingText">IG: @being_rebel__7 • Praveen</span>
           </div>
         </div>
         <div class="header-actions">
-          <button onclick="switchTab('connect')" id="headerUserBtn" class="spotify-pill-btn" style="background:rgba(255,255,255,0.10);color:#ffffff;border-color:rgba(255,255,255,0.26);font-weight:800;" title="Account & Credentials">
+          <button onclick="switchTab('connect')" id="headerUserBtn" class="spotify-pill-btn" style="font-weight:800;" title="Account & Credentials">
             👤 Account
           </button>
-          <button onclick="openShareModal()" class="spotify-pill-btn" style="background:linear-gradient(135deg,#ffffff,#d4d8e2);color:#060709;border:none;font-weight:800;" title="Download & Install Balu Beats App">
+          <button onclick="openShareModal()" class="spotify-pill-btn" style="background:var(--accent-green);color:#101114;border-color:var(--accent-green);font-weight:800;" title="Download & Install Balu Beats App">
             📲 App
           </button>
-          <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="spotify-pill-btn" style="text-decoration:none;background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.22);color:#e5e7eb;" title="Follow @being_rebel__7 on Instagram">
-            📸 IG
-          </a>
         </div>
       </header>
 
@@ -2113,9 +2098,9 @@
         <!-- ================= TAB 1: HOME ================= -->
         <section id="tab-home" class="tab-pane active">
           <!-- Install Native App Banner -->
-          <div id="installAppBanner" style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(135deg,rgba(48,50,58,0.68),rgba(22,23,28,0.85));backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.22);border-radius:16px;padding:10px 12px;margin-bottom:10px;box-shadow:0 10px 25px rgba(0,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.22);">
+          <div id="installAppBanner" style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:16px;padding:10px 12px;margin-bottom:12px;">
             <div style="min-width:0;flex:1;">
-              <div style="font-size:12px;font-weight:800;color:#fff;">📲 Install Balu Beats Mobile App</div>
+              <div style="font-size:12px;font-weight:800;color:var(--text-primary);">📲 Install Balu Beats Mobile App</div>
               <div style="font-size:10.5px;color:var(--text-secondary);">100% Full-Length 320kbps Songs • Android APK & Web App</div>
             </div>
             <div style="display:flex;gap:6px;flex-shrink:0;">
@@ -2125,6 +2110,103 @@
               <button class="util-btn" style="padding:6px 10px;font-size:11px;" onclick="triggerInstallPWA()">
                 📱 Install
               </button>
+            </div>
+          </div>
+
+          <!-- Greeting Header -->
+          <div class="home-greeting-wrap">
+            <div class="home-greeting-title" id="homeTimeGreeting">Good evening</div>
+            <div class="home-greeting-sub">Ready for your next track?</div>
+          </div>
+
+          <!-- Instant Search Trigger Bar -->
+          <div class="home-search-trigger" onclick="switchTab('search'); setTimeout(() => document.getElementById('searchInput')?.focus(), 80);">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+            </svg>
+            <span>Search songs, artists, albums...</span>
+          </div>
+
+          <!-- Jump Back In Section -->
+          <div class="section-header" style="margin-top:4px;">
+            <h2 class="section-title">Jump back in</h2>
+            <button class="section-link" onclick="switchTab('library');showLibraryView('recent')">See all</button>
+          </div>
+          <div class="jump-back-grid">
+            <div class="jump-card" onclick="openHomeRecentCard()">
+              <div class="jump-card-art" id="homeRecentCardArt">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/>
+                </svg>
+              </div>
+              <div style="min-width:0;flex:1;">
+                <div class="jump-card-title">Recently played</div>
+                <div class="jump-card-sub" id="homeRecentCardSub">Continue listening</div>
+              </div>
+            </div>
+            <div class="jump-card" onclick="switchTab('library');showLibraryView('liked')">
+              <div class="jump-card-art">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+              </div>
+              <div style="min-width:0;flex:1;">
+                <div class="jump-card-title">Your favourites</div>
+                <div class="jump-card-sub" id="homeFavCardSub">Your liked songs</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Your Library 2x2 Grid -->
+          <div class="section-header" style="margin-top:4px;">
+            <h2 class="section-title">Your library</h2>
+            <button class="section-link" onclick="switchTab('library')">Open Library</button>
+          </div>
+          <div class="library-grid-home">
+            <div class="lib-home-card" onclick="document.getElementById('carouselSectionHeader')?.scrollIntoView({behavior:'smooth'})">
+              <div class="lib-home-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/>
+                </svg>
+              </div>
+              <div style="min-width:0;">
+                <div class="lib-home-title">All songs</div>
+                <div class="lib-home-sub">Music on this device</div>
+              </div>
+            </div>
+            <div class="lib-home-card" onclick="openQuickCollection('telugu', 'Top Albums & Soundtracks', 'devara kalki pushpa')">
+              <div class="lib-home-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/>
+                </svg>
+              </div>
+              <div style="min-width:0;">
+                <div class="lib-home-title">Albums</div>
+                <div class="lib-home-sub">Browse by album</div>
+              </div>
+            </div>
+            <div class="lib-home-card" onclick="openQuickCollection('all', 'Popular Artists', 'anirudh arijit weeknd')">
+              <div class="lib-home-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                </svg>
+              </div>
+              <div style="min-width:0;">
+                <div class="lib-home-title">Artists</div>
+                <div class="lib-home-sub">Browse by artist</div>
+              </div>
+            </div>
+            <div class="lib-home-card" onclick="switchTab('library');showLibraryView('playlists')">
+              <div class="lib-home-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                  <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+              </div>
+              <div style="min-width:0;">
+                <div class="lib-home-title">Playlists</div>
+                <div class="lib-home-sub">Your custom mixes</div>
+              </div>
             </div>
           </div>
 
@@ -2148,40 +2230,12 @@
                 <button class="btn-play-hero" onclick="playHeroTrack()">
                   ▶ Play Full Song
                 </button>
-                <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn-secondary-hero" style="text-decoration:none;border-color:rgba(255,255,255,0.24);color:#e5e7eb;">
+                <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn-secondary-hero" style="text-decoration:none;">
                   📸 @being_rebel__7 ↗
                 </a>
               </div>
             </div>
             <img id="heroArt" class="hero-art" src="https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg" onerror="this.src='https://picsum.photos/seed/pulsehero/300/300'" alt="Featured" />
-          </div>
-
-          <!-- Quick Mood Grid — Smoked Charcoal-Glass Icons -->
-          <div class="quick-grid">
-            <div class="quick-card" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #3f3f46, #18181b);">🔥</div>
-              <div class="quick-card-title">Telugu Hits</div>
-            </div>
-            <div class="quick-card" onclick="openQuickCollection('english', 'The Weeknd Hits', 'the weeknd')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #374151, #111827);">🌙</div>
-              <div class="quick-card-title">The Weeknd</div>
-            </div>
-            <div class="quick-card" onclick="openQuickCollection('bollywood', 'Arijit Singh Hits', 'arijit singh')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #4b5563, #1f2937);">💖</div>
-              <div class="quick-card-title">Arijit Singh</div>
-            </div>
-            <div class="quick-card" onclick="openQuickCollection('telugu', 'Anirudh Ravichander', 'anirudh')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #334155, #0f172a);">⚡</div>
-              <div class="quick-card-title">Anirudh Hits</div>
-            </div>
-            <div class="quick-card" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #52525b, #18181b);">🎧</div>
-              <div class="quick-card-title">Global Pop</div>
-            </div>
-            <div class="quick-card" onclick="openQuickCollection('hiphop', 'Hip-Hop & Rap', 'travis scott')">
-              <div class="quick-card-icon" style="background: linear-gradient(135deg, #27272a, #09090b);">🪐</div>
-              <div class="quick-card-title">Hip-Hop & Rap</div>
-            </div>
           </div>
 
           <!-- 1. Featured Full-Length Songs Carousel (320kbps) -->
@@ -2225,7 +2279,7 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="color:var(--text-secondary)">
                 <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
-              <input type="text" id="searchInput" placeholder="Search any full song, Telugu hit, artist, or movie (320kbps)..." autocomplete="off" />
+              <input type="text" id="searchInput" placeholder="Find a song, artist, album or movie..." autocomplete="off" />
               <button class="row-icon-btn" onclick="startVoiceSearch()" title="Voice Search">
                 🎤
               </button>
@@ -2263,7 +2317,7 @@
             <button class="chip" onclick="searchAndGo('Alan Walker')">🎧 Alan Walker</button>
             <button class="chip" onclick="searchAndGo('Telugu Lofi')">☕ Telugu Lo-Fi</button>
           </div>
-          <div id="searchStatus" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-bottom:8px;"></div>
+          <div id="searchStatus" style="font-size:12px;color:var(--text-primary);font-weight:700;margin-bottom:8px;"></div>
 
           <!-- Matching Artists Section in Search -->
           <div id="searchArtistsSection" style="display:none;margin-bottom:16px;">
@@ -2297,22 +2351,22 @@
             <h2 class="section-title">Browse Moods & Genres</h2>
           </div>
           <div class="genre-grid">
-            <div class="genre-card" style="background:linear-gradient(135deg,#27272a,#09090b)" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
+            <div class="genre-card" onclick="openQuickCollection('telugu', 'Telugu Blockbusters', 'devara')">
               <span>Telugu Hits</span><span class="emoji">🎬</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#334155,#0f172a)" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
+            <div class="genre-card" onclick="openQuickCollection('english', 'Global Pop Anthems', 'dua lipa')">
               <span>Pop Anthems</span><span class="emoji">🎤</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#3f3f46,#18181b)" onclick="openQuickCollection('bollywood', 'Bollywood Romantic Hits', 'arijit singh')">
+            <div class="genre-card" onclick="openQuickCollection('bollywood', 'Bollywood Romantic Hits', 'arijit singh')">
               <span>Bollywood</span><span class="emoji">💖</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#1f2937,#090a0f)" onclick="openQuickCollection('hiphop', 'Hip-Hop & Phonk', 'travis scott')">
+            <div class="genre-card" onclick="openQuickCollection('hiphop', 'Hip-Hop & Phonk', 'travis scott')">
               <span>Hip-Hop & Phonk</span><span class="emoji">🔥</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#374151,#111827)" onclick="openQuickCollection('lofi', 'Lo-Fi Chill Beats', 'lofi chill')">
+            <div class="genre-card" onclick="openQuickCollection('lofi', 'Lo-Fi Chill Beats', 'lofi chill')">
               <span>Lo-Fi Study</span><span class="emoji">☕</span>
             </div>
-            <div class="genre-card" style="background:linear-gradient(135deg,#262626,#0a0a0a)" onclick="openQuickCollection('english', 'Rock & EDM Classics', 'imagine dragons')">
+            <div class="genre-card" onclick="openQuickCollection('english', 'Rock & EDM Classics', 'imagine dragons')">
               <span>Rock & EDM</span><span class="emoji">⚡</span>
             </div>
           </div>
@@ -2342,9 +2396,9 @@
         <!-- ================= TAB 4: LIBRARY ================= -->
         <section id="tab-library" class="tab-pane">
           <div class="section-header" style="margin-top:4px;">
-            <h2 class="section-title">❤️ Your Music Library</h2>
+            <h2 class="section-title">Your Library</h2>
             <div style="display:flex;gap:6px;">
-              <button class="section-link" style="background:rgba(255,255,255,0.12);border-color:rgba(255,255,255,0.28);color:#ffffff;" onclick="showLibraryView('playlists')">➕ New Playlist</button>
+              <button class="section-link" onclick="showLibraryView('playlists')">➕ New Playlist</button>
               <button class="section-link" onclick="document.getElementById('localAudioInput').click()">+ Local MP3</button>
               <button class="section-link" onclick="exportLibraryData()">Export</button>
             </div>
@@ -2353,24 +2407,24 @@
           <input type="file" id="localAudioInput" accept="audio/*" multiple style="display:none" onchange="handleLocalFiles(event)" />
 
           <div class="chips-scroll" id="libraryViewChips">
-            <button class="chip active" data-lib-view="liked" onclick="showLibraryView('liked', this)">❤️ Liked Songs (<span id="likedCount">0</span>)</button>
-            <button class="chip" data-lib-view="playlists" onclick="showLibraryView('playlists', this)">🎵 Playlists (<span id="playlistCount">0</span>)</button>
-            <button class="chip" data-lib-view="recent" onclick="showLibraryView('recent', this)">🕒 Recently Played</button>
-            <button class="chip" data-lib-view="local" onclick="showLibraryView('local', this)">📂 Device Audio Files</button>
+            <button class="chip active" data-lib-view="liked" onclick="showLibraryView('liked', this)">Liked Songs (<span id="likedCount">0</span>)</button>
+            <button class="chip" data-lib-view="playlists" onclick="showLibraryView('playlists', this)">Playlists (<span id="playlistCount">0</span>)</button>
+            <button class="chip" data-lib-view="recent" onclick="showLibraryView('recent', this)">Recently Played</button>
+            <button class="chip" data-lib-view="local" onclick="showLibraryView('local', this)">Device Files</button>
           </div>
 
           <!-- Custom Playlists Manager Panel -->
           <div id="libraryPlaylistsPanel" style="display:none;margin-bottom:14px;">
-            <div style="display:flex;gap:8px;margin-bottom:12px;background:rgba(255,255,255,0.05);padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,0.16);">
+            <div style="display:flex;gap:8px;margin-bottom:12px;background:var(--bg-surface);padding:10px;border-radius:14px;border:1px solid var(--border-subtle);">
               <input type="text" id="newPlaylistNameInput" class="connect-input" style="margin:0;flex:1;" placeholder="Enter new playlist name (e.g. Gym Vibes, Telugu Melodies)..." />
               <button class="util-btn primary" style="white-space:nowrap;font-weight:800;padding:8px 14px;" onclick="createNewUserPlaylist()">
                 ➕ Create
               </button>
             </div>
             <div id="playlistsGridCards" style="display:flex;flex-direction:column;gap:10px;margin-bottom:14px;"></div>
-            <div id="activePlaylistHeaderBar" style="display:none;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.22);align-items:center;justify-content:space-between;gap:8px;">
+            <div id="activePlaylistHeaderBar" style="display:none;margin-bottom:8px;padding:10px 12px;border-radius:12px;background:var(--bg-surface);border:1px solid var(--border-subtle);align-items:center;justify-content:space-between;gap:8px;">
               <div>
-                <div id="activePlaylistTitleText" style="font-size:13.5px;font-weight:800;color:#fff;">Playlist Songs</div>
+                <div id="activePlaylistTitleText" style="font-size:13.5px;font-weight:800;color:var(--text-primary);">Playlist Songs</div>
                 <div id="activePlaylistSubText" style="font-size:11px;color:var(--text-secondary);">Tap any song to play</div>
               </div>
               <div style="display:flex;gap:6px;">
@@ -2384,13 +2438,13 @@
         </section>
 
         <!-- Add Song to Playlist Picker Modal -->
-        <div id="playlistPickerModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(4,5,9,0.85);backdrop-filter:blur(16px);align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closePlaylistPickerModal()">
-          <div style="width:100%;max-width:400px;background:rgba(24,25,30,0.95);border:1px solid rgba(255,255,255,0.24);border-radius:22px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,0.85);">
+        <div id="playlistPickerModal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(16,17,20,0.88);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:18px;" onclick="if(event.target===this)closePlaylistPickerModal()">
+          <div style="width:100%;max-width:400px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:22px;padding:18px;box-shadow:0 24px 60px rgba(0,0,0,0.85);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-              <h3 style="margin:0;font-size:15px;font-weight:900;color:#fff;">🎵 Add Song to Playlist</h3>
+              <h3 style="margin:0;font-size:15px;font-weight:900;color:var(--text-primary);">🎵 Add Song to Playlist</h3>
               <button class="util-btn" style="padding:4px 9px;font-size:12px;" onclick="closePlaylistPickerModal()">✕</button>
             </div>
-            <div id="playlistPickerTrackName" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-bottom:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
+            <div id="playlistPickerTrackName" style="font-size:12px;color:var(--text-secondary);font-weight:700;margin-bottom:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></div>
             <div style="display:flex;gap:6px;margin-bottom:12px;">
               <input type="text" id="modalNewPlaylistInput" class="connect-input" style="margin:0;flex:1;" placeholder="Or create new playlist..." />
               <button class="util-btn primary" style="padding:7px 12px;font-size:11.5px;font-weight:800;" onclick="createAndAddFromModal()">➕ Create & Add</button>
@@ -2409,31 +2463,31 @@
           <!-- Active User Profile Card -->
           <div class="connect-card">
             <div style="display:flex;align-items:center;gap:14px;margin-bottom:12px;">
-              <div id="accountAvatarCircle" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#ffffff,#cbd5e1);color:#060709;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 8px 20px rgba(0,0,0,0.5);">
+              <div id="accountAvatarCircle" style="width:56px;height:56px;border-radius:50%;background:var(--accent-green);color:#101114;font-size:22px;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
                 BB
               </div>
               <div style="min-width:0;flex:1;">
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                  <h3 id="accountDisplayName" style="font-size:17px;font-weight:900;margin:0;color:#fff;">Balu Beats Member</h3>
-                  <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,0.12);color:#ffffff;border:1px solid rgba(255,255,255,0.28);">PRO 320kbps</span>
-                  <span id="accountOwnerRoleBadge" style="display:none;font-size:10px;font-weight:900;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.22);color:#1ed760;border:1px solid rgba(30,215,96,0.5);">👑 OWNER ADMIN</span>
+                  <h3 id="accountDisplayName" style="font-size:17px;font-weight:900;margin:0;color:var(--text-primary);">Balu Beats Member</h3>
+                  <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(184,243,107,0.12);color:var(--accent-green);border:1px solid rgba(184,243,107,0.3);">PRO 320kbps</span>
+                  <span id="accountOwnerRoleBadge" style="display:none;font-size:10px;font-weight:900;padding:2px 8px;border-radius:999px;background:rgba(184,243,107,0.2);color:var(--accent-green);border:1px solid var(--accent-green);">👑 OWNER ADMIN</span>
                 </div>
-                <div id="accountHandleText" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-top:2px;">@balu_listener</div>
+                <div id="accountHandleText" style="font-size:12px;color:var(--text-primary);font-weight:700;margin-top:2px;">@balu_listener</div>
                 <div id="accountEmailText" style="font-size:11.5px;color:var(--text-secondary);margin-top:1px;">Logged in • Full HD Streaming Active</div>
               </div>
             </div>
 
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.38);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.08);">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-deep);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid var(--border-subtle);">
               <div>
-                <div id="accountLikedStat" style="font-size:15px;font-weight:900;color:#fff;">0</div>
+                <div id="accountLikedStat" style="font-size:15px;font-weight:900;color:var(--text-primary);">0</div>
                 <div style="font-size:10.5px;color:var(--text-secondary);">Liked Songs</div>
               </div>
               <div>
-                <div style="font-size:15px;font-weight:900;color:#1ed760;">140+</div>
+                <div style="font-size:15px;font-weight:900;color:var(--accent-green);">140+</div>
                 <div style="font-size:10.5px;color:var(--text-secondary);">HD Catalog</div>
               </div>
               <div>
-                <div id="accountVibeStat" style="font-size:13px;font-weight:900;color:#e5e7eb;">Telugu</div>
+                <div id="accountVibeStat" style="font-size:13px;font-weight:900;color:var(--text-primary);">Telugu</div>
                 <div style="font-size:10.5px;color:var(--text-secondary);">Home Vibe</div>
               </div>
             </div>
@@ -2468,10 +2522,10 @@
           <!-- WhatsApp Group Testing & Live Users Analytics (OWNER ONLY: being_rebel_7 / balu) -->
           <div class="connect-card" id="ownerLiveTrackingCard" style="display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-              <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
+              <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:var(--text-primary);">
                 <span>👑</span> WhatsApp Group Testing & Live Users
               </h3>
-              <span id="telemetryStatusBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
+              <span id="telemetryStatusBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(184,243,107,0.16);color:var(--accent-green);border:1px solid rgba(184,243,107,0.4);">
                 🟢 Owner Live Tracking
               </span>
             </div>
@@ -2480,17 +2534,17 @@
             </p>
 
             <!-- Live Metrics Counter -->
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:rgba(0,0,0,0.38);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid rgba(255,255,255,0.08);">
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--bg-deep);padding:10px;border-radius:12px;text-align:center;margin-bottom:12px;border:1px solid var(--border-subtle);">
               <div>
-                <div id="statTotalUsers" style="font-size:18px;font-weight:900;color:#ffffff;">1</div>
+                <div id="statTotalUsers" style="font-size:18px;font-weight:900;color:var(--text-primary);">1</div>
                 <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Total Testers</div>
               </div>
               <div>
-                <div id="statApkUsers" style="font-size:18px;font-weight:900;color:#1ed760;">1</div>
+                <div id="statApkUsers" style="font-size:18px;font-weight:900;color:var(--accent-green);">1</div>
                 <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Android APK</div>
               </div>
               <div>
-                <div id="statWebUsers" style="font-size:18px;font-weight:900;color:#d1d5db;">0</div>
+                <div id="statWebUsers" style="font-size:18px;font-weight:900;color:var(--text-secondary);">0</div>
                 <div style="font-size:10px;color:var(--text-secondary);margin-top:2px;">Web Browser</div>
               </div>
             </div>
@@ -2510,7 +2564,7 @@
 
             <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text-secondary);padding-top:4px;">
               <span id="lastUserSeenText">Last Activity: Just now (@being_rebel__7)</span>
-              <button onclick="refreshDeveloperTelemetry(true)" style="background:none;border:none;color:#ffffff;cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;">
+              <button onclick="refreshDeveloperTelemetry(true)" style="background:none;border:none;color:var(--accent-green);cursor:pointer;font-size:11px;font-weight:700;display:flex;align-items:center;gap:3px;">
                 🔄 Refresh Now
               </button>
             </div>
@@ -2519,10 +2573,10 @@
           <!-- App Updates & APK Download Center -->
           <div class="connect-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
-              <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
+              <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:var(--text-primary);">
                 <span>🚀</span> Native APK Update Center
               </h3>
-              <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.45);">
+              <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(184,243,107,0.16);color:var(--accent-green);border:1px solid rgba(184,243,107,0.4);">
                 v3.5.0 • Build 15 (LIVE)
               </span>
             </div>
@@ -2531,22 +2585,21 @@
             </p>
 
             <!-- Published Live v3.5 Update Status Box (Visible by default in Account section) -->
-            <div id="updateStatusBox" style="display:block;padding:13px;border-radius:16px;margin-bottom:12px;font-size:12px;line-height:1.5;background:linear-gradient(145deg,rgba(46,48,56,0.78),rgba(20,21,26,0.92));border:1px solid rgba(255,255,255,0.26);color:#e2e8f0;box-shadow:inset 0 1px 0 rgba(255,255,255,0.25);">
+            <div id="updateStatusBox" style="display:block;padding:13px;border-radius:16px;margin-bottom:12px;font-size:12px;line-height:1.5;background:var(--bg-deep);border:1px solid var(--border-subtle);color:var(--text-primary);">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:6px;">
-                <div style="font-weight:900;color:#1ed760;display:flex;align-items:center;gap:6px;font-size:13px;">
+                <div style="font-weight:900;color:var(--accent-green);display:flex;align-items:center;gap:6px;font-size:13px;">
                   <span>✓</span> Balu Beats <strong>v3.5 (v3.5.0 • Build 15)</strong> — Native APK Update Live
                 </div>
-                <span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.24);">Signed APK</span>
+                <span style="font-size:10px;font-weight:800;padding:2px 7px;border-radius:999px;background:var(--bg-surface);color:var(--text-primary);border:1px solid var(--border-subtle);">Signed APK</span>
               </div>
-              <div style="font-size:11.5px;color:#d1d5db;margin-bottom:10px;background:rgba(0,0,0,0.42);padding:9px 11px;border-radius:12px;border:1px solid rgba(255,255,255,0.10);">
+              <div style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;background:var(--bg-surface);padding:9px 11px;border-radius:12px;border:1px solid var(--border-subtle);">
                 ✨ <strong>What's Included in v3.5.0 Native APK:</strong><br/>
+                • <strong>Charcoal & Electric Lime Minimal UI:</strong> Clean <code>#101114</code> / <code>#1B1D22</code> surfaces, <code>#B8F36B</code> lime accents & large square Now Playing artwork<br/>
+                • <strong>Jump Back In & Library Grid:</strong> Quick access to Recently Played, Liked Songs, Albums, Artists & Playlists right from Home<br/>
                 • <strong>Auto-Refresh Home Suggestions:</strong> Fresh Hero, Carousels & 120+ live 320kbps recommendations on every open<br/>
-                • <strong>Dark Smoked-Glass 3D Coverflow Theme:</strong> Deep charcoal-ash glass, top-right silver spotlight rays & 5-card 3D fanned album deck<br/>
-                • <strong>Artist Search & Profiles Fixed:</strong> Dedicated "🎤 Matching Artists" carousel + multi-field artist extraction<br/>
-                • <strong>Custom Playlists in Library:</strong> Create playlists & tap <code>📁+</code> on any song to add it<br/>
-                • <strong>Permanent APK Signing Key:</strong> Installs directly over existing builds without package conflict errors
+                • <strong>Artist Search & Custom Playlists:</strong> Tappable artists, Matching Artists carousel & Custom Playlists (<code>📁+</code>)
               </div>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.4" download="Balu_Beats_v3.5.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;padding:11px 14px;font-size:13px;">
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.5" download="Balu_Beats_v3.5.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;padding:11px 14px;font-size:13px;">
                 ⬇ Install / Update Native APK (v3.5.0)
               </a>
             </div>
@@ -2556,38 +2609,38 @@
               <button class="util-btn primary" id="checkUpdateBtn" onclick="checkForAppUpdates()" style="flex:1;justify-content:center;font-weight:800;">
                 🔄 Check for Updates (v3.5)
               </button>
-              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.4" download="Balu_Beats_v3.5.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;border-color:rgba(255,255,255,0.28);color:#ffffff;font-weight:800;">
+              <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.5" download="Balu_Beats_v3.5.apk" class="util-btn" id="directDownloadUpdateBtn" style="text-decoration:none;flex:1;justify-content:center;font-weight:800;">
                 ⬇ Direct APK Download
               </a>
             </div>
 
             <!-- Publish Update Notification to All Users & Native APK (OWNER ONLY: being_rebel_7 / balu) -->
-            <div id="ownerPushNotifPanel" style="display:none;padding:12px;border-radius:15px;margin-bottom:12px;background:rgba(0,0,0,0.38);border:1px solid rgba(30,215,96,0.35);">
+            <div id="ownerPushNotifPanel" style="display:none;padding:12px;border-radius:15px;margin-bottom:12px;background:var(--bg-deep);border:1px solid rgba(184,243,107,0.35);">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                <span style="font-size:12.5px;font-weight:900;color:#ffffff;display:flex;align-items:center;gap:5px;">
+                <span style="font-size:12.5px;font-weight:900;color:var(--text-primary);display:flex;align-items:center;gap:5px;">
                   👑 Owner Push Notification Publisher (All Users)
                 </span>
-                <span style="font-size:10px;font-weight:800;color:#1ed760;">● Owner Verified</span>
+                <span style="font-size:10px;font-weight:800;color:var(--accent-green);">● Owner Verified</span>
               </div>
               <p style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;line-height:1.4;">
                 Send an instant update notification banner & native Android status-bar alert to all users on the APK and Web App:
               </p>
               <input type="text" id="updateNotifTitleInput" class="connect-input" style="margin-bottom:6px;font-weight:700;" value="🚀 Balu Beats v3.5.0 Update Live!" placeholder="Notification Title..." />
-              <input type="text" id="updateNotifBodyInput" class="connect-input" style="margin-bottom:8px;" value="Auto-Refresh Home Suggestions on Every Open, Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel, Custom Playlists (📁+) & Conflict-Free Native APK! Tap to update now." placeholder="Notification Message..." />
+              <input type="text" id="updateNotifBodyInput" class="connect-input" style="margin-bottom:8px;" value="New Minimal Charcoal & Lime UI, Jump Back In & Library Grid, Auto-Refresh Home Suggestions, Tappable Artists & Custom Playlists (📁+)!" placeholder="Notification Message..." />
               <div style="display:flex;gap:8px;flex-wrap:wrap;">
                 <button class="util-btn primary" id="publishUpdateNotifBtn" onclick="publishUpdateAndNotifyAll()" style="flex:1.4;justify-content:center;font-weight:900;padding:10px 12px;">
                   📢 Publish Update & Notify All
                 </button>
-                <button class="util-btn" onclick="triggerLocalUpdateNotificationPreview()" style="flex:1;justify-content:center;font-weight:800;padding:10px 12px;border-color:rgba(255,255,255,0.26);color:#fff;">
+                <button class="util-btn" onclick="triggerLocalUpdateNotificationPreview()" style="flex:1;justify-content:center;font-weight:800;padding:10px 12px;">
                   🔔 Test Alert Here
                 </button>
               </div>
-              <div id="publishUpdateNotifStatus" style="display:none;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(30,215,96,0.15);border:1px solid rgba(30,215,96,0.4);color:#86efac;"></div>
+              <div id="publishUpdateNotifStatus" style="display:none;margin-top:8px;padding:8px 10px;border-radius:10px;font-size:11px;font-weight:700;background:rgba(184,243,107,0.14);border:1px solid rgba(184,243,107,0.4);color:var(--accent-green);"></div>
             </div>
 
             <!-- Fast Store Link & Direct Share Link -->
-            <div style="display:flex;gap:8px;align-items:center;background:rgba(255,255,255,0.04);padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.12);">
-              <span style="font-size:11px;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">https://praveen-79.github.io/balu-beats/download.html</span>
+            <div style="display:flex;gap:8px;align-items:center;background:var(--bg-deep);padding:8px 10px;border-radius:10px;border:1px solid var(--border-subtle);">
+              <span style="font-size:11px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">https://praveen-79.github.io/balu-beats/download.html</span>
               <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="padding:4px 9px;font-size:11px;text-decoration:none;">🏪 APK Store</a>
               <button class="util-btn" style="padding:4px 9px;font-size:11px;" onclick="navigator.clipboard?.writeText('https://praveen-79.github.io/balu-beats/download.html');showToast('Copied APK Store Link!')">📋 Copy</button>
             </div>
@@ -2634,7 +2687,7 @@
         </button>
         <button class="nav-item" data-tab="radio" onclick="switchTab('radio')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"/></svg>
-          <span>Live Radio</span>
+          <span>Radio</span>
         </button>
         <button class="nav-item" data-tab="library" onclick="switchTab('library')">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
@@ -2655,11 +2708,11 @@
             </svg>
           </button>
           <div class="np-source-label">
-            <small>🎵 BALU BEATS • @being_rebel__7</small>
+            <small>NOW PLAYING</small>
             <strong id="npSourceBadge">320kbps Full-Track Stream</strong>
           </div>
           <button class="icon-btn" onclick="shareCurrentSongNative()" title="Share Song">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
               <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
             </svg>
@@ -2669,31 +2722,29 @@
         <!-- Mode Switcher: Cover / Synced Lyrics / Queue -->
         <div class="np-mode-tabs">
           <button class="np-mode-btn active" onclick="setNpView('art', this)">💿 Artwork</button>
-          <button class="np-mode-btn" onclick="setNpView('lyrics', this)">🎤 Synced Lyrics</button>
+          <button class="np-mode-btn" onclick="setNpView('lyrics', this)">🎤 Lyrics</button>
           <button class="np-mode-btn" onclick="setNpView('queue', this)">📜 Queue (<span id="queueCountBadge">0</span>)</button>
         </div>
 
-        <!-- Stage: 3D Fanned Coverflow Glass Stack + Visualizer / Lyrics / Queue -->
+        <!-- Stage: Large Square Album Cover + Visualizer / Lyrics / Queue -->
         <div class="np-stage">
           <div id="npArtView" style="display:flex;flex-direction:column;align-items:center;width:100%;">
             <div class="np-coverflow-deck">
-              <!-- Left Far Fanned Card -->
-              <div class="np-side-card left-far" id="npSideLeft2" onclick="playPrev()" title="Previous Track">
+              <div class="np-side-card left-far" id="npSideLeft2" onclick="playPrev()">
                 <img id="npSideLeft2Img" src="https://picsum.photos/seed/l2/300/300" alt="" />
                 <div class="np-side-card-meta">
                   <div class="np-side-card-title" id="npSideLeft2Title">Previous</div>
                   <div class="np-side-card-sub" id="npSideLeft2Artist">Balu Beats</div>
                 </div>
               </div>
-              <!-- Left Near Fanned Card -->
-              <div class="np-side-card left-near" id="npSideLeft1" onclick="playPrev()" title="Previous Track">
+              <div class="np-side-card left-near" id="npSideLeft1" onclick="playPrev()">
                 <img id="npSideLeft1Img" src="https://picsum.photos/seed/l1/300/300" alt="" />
                 <div class="np-side-card-meta">
                   <div class="np-side-card-title" id="npSideLeft1Title">Previous</div>
                   <div class="np-side-card-sub" id="npSideLeft1Artist">Balu Beats</div>
                 </div>
               </div>
-              <!-- Center Active Frosted Glass Card -->
+              <!-- Large Square Album Cover -->
               <div class="np-art-container" id="npArtContainer" onclick="togglePlay()" title="Tap to Play / Pause">
                 <img id="npArt" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/np/500/500'" alt="Album Art" />
                 <div class="np-card-glass-footer">
@@ -2701,21 +2752,16 @@
                     <div class="np-card-glass-title" id="npCardGlassTitle">Select a Track</div>
                     <div class="np-card-glass-artist" id="npCardGlassArtist">Balu Beats</div>
                   </div>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.85)" stroke-width="2.2" stroke-linecap="round" style="flex-shrink:0;">
-                    <line x1="4" y1="10" x2="4" y2="14"/><line x1="8" y1="7" x2="8" y2="17"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="16" y1="7" x2="16" y2="17"/><line x1="20" y1="10" x2="20" y2="14"/>
-                  </svg>
                 </div>
               </div>
-              <!-- Right Near Fanned Card -->
-              <div class="np-side-card right-near" id="npSideRight1" onclick="playNext()" title="Next Track">
+              <div class="np-side-card right-near" id="npSideRight1" onclick="playNext()">
                 <img id="npSideRight1Img" src="https://picsum.photos/seed/r1/300/300" alt="" />
                 <div class="np-side-card-meta">
                   <div class="np-side-card-title" id="npSideRight1Title">Up Next</div>
                   <div class="np-side-card-sub" id="npSideRight1Artist">Balu Beats</div>
                 </div>
               </div>
-              <!-- Right Far Fanned Card -->
-              <div class="np-side-card right-far" id="npSideRight2" onclick="playNext()" title="Next Track">
+              <div class="np-side-card right-far" id="npSideRight2" onclick="playNext()">
                 <img id="npSideRight2Img" src="https://picsum.photos/seed/r2/300/300" alt="" />
                 <div class="np-side-card-meta">
                   <div class="np-side-card-title" id="npSideRight2Title">Later</div>
@@ -2723,7 +2769,7 @@
                 </div>
               </div>
             </div>
-            <canvas id="visualizerCanvas" class="visualizer-canvas" width="320" height="36"></canvas>
+            <canvas id="visualizerCanvas" class="visualizer-canvas" width="320" height="28"></canvas>
           </div>
 
           <div id="npLyricsView" class="np-lyrics-box">
@@ -2735,17 +2781,17 @@
           </div>
         </div>
 
-        <!-- Smoked-Glass Floating Pill Bar (Matching Shared Reference Image) -->
+        <!-- Song Information & Quick Actions -->
         <div class="np-track-info">
-          <img id="npPillArt" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/np/100/100'" style="width:38px;height:38px;border-radius:9px;object-fit:cover;border:1px solid rgba(255,255,255,0.22);flex-shrink:0;" alt="" />
+          <img id="npPillArt" src="https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/6f/6f/2c/6f6f2c7e-9c74-8b9f-73a1-f8e2e6c67b6f/20UMGIM11048.rgb.jpg/600x600bb.jpg" onerror="this.src='https://picsum.photos/seed/np/100/100'" style="display:none;" alt="" />
           <div style="min-width:0;flex:1;">
             <div class="np-title" id="npTitle">Select a Track</div>
-            <div class="np-artist" id="npArtist">Balu Beats • @being_rebel__7</div>
+            <div class="np-artist" id="npArtist" onclick="browseCurrentTrackArtist()" title="Tap to browse tracks by this artist">Balu Beats • @being_rebel__7</div>
           </div>
-          <button class="icon-btn" onclick="if(state.currentTrack)openPlaylistPickerForTrack(state.currentTrack)" title="Add to Playlist" style="width:32px;height:32px;font-size:12px;">
+          <button class="icon-btn" onclick="if(state.currentTrack)openPlaylistPickerForTrack(state.currentTrack)" title="Add to Playlist" style="width:36px;height:36px;font-size:13px;">
             📁+
           </button>
-          <button class="icon-btn" id="npLikeBtn" onclick="toggleLikeCurrent()" title="Save to Liked Songs" style="width:32px;height:32px;background:rgba(30,215,96,0.18);border-color:rgba(30,215,96,0.45);color:#1ed760;">
+          <button class="icon-btn" id="npLikeBtn" onclick="toggleLikeCurrent()" title="Save to Liked Songs" style="width:36px;height:36px;background:rgba(184,243,107,0.14);border-color:rgba(184,243,107,0.4);color:var(--accent-green);">
             ♡
           </button>
         </div>
@@ -5944,8 +5990,57 @@
       return arr;
     }
 
+    function updateHomeJumpBackCards() {
+      const greetEl = document.getElementById('homeTimeGreeting');
+      if (greetEl) {
+        const hr = new Date().getHours();
+        greetEl.textContent = hr < 12 ? 'Good morning' : (hr < 17 ? 'Good afternoon' : 'Good evening');
+      }
+      const recentSubEl = document.getElementById('homeRecentCardSub');
+      const recentArtEl = document.getElementById('homeRecentCardArt');
+      if (recentSubEl) {
+        const lastRec = state.recentTracks && state.recentTracks[0];
+        if (lastRec) {
+          recentSubEl.textContent = `${lastRec.title}`;
+          if (recentArtEl && lastRec.artwork) recentArtEl.src = lastRec.artwork;
+        } else {
+          recentSubEl.textContent = 'Continue listening';
+        }
+      }
+      const favSubEl = document.getElementById('homeFavCardSub');
+      if (favSubEl) {
+        const cnt = (state.likedTracks || []).length;
+        favSubEl.textContent = cnt > 0 ? `${cnt} liked song${cnt === 1 ? '' : 's'}` : 'Your liked songs';
+      }
+      const libSongsSub = document.getElementById('homeLibSongsSub');
+      if (libSongsSub) {
+        const localCnt = (state.localTracks || []).length;
+        libSongsSub.textContent = localCnt > 0 ? `${localCnt} local + 320kbps HD` : 'Music on this device';
+      }
+    }
+
+    function openHomeRecentCard() {
+      if (state.recentTracks && state.recentTracks.length > 0) {
+        playFromList(state.recentTracks, 0);
+        showToast(`▶ Resuming: ${state.recentTracks[0].title}`);
+      } else {
+        switchTab('library');
+        showLibraryView('recent');
+      }
+    }
+
+    function browseCurrentTrackArtist() {
+      const artistRaw = state.currentTrack?.artist || '';
+      const firstArtist = artistRaw.split(',')[0].split('•')[0].trim();
+      if (!firstArtist) return;
+      closeNowPlaying();
+      switchTab('search', true);
+      openArtistHits(firstArtist);
+    }
+
     async function loadHomeFeeds(preservePlayback = false) {
       state.activeCategory = 'all';
+      updateHomeJumpBackCards();
       const carouselEl = document.getElementById('homeFullSongsCarousel');
       const teluguCarouselEl = document.getElementById('homeTeluguCarousel');
       const recCarouselEl = document.getElementById('homeRecommendedCarousel');
@@ -5965,9 +6060,12 @@
 
       if (initialFull[0]) {
         window.__heroTrack = initialFull[0];
-        document.getElementById('heroTitle').textContent = initialFull[0].title;
-        document.getElementById('heroSub').textContent = `${initialFull[0].artist} • Full Song (${formatTime(initialFull[0].duration)})`;
-        document.getElementById('heroArt').src = initialFull[0].artwork;
+        const heroTitleEl = document.getElementById('heroTitle');
+        const heroSubEl = document.getElementById('heroSub');
+        const heroArtEl = document.getElementById('heroArt');
+        if (heroTitleEl) heroTitleEl.textContent = initialFull[0].title;
+        if (heroSubEl) heroSubEl.textContent = `${initialFull[0].artist} • Full Song (${formatTime(initialFull[0].duration)})`;
+        if (heroArtEl) heroArtEl.src = initialFull[0].artwork;
       }
 
       if (carouselEl) renderCarouselCards(carouselEl, initialFull.slice(0, 28));
@@ -6136,21 +6234,29 @@
       const carouselEl = document.getElementById('homeFullSongsCarousel');
       const globalEl = document.getElementById('homeGlobalList');
 
-      // 1. INSTANT 0ms UI UPDATE (Hero + Carousel + Track List + Section Headings!)
+      // 1. INSTANT 0ms UI UPDATE (Carousel + Track List + Section Headings!)
       const instantTracks = getCategoryPlaylist(catKey);
-      document.getElementById('heroCategoryTag').textContent = meta.tag;
-      document.getElementById('carouselSectionTitle').textContent = meta.title;
-      document.getElementById('listSectionTitle').textContent = meta.listTitle;
+      const heroCatEl = document.getElementById('heroCategoryTag');
+      const carTitleEl = document.getElementById('carouselSectionTitle');
+      const listTitleEl = document.getElementById('listSectionTitle');
+      if (heroCatEl) heroCatEl.textContent = meta.tag;
+      if (carTitleEl) carTitleEl.textContent = meta.title;
+      if (listTitleEl) listTitleEl.textContent = meta.listTitle;
 
       if (instantTracks[0]) {
         window.__heroTrack = instantTracks[0];
-        document.getElementById('heroTitle').textContent = instantTracks[0].title;
-        document.getElementById('heroSub').textContent = `${instantTracks[0].artist} • Full Song (${formatTime(instantTracks[0].duration)})`;
-        document.getElementById('heroArt').src = instantTracks[0].artwork;
+        const heroTitleEl = document.getElementById('heroTitle');
+        const heroSubEl = document.getElementById('heroSub');
+        const heroArtEl = document.getElementById('heroArt');
+        if (heroTitleEl) heroTitleEl.textContent = instantTracks[0].title;
+        if (heroSubEl) heroSubEl.textContent = `${instantTracks[0].artist} • Full Song (${formatTime(instantTracks[0].duration)})`;
+        if (heroArtEl) heroArtEl.src = instantTracks[0].artwork;
       }
 
-      renderCarouselCards(carouselEl, instantTracks.slice(0, 24));
-      carouselEl.scrollLeft = 0;
+      if (carouselEl) {
+        renderCarouselCards(carouselEl, instantTracks.slice(0, 24));
+        carouselEl.scrollLeft = 0;
+      }
       renderTrackList(globalEl, instantTracks);
 
       // Start playing the first song of the selected category immediately!
@@ -6246,7 +6352,7 @@
       if (!container) return;
       container.innerHTML = '';
       if (!tracks || !tracks.length) {
-        container.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:13px;">No tracks found. Try another search or source tab!</div>`;
+        container.innerHTML = `<div style="padding:24px;text-align:center;color:var(--text-secondary);font-size:13px;">No matching songs found. Try clearing your search or choosing another filter.</div>`;
         return;
       }
       const frag = document.createDocumentFragment();
@@ -6266,7 +6372,7 @@
         const badgeClass = track.isFullTrack ? 'quality-tag' : 'quality-tag preview';
         const badgeText = track.sourceKey === 'radio'
           ? 'LIVE RADIO'
-          : (track.isFullTrack ? `320kbps FULL${durText}` : `AUTO-FULL${durText}`);
+          : (track.isFullTrack ? `320kbps${durText}` : `AUTO-FULL${durText}`);
 
         row.innerHTML = `
           <div class="track-thumb-wrap">
@@ -6354,7 +6460,7 @@
 
       // 1. Update UI & Notification IMMEDIATELY (0ms delay, 0-song lag)
       document.getElementById('miniTitle').textContent = track.title;
-      document.getElementById('miniArtist').textContent = `${track.artist} • ${track.source}`;
+      document.getElementById('miniArtist').textContent = `${track.artist}`;
       document.getElementById('miniArt').src = track.artwork;
 
       document.getElementById('npTitle').textContent = track.title;
@@ -6364,7 +6470,11 @@
       updateNowPlayingCoverflowDeck(track);
 
       document.getElementById('miniProgressFill').style.width = '0%';
-      document.getElementById('seekSlider').value = 0;
+      const seekEl = document.getElementById('seekSlider');
+      if (seekEl) {
+        seekEl.value = 0;
+        seekEl.style.background = `linear-gradient(90deg, #B8F36B 0%, #34363D 0%)`;
+      }
       document.getElementById('currentTimeLabel').textContent = '0:00';
       document.getElementById('durationLabel').textContent = track.duration > 0 ? formatTime(track.duration) : 'LIVE';
 
@@ -6543,7 +6653,11 @@
       const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
 
       document.getElementById('miniProgressFill').style.width = `${pct}%`;
-      document.getElementById('seekSlider').value = pct;
+      const seekEl = document.getElementById('seekSlider');
+      if (seekEl) {
+        seekEl.value = pct;
+        seekEl.style.background = `linear-gradient(90deg, #B8F36B ${pct}%, #34363D ${pct}%)`;
+      }
       document.getElementById('currentTimeLabel').textContent = formatTime(cur);
       document.getElementById('durationLabel').textContent = dur > 0 ? formatTime(dur) : 'LIVE';
 
@@ -6636,6 +6750,10 @@
     function onSeekInput(pct) {
       state.isSeeking = true;
       const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
+      const seekEl = document.getElementById('seekSlider');
+      if (seekEl) {
+        seekEl.style.background = `linear-gradient(90deg, #B8F36B ${pct}%, #34363D ${pct}%)`;
+      }
       document.getElementById('currentTimeLabel').textContent = formatTime((pct / 100) * dur);
     }
 
@@ -6778,10 +6896,10 @@
 
     function updateDynamicAmbientGlow(sourceKey) {
       const colors = {
-        saavn: 'rgba(225, 230, 240, 0.24)',
-        itunes: 'rgba(205, 212, 226, 0.22)',
-        audius: 'rgba(215, 220, 232, 0.22)',
-        radio: 'rgba(235, 238, 245, 0.24)'
+        saavn: 'rgba(184, 243, 107, 0.12)',
+        itunes: 'rgba(184, 243, 107, 0.12)',
+        audius: 'rgba(184, 243, 107, 0.12)',
+        radio: 'rgba(184, 243, 107, 0.12)'
       };
       document.documentElement.style.setProperty('--dynamic-glow', colors[sourceKey] || colors.saavn);
     }
@@ -6927,14 +7045,14 @@
       car.innerHTML = '';
       artists.forEach((artist, idx) => {
         const card = document.createElement('div');
-        card.style.cssText = 'flex:0 0 108px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer;text-align:center;transition:transform 0.18s ease, border-color 0.18s ease;';
+        card.style.cssText = 'flex:0 0 108px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:#1B1D22;border:1px solid #34363D;cursor:pointer;text-align:center;transition:transform 0.16s ease, border-color 0.16s ease;';
         card.onclick = () => openArtistHits(artist.name);
         card.innerHTML = `
-          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid var(--accent-green);box-shadow:0 6px 16px rgba(30,215,96,0.22);position:relative;">
+          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid #B8F36B;box-shadow:0 4px 12px rgba(0,0,0,0.4);position:relative;">
             <img src="${artist.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/art${idx}/200/200'" style="width:100%;height:100%;object-fit:cover;" alt="" />
           </div>
-          <div style="font-size:11.5px;font-weight:800;color:#fff;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.name)}</div>
-          <div style="font-size:9.5px;font-weight:700;color:var(--accent-green);background:rgba(30,215,96,0.12);padding:2px 7px;border-radius:999px;">▶ Play Hits</div>
+          <div style="font-size:11.5px;font-weight:800;color:#F5F5F5;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.name)}</div>
+          <div style="font-size:9.5px;font-weight:700;color:#B8F36B;background:rgba(184,243,107,0.12);padding:2px 7px;border-radius:999px;">▶ Play Hits</div>
         `;
         car.appendChild(card);
       });
@@ -7141,11 +7259,13 @@
       document.getElementById('likedCount').textContent = state.likedTracks.length;
       const plCountEl = document.getElementById('playlistCount');
       if (plCountEl) plCountEl.textContent = String((state.playlists || []).length);
+      updateHomeJumpBackCards();
     }
 
     function addToRecent(track) {
       state.recentTracks = [track, ...state.recentTracks.filter(t => t.id !== track.id)].slice(0, 35);
       localStorage.setItem('pb_recent_tracks', JSON.stringify(state.recentTracks));
+      updateHomeJumpBackCards();
     }
 
     function saveUserPlaylists() {
@@ -7264,8 +7384,8 @@
           closePlaylistPickerModal();
         };
         btn.innerHTML = `
-          <span style="font-weight:800;color:#fff;">🎵 ${escapeHtml(pl.name)}</span>
-          <span style="font-size:11px;color:${alreadyIn ? '#1ed760' : 'var(--text-secondary)'};">${alreadyIn ? '✓ Added' : `${(pl.tracks || []).length} songs • + Add`}</span>
+          <span style="font-weight:800;color:#F5F5F5;">🎵 ${escapeHtml(pl.name)}</span>
+          <span style="font-size:11px;color:${alreadyIn ? '#B8F36B' : 'var(--text-secondary)'};">${alreadyIn ? '✓ Added' : `${(pl.tracks || []).length} songs • + Add`}</span>
         `;
         listEl.appendChild(btn);
       });
@@ -7339,13 +7459,13 @@
         const count = (pl.tracks || []).length;
         const cover = pl.tracks?.[0]?.artwork || 'https://picsum.photos/seed/' + encodeURIComponent(pl.id) + '/200/200';
         const card = document.createElement('div');
-        card.style.cssText = `display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;cursor:pointer;background:${isActive ? 'rgba(30,215,96,0.14)' : 'rgba(255,255,255,0.04)'};border:1px solid ${isActive ? 'rgba(30,215,96,0.45)' : 'rgba(255,255,255,0.08)'};`;
+        card.style.cssText = `display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:14px;cursor:pointer;background:${isActive ? 'rgba(184,243,107,0.12)' : '#1B1D22'};border:1px solid ${isActive ? '#B8F36B' : '#34363D'};`;
         card.onclick = () => selectActivePlaylist(pl.id);
         card.innerHTML = `
           <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
             <img src="${cover}" style="width:44px;height:44px;border-radius:10px;object-fit:cover;flex-shrink:0;" onerror="this.src='https://picsum.photos/seed/pl/120/120'" alt="" />
             <div style="min-width:0;">
-              <div style="font-size:13px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pl.name)}</div>
+              <div style="font-size:13px;font-weight:800;color:#F5F5F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(pl.name)}</div>
               <div style="font-size:11px;color:var(--text-secondary);">${count} song${count === 1 ? '' : 's'} • Tap to view</div>
             </div>
           </div>
@@ -7398,7 +7518,7 @@
         const activePl = (state.playlists || []).find(p => p.id === state.activePlaylistId) || state.playlists[0];
         const tracks = activePl?.tracks || [];
         if (tracks.length === 0 && listEl) {
-          listEl.innerHTML = `<div style="padding:22px;text-align:center;color:var(--text-secondary);font-size:12.5px;background:rgba(255,255,255,0.03);border-radius:14px;border:1px dashed rgba(255,255,255,0.12);">Playlist <strong>"${escapeHtml(activePl?.name || 'Playlist')}"</strong> is empty.<br/>Tap <strong>📁+</strong> on any song in Home or Search (or tap <strong>+ Add Playing Song</strong> above) to add songs!</div>`;
+          listEl.innerHTML = `<div style="padding:22px;text-align:center;color:var(--text-secondary);font-size:12.5px;background:#1B1D22;border-radius:14px;border:1px dashed #34363D;">Playlist <strong>"${escapeHtml(activePl?.name || 'Playlist')}"</strong> is empty.<br/>Tap <strong>📁+</strong> on any song in Home or Search (or tap <strong>+ Add Playing Song</strong> above) to add songs!</div>`;
         } else {
           renderTrackList(listEl, tracks);
         }
@@ -7434,6 +7554,7 @@
         });
       });
       showToast(`Loaded ${files.length} local audio file(s)!`);
+      updateHomeJumpBackCards();
       showLibraryView('local');
       playFromList(state.localTracks, 0);
     }
@@ -7653,8 +7774,8 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (!cachedVisGrad) {
         cachedVisGrad = ctx.createLinearGradient(0, canvas.height, 0, 0);
-        cachedVisGrad.addColorStop(0, '#1ed760');
-        cachedVisGrad.addColorStop(1, '#00d2ff');
+        cachedVisGrad.addColorStop(0, '#8CE23A');
+        cachedVisGrad.addColorStop(1, '#B8F36B');
       }
       ctx.fillStyle = cachedVisGrad;
       const bars = 32;

@@ -8,12 +8,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background:
-        radial-gradient(ellipse at 82% 6%, rgba(235, 238, 245, 0.20) 0%, rgba(160, 165, 178, 0.08) 34%, transparent 62%),
-        radial-gradient(circle at 18% 88%, rgba(95, 100, 114, 0.14) 0%, transparent 55%),
-        linear-gradient(168deg, #16171b 0%, #0b0c0e 48%, #040406 100%);
-      color: #f4f5f8;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #101114;
+      color: #F5F5F5;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -22,13 +19,11 @@
     .store-card {
       width: 100%;
       max-width: 480px;
-      background: linear-gradient(155deg, rgba(46, 48, 55, 0.76) 0%, rgba(22, 23, 27, 0.92) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 30px;
+      background: #1B1D22;
+      border: 1px solid #34363D;
+      border-radius: 26px;
       padding: 28px 24px;
-      box-shadow: 0 28px 75px rgba(0, 0, 0, 0.92), inset 0 1px 0 rgba(255, 255, 255, 0.28);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72);
     }
     .app-header {
       display: flex;
@@ -37,30 +32,31 @@
       margin-bottom: 20px;
     }
     .app-icon {
-      width: 78px;
-      height: 78px;
-      border-radius: 22px;
-      background: linear-gradient(145deg, #f3f5f9, #b8beca);
-      border: 1px solid rgba(255, 255, 255, 0.55);
+      width: 74px;
+      height: 74px;
+      border-radius: 20px;
+      background: #B8F36B;
+      border: 1px solid #8CE23A;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #090a0d;
-      font-size: 38px;
+      color: #101114;
+      font-size: 36px;
       font-weight: 900;
       flex-shrink: 0;
-      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), inset 0 1px 0 #ffffff;
+      box-shadow: 0 8px 24px rgba(184, 243, 107, 0.25);
     }
     .app-title-box h1 {
       font-size: 24px;
       font-weight: 900;
       letter-spacing: -0.4px;
       margin-bottom: 3px;
+      color: #F5F5F5;
     }
     .dev-name {
       font-size: 13px;
       font-weight: 700;
-      color: #d4d8e2;
+      color: #A1A4AE;
       margin-bottom: 4px;
     }
     .verified-pill {
@@ -71,31 +67,31 @@
       font-weight: 700;
       padding: 2px 9px;
       border-radius: 999px;
-      background: rgba(255, 255, 255, 0.10);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.26);
+      background: rgba(184, 243, 107, 0.14);
+      color: #B8F36B;
+      border: 1px solid rgba(184, 243, 107, 0.35);
     }
     .stats-row {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid #34363D;
+      border-bottom: 1px solid #34363D;
       padding: 12px 0;
       margin-bottom: 20px;
       text-align: center;
     }
     .stat-box {
-      border-right: 1px solid rgba(255, 255, 255, 0.12);
+      border-right: 1px solid #34363D;
     }
     .stat-box:last-child { border-right: none; }
     .stat-val {
       font-size: 14px;
       font-weight: 800;
-      color: #fff;
+      color: #F5F5F5;
     }
     .stat-lbl {
       font-size: 11px;
-      color: #9da2ae;
+      color: #A1A4AE;
       margin-top: 2px;
     }
     .btn {
@@ -104,50 +100,50 @@
       justify-content: center;
       gap: 10px;
       width: 100%;
-      padding: 15px 20px;
+      padding: 14px 20px;
       border-radius: 999px;
-      font-size: 15px;
+      font-size: 14.5px;
       font-weight: 800;
       text-decoration: none;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       transition: transform 0.15s, filter 0.15s;
       cursor: pointer;
       border: none;
     }
-    .btn:hover { transform: translateY(-2px); filter: brightness(1.07); }
+    .btn:hover { transform: translateY(-1px); filter: brightness(1.06); }
     .btn-install {
-      background: linear-gradient(135deg, #ffffff, #d6dae4);
-      color: #090a0d;
-      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75), inset 0 1px 0 #ffffff;
+      background: #B8F36B;
+      color: #101114;
+      box-shadow: 0 8px 22px rgba(184, 243, 107, 0.28);
     }
     .btn-secondary {
-      background: rgba(34, 36, 42, 0.78);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.20);
+      background: #101114;
+      color: #F5F5F5;
+      border: 1px solid #34363D;
       font-size: 13.5px;
       padding: 12px 16px;
     }
     .btn-ig {
-      background: rgba(255, 255, 255, 0.08);
-      color: #e2e8f0;
-      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(184, 243, 107, 0.08);
+      color: #B8F36B;
+      border: 1px solid rgba(184, 243, 107, 0.25);
       font-size: 13px;
       padding: 11px 16px;
     }
     .info-section {
       margin-top: 16px;
-      background: rgba(20, 21, 25, 0.72);
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      border-radius: 18px;
+      background: #101114;
+      border: 1px solid #34363D;
+      border-radius: 16px;
       padding: 14px;
       font-size: 12.5px;
-      color: #d1d5db;
+      color: #A1A4AE;
       line-height: 1.5;
     }
     .info-section h3 {
       font-size: 13px;
       font-weight: 800;
-      color: #fff;
+      color: #F5F5F5;
       margin-bottom: 6px;
     }
     .meta-grid {
@@ -156,16 +152,16 @@
       gap: 8px;
       margin-top: 10px;
       font-size: 11.5px;
-      color: #9da2ae;
+      color: #A1A4AE;
     }
-    .meta-grid strong { color: #f7f8fc; display: block; }
+    .meta-grid strong { color: #F5F5F5; display: block; }
     .qr-box {
       margin-top: 16px;
       padding-top: 14px;
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      border-top: 1px solid #34363D;
       text-align: center;
       font-size: 12px;
-      color: #9da2ae;
+      color: #A1A4AE;
     }
     .qr-box img {
       margin-top: 8px;
@@ -184,7 +180,7 @@
       <div class="app-title-box">
         <h1>Balu Beats</h1>
         <div class="dev-name">Balu • 𝔓𝔯𝔞𝔳𝔢𝔢𝔫 (@being_rebel__7)</div>
-        <span class="verified-pill">✓ Verified Android APK • Smoked-Glass Edition</span>
+        <span class="verified-pill">✓ Verified Android APK • Charcoal & Lime Edition</span>
       </div>
     </div>
 
@@ -204,18 +200,18 @@
     </div>
 
     <!-- Primary Direct Android APK Download Button -->
-    <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.3" download="Balu_Beats_v3.5.apk" class="btn btn-install">
+    <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.4" download="Balu_Beats_v3.5.apk" class="btn btn-install">
       ⬇ Download APK v3.5.0 (Balu_Beats.apk)
     </a>
 
     <!-- Mirror APK Link -->
-    <a href="./Balu_Beats.apk?v=3.5.3" download="Balu_Beats_v3.5.apk" class="btn btn-secondary">
+    <a href="./Balu_Beats.apk?v=3.5.4" download="Balu_Beats_v3.5.apk" class="btn btn-secondary">
       📦 Direct Mirror Download (Balu_Beats.apk)
     </a>
 
     <!-- Launch Web / iOS Version -->
-    <a href="https://praveen-79.github.io/balu-beats/" class="btn btn-secondary" style="border-color:rgba(255,255,255,0.34);color:#ffffff;">
-      ▶ Open Web App (No Vercel Login • Instant Access)
+    <a href="https://praveen-79.github.io/balu-beats/" class="btn btn-secondary" style="border-color:#B8F36B;color:#B8F36B;">
+      ▶ Open Web App (Instant Access)
     </a>
 
     <a href="https://www.instagram.com/being_rebel__7/" target="_blank" class="btn btn-ig">
@@ -223,13 +219,12 @@
     </a>
 
     <div class="info-section">
-      <h3>📲 What's New in v3.5.0 (.APK)</h3>
+      <h3>📲 What's New in Balu Beats (.APK)</h3>
       <p>
-        • <strong>Auto-Refresh Home Suggestions on Every Open:</strong> Freshly shuffled Telugu, Hindi, Tamil & English mixes, dynamic Hero Banner, and live 320kbps recommendations every time you open the app.<br/>
-        • <strong>Dark Smoked-Glass & 3D Coverflow Theme:</strong> Deep obsidian & charcoal-ash glass UI, frosted silver-rim cards, pill-shaped mini-player dock, and 5-card 3D fanned coverflow stack.<br/>
-        • <strong>Artist Search & Artist Profiles Fixed:</strong> Multi-field artist extraction + dedicated "🎤 Matching Artists" carousel in Search.<br/>
-        • <strong>Custom Playlists in Library:</strong> Create playlists in Library and tap <code>📁+</code> on any song to add it to a playlist.<br/>
-        • <strong>APK Package Conflict Fix:</strong> Persistent RSA release signature so APK updates install cleanly over existing builds.
+        • <strong>Minimal Dark Charcoal & Electric Lime Design System:</strong> Clean <code>#101114</code> surfaces, <code>#1B1D22</code> cards, and <code>#B8F36B</code> lime accents for effortless day & night listening.<br/>
+        • <strong>Streamlined Home & Now Playing:</strong> Dynamic greeting, top search bar, <em>Jump back in</em> (Recently played & Your favourites), <em>Your library</em> 2×2 grid, and a large square album cover Now Playing screen.<br/>
+        • <strong>Universal Mobile Dock Fix:</strong> Dynamic viewport sizing so the bottom navigation and mini-player dock never get clipped on any Android screen.<br/>
+        • <strong>Custom Playlists & 320kbps Audio:</strong> Create playlists in Library, tap any artist to play their hits, and update seamlessly with persistent APK signing.
       </p>
       <div class="meta-grid">
         <div><strong>Package Name</strong>com.balubeats.music</div>
