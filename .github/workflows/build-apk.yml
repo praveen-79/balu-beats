@@ -96,8 +96,8 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="15"
-              android:versionName="3.5.0">
+              android:versionCode="16"
+              android:versionName="3.6.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
               <uses-permission android:name="android.permission.INTERNET" />
@@ -743,8 +743,8 @@ jobs:
                   super.onCreate(savedInstanceState);
                   requestWindowFeature(Window.FEATURE_NO_TITLE);
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                      getWindow().setStatusBarColor(Color.parseColor("#050507"));
-                      getWindow().setNavigationBarColor(Color.parseColor("#050507"));
+                      getWindow().setStatusBarColor(Color.parseColor("#101114"));
+                      getWindow().setNavigationBarColor(Color.parseColor("#101114"));
                   }
 
                   createUpdateNotificationChannel();
@@ -772,7 +772,7 @@ jobs:
                   }
 
                   webView = new BackgroundWebView(this);
-                  webView.setBackgroundColor(Color.parseColor("#050507"));
+                  webView.setBackgroundColor(Color.parseColor("#101114"));
                   WebSettings settings = webView.getSettings();
                   settings.setJavaScriptEnabled(true);
                   settings.setDomStorageEnabled(true);
@@ -795,9 +795,9 @@ jobs:
                                   try {
                                       JSONObject uObj = new JSONObject(msg.substring(18));
                                       showNativeUpdateNotification(
-                                          uObj.optString("title", "Balu Beats v3.5.0 Update Live!"),
-                                          uObj.optString("message", "New: Auto-Refresh Home Suggestions on Every Open, Dark Smoked-Glass 3D Theme, Artist Search & Custom Playlists!"),
-                                          uObj.optString("url", "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.3")
+                                          uObj.optString("title", "Balu Beats v3.6.0 Update Live!"),
+                                          uObj.optString("message", "New Minimal Charcoal & Lime UI (#101114 / #B8F36B), Jump Back In & Library Grid, Tappable Artists & Custom Playlists!"),
+                                          uObj.optString("url", "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.6.0")
                                       );
                                   } catch (Exception ignored) {}
                                   return true;
@@ -856,12 +856,12 @@ jobs:
                           }
                       }
                       SharedPreferences prefs = getSharedPreferences("balu_prefs", MODE_PRIVATE);
-                      if (!prefs.getBoolean("notified_build_15", false)) {
-                          prefs.edit().putBoolean("notified_build_15", true).apply();
+                      if (!prefs.getBoolean("notified_build_16", false)) {
+                          prefs.edit().putBoolean("notified_build_16", true).apply();
                           showNativeUpdateNotification(
-                              "🚀 Balu Beats v3.5.0 Update Live!",
-                              "New: Auto-Refresh Home Suggestions on Every Open, Dark Smoked-Glass 3D Coverflow Theme, Artist Search Carousel & Custom Playlists (📁+)!",
-                              "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.3"
+                              "🚀 Balu Beats v3.6.0 Update Live!",
+                              "New Minimal Charcoal & Lime UI (#101114 / #B8F36B), Jump Back In & Library Grid, Tappable Artists, Custom Playlists (📁+) & Mobile Dock Fix!",
+                              "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.6.0"
                           );
                       }
                   } catch (Exception ignored) {}
@@ -878,7 +878,7 @@ jobs:
                       );
                       ch.setDescription("Notifies when a new Balu Beats APK update or theme release is published");
                       ch.enableLights(true);
-                      ch.setLightColor(Color.parseColor("#1ED760"));
+                      ch.setLightColor(Color.parseColor("#B8F36B"));
                       ch.enableVibration(true);
                       ch.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
                       nm.createNotificationChannel(ch);
@@ -902,7 +902,7 @@ jobs:
 
                       String safeUrl = (downloadUrl != null && downloadUrl.startsWith("http"))
                           ? downloadUrl
-                          : "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.3";
+                          : "https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.6.0";
                       Intent dlIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(safeUrl));
                       PendingIntent dlPi = PendingIntent.getActivity(this, 302, dlIntent, flags);
 
@@ -910,19 +910,19 @@ jobs:
                           ? new Notification.Builder(this, UPDATE_CHANNEL_ID)
                           : new Notification.Builder(this);
 
-                      builder.setContentTitle(title != null ? title : "Balu Beats v3.5.0 Update Live!")
-                             .setContentText(message != null ? message : "Tap to view update in Account or download APK v3.5.0")
+                      builder.setContentTitle(title != null ? title : "Balu Beats v3.6.0 Update Live!")
+                             .setContentText(message != null ? message : "Tap to view update in Account or download APK v3.6.0")
                              .setStyle(new Notification.BigTextStyle().bigText(message))
                              .setSmallIcon(R.drawable.ic_launcher)
                              .setContentIntent(openAccPi)
                              .setAutoCancel(true)
                              .setVisibility(Notification.VISIBILITY_PUBLIC)
                              .setPriority(Notification.PRIORITY_HIGH)
-                             .setColor(Color.parseColor("#1ED760"));
+                             .setColor(Color.parseColor("#B8F36B"));
 
                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
                           builder.addAction(new Notification.Action.Builder(android.R.drawable.stat_sys_download_done, "View in Account", openAccPi).build());
-                          builder.addAction(new Notification.Action.Builder(android.R.drawable.stat_sys_download, "Download APK v3.5", dlPi).build());
+                          builder.addAction(new Notification.Action.Builder(android.R.drawable.stat_sys_download, "Download APK v3.6", dlPi).build());
                       }
 
                       nm.notify(UPDATE_NOTIF_ID, builder.build());
@@ -1054,4 +1054,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add Balu_Beats.apk Balu_Beats_App.html release.keystore
-          git diff --staged --quiet || (git commit -m "chore: sync compiled v3.5.0 Balu_Beats.apk [skip ci]" && git push origin HEAD:main)
+          git diff --staged --quiet || (git commit -m "chore: sync compiled v3.6.0 Balu_Beats.apk [skip ci]" && git push origin HEAD:main)
