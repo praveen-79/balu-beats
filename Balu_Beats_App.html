@@ -2006,14 +2006,6 @@
       color: var(--accent-green);
     }
 
-    /* Freeze all infinite CSS animations and transitions when app is minimized/backgrounded to prevent audio micro-stutters */
-    body.app-bg-mode *,
-    body.app-bg-mode *::before,
-    body.app-bg-mode *::after {
-      animation-play-state: paused !important;
-      transition: none !important;
-    }
-
   </style>
 </head>
 <body>
@@ -2179,7 +2171,7 @@
               </div>
               <div style="min-width:0;">
                 <div class="lib-home-title">All songs</div>
-                <div class="lib-home-sub" id="homeLibSongsSub">Music on this device</div>
+                <div class="lib-home-sub">Music on this device</div>
               </div>
             </div>
             <div class="lib-home-card" onclick="openQuickCollection('telugu', 'Top Albums & Soundtracks', 'devara kalki pushpa')">
@@ -2193,7 +2185,7 @@
                 <div class="lib-home-sub">Browse by album</div>
               </div>
             </div>
-            <div class="lib-home-card" onclick="scrollToHomeArtists()">
+            <div class="lib-home-card" onclick="openQuickCollection('all', 'Popular Artists', 'anirudh arijit weeknd')">
               <div class="lib-home-icon">
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -2244,15 +2236,6 @@
               </div>
             </div>
             <img id="heroArt" class="hero-art" src="https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg" onerror="this.src='https://picsum.photos/seed/pulsehero/300/300'" alt="Featured" />
-          </div>
-
-          <!-- 0. Artist Discovery Carousel on Home -->
-          <div id="homeArtistsSection" style="margin-bottom:16px;">
-            <div class="section-header" id="homeArtistsHeader" style="margin-bottom:8px;">
-              <h2 class="section-title">🎤 Artist Discovery (Tap to Play Hits)</h2>
-              <button class="section-link" onclick="refreshHomeArtists(true)">Shuffle Artists ↻</button>
-            </div>
-            <div id="homeArtistsCarousel" class="horiz-scroll" style="padding-bottom:6px;"></div>
           </div>
 
           <!-- 1. Featured Full-Length Songs Carousel (320kbps) -->
@@ -2337,12 +2320,39 @@
           <div id="searchStatus" style="font-size:12px;color:var(--text-primary);font-weight:700;margin-bottom:8px;"></div>
 
           <!-- Matching Artists Section in Search -->
-          <div id="searchArtistsSection" style="display:block;margin-bottom:16px;">
+          <div id="searchArtistsSection" style="display:none;margin-bottom:16px;">
             <div class="section-header" style="margin-bottom:8px;">
-              <h2 class="section-title" id="searchArtistsTitle" style="font-size:14px;">🎤 Popular & Matching Artists (Tap to Play All Hits)</h2>
-              <button class="section-link" onclick="renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12))">Shuffle ↻</button>
+              <h2 class="section-title" id="searchArtistsTitle" style="font-size:14px;">🎤 Matching Artists (Tap for Profile & Discography)</h2>
             </div>
             <div id="searchArtistsCarousel" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;"></div>
+          </div>
+
+          <!-- Artist Profile & Discography Panel (Opens when an artist is selected in Search) -->
+          <div id="artistProfilePanel" style="display:none;margin-bottom:18px;background:#1B1D22;border:1px solid #34363D;border-radius:18px;padding:16px;box-shadow:0 12px 30px rgba(0,0,0,0.45);">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:14px;min-width:0;flex:1;">
+                <img id="artistProfileImg" src="" alt="" onerror="this.src='https://picsum.photos/seed/artistprof/200/200'" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2.5px solid #B8F36B;flex-shrink:0;background:#101114;" />
+                <div style="min-width:0;flex:1;">
+                  <div style="display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;color:#B8F36B;background:rgba(184,243,107,0.12);padding:2px 8px;border-radius:999px;margin-bottom:4px;" id="artistProfileBadge">✓ VERIFIED ARTIST</div>
+                  <div id="artistProfileName" style="font-size:18px;font-weight:900;color:#F5F5F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Artist Name</div>
+                  <div id="artistProfileSub" style="font-size:11.5px;color:#A1A4AE;margin-top:2px;">Loading songs & discography...</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <button class="util-btn primary" onclick="playArtistProfileAll(false)" style="padding:8px 14px;font-size:12px;font-weight:800;">▶ Play All</button>
+                <button class="util-btn" onclick="playArtistProfileAll(true)" style="padding:8px 12px;font-size:12px;font-weight:700;">🔀 Shuffle</button>
+                <button class="util-btn" onclick="closeArtistProfile()" style="padding:8px 10px;font-size:12px;" title="Close Artist Profile">✕</button>
+              </div>
+            </div>
+
+            <!-- Artist Discography (Albums & Singles) -->
+            <div id="artistDiscographyWrap" style="display:none;margin-top:10px;padding-top:12px;border-top:1px solid #34363D;">
+              <div class="section-header" style="margin-bottom:8px;">
+                <h3 style="font-size:13px;font-weight:800;color:#F5F5F5;margin:0;" id="artistDiscographyTitle">💿 Discography (Albums & Singles)</h3>
+                <span style="font-size:11px;color:#A1A4AE;">Tap any album to view & play songs</span>
+              </div>
+              <div id="artistDiscographyCarousel" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;"></div>
+            </div>
           </div>
 
           <div class="track-list" id="searchResultsList"></div>
@@ -2980,56 +2990,46 @@
   <div class="modal-backdrop" id="shareModal" onclick="if(event.target===this)closeShareModal()">
     <div class="modal-box">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-        <h3 style="font-size:17px;font-weight:800;">📲 Download & Share Balu Beats</h3>
+        <h3 style="font-size:17px;font-weight:800;">📲 Download & Install Balu Beats</h3>
         <button class="row-icon-btn" onclick="closeShareModal()">✕</button>
       </div>
       <p style="font-size:12.5px;color:var(--text-secondary);line-height:1.45;margin-bottom:12px;">
-        Install or share <strong>Balu Beats v3.6.0 (Play-Protect Clean Edition)</strong> with <strong>100% full-length 320kbps songs</strong>:
+        Install <strong>Balu Beats</strong> on your phone or PC to stream <strong>100% full-length 320kbps songs</strong>:
       </p>
 
-      <div style="background:#1B1D22;padding:12px;border-radius:14px;margin-bottom:10px;border:1px solid #B8F36B;">
-        <div style="font-size:13px;font-weight:800;margin-bottom:4px;color:#B8F36B;">1. 🤖 Download Clean Android APK (v3.6.0)</div>
+      <div style="background:linear-gradient(135deg,rgba(30,215,96,0.16),rgba(0,210,255,0.12));padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid rgba(30,215,96,0.45);">
+        <div style="font-size:13px;font-weight:800;margin-bottom:4px;color:var(--accent-green);">1. 🤖 Download Android App (Balu_Beats.apk)</div>
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          100% clean, lightweight (~450 KB) signed Android package with zero binary bloat.
+          Install the native Android application package (<code>Balu_Beats.apk</code>) directly on your phone!
         </p>
-        <div style="display:flex;flex-direction:column;gap:8px;">
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.6.18" download="Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;font-weight:900;">
-            ⬇ Download Balu_Beats.apk (Direct)
-          </a>
-          <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats_Installer.zip?v=3.6.18" download="Balu_Beats_Installer.zip" class="util-btn" style="width:100%;justify-content:center;text-decoration:none;font-size:11.5px;">
-            📦 Download as .ZIP (To Send File in WhatsApp Without Warning)
-          </a>
-        </div>
+        <a href="https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk" download="Balu_Beats.apk" class="util-btn primary" style="width:100%;justify-content:center;text-decoration:none;">
+          ⬇ Download Balu_Beats.apk (Android)
+        </a>
       </div>
 
-      <div style="background:var(--bg-elevated);padding:12px;border-radius:14px;margin-bottom:10px;border:1px solid var(--border-subtle);">
-        <div style="font-size:13px;font-weight:800;margin-bottom:4px;color:#B8F36B;">2. 💬 Share on WhatsApp (Zero "Harmful File" Warning)</div>
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;margin-bottom:10px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--accent-cyan);">2. 📱 Install to Phone Home Screen (Android & iOS)</div>
         <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          WhatsApp flags raw <code>.apk</code> files in chat. Share the official HTTPS store link below so friends can install with zero WhatsApp warnings:
-        </p>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="https://wa.me/?text=%F0%9F%8E%B5%20Install%20*Balu%20Beats%20v3.6*%20(100%25%20Full-Length%20320kbps%20HD%20Music%20App%20by%20%40being_rebel__7)%0A%0A%F0%9F%93%B2%20*Official%20Download%20Page%3A*%0Ahttps%3A%2F%2Fpraveen-79.github.io%2Fbalu-beats%2Fdownload.html" target="_blank" class="util-btn primary" style="flex:1;justify-content:center;text-decoration:none;font-weight:800;">
-            💬 Share Safe Link on WhatsApp
-          </a>
-          <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="justify-content:center;text-decoration:none;">
-            🏪 Store Page
-          </a>
-        </div>
-      </div>
-
-      <div style="background:var(--bg-elevated);padding:12px;border-radius:14px;border:1px solid var(--border-subtle);">
-        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:var(--text-primary);">3. 📱 Install Web App (Instant, Zero APK Check)</div>
-        <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
-          Adds <strong>Balu Beats</strong> directly to your Home Screen via Chrome/Safari with zero Play Protect prompts.
+          Tap below (or use your browser's <strong>Add to Home Screen</strong>) to install <strong>Balu Beats</strong> with its app icon.
         </p>
         <div style="display:flex;gap:8px;">
-          <button class="util-btn" style="flex:1;justify-content:center;border-color:#B8F36B;color:#B8F36B;" onclick="triggerInstallPWA()">
+          <button class="util-btn" style="flex:1;justify-content:center;border-color:rgba(0,210,255,0.4);color:var(--accent-cyan);" onclick="triggerInstallPWA()">
             📱 Install Web App
           </button>
           <button class="util-btn" style="flex:1;justify-content:center;" onclick="shareCurrentSongNative()">
             🔗 Share App Link
           </button>
         </div>
+      </div>
+
+      <div style="background:var(--bg-elevated);padding:12px;border-radius:12px;border:1px solid var(--border-subtle);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:4px;color:#f9a8d4;">3. 🏪 Official APK Store Page & QR Code</div>
+        <p style="font-size:11.5px;color:var(--text-secondary);margin-bottom:10px;">
+          Open the Play-Store-style APK download page to scan the QR code or download from the mirror.
+        </p>
+        <a href="https://praveen-79.github.io/balu-beats/download.html" target="_blank" class="util-btn" style="width:100%;justify-content:center;text-decoration:none;">
+          🏪 Open Balu Beats APK Store Page
+        </a>
       </div>
     </div>
   </div>
@@ -5545,16 +5545,19 @@
     // Search JioSaavn Artists directly + extract top artists from track results
     async function searchSaavnArtists(query, fallbackTracks = []) {
       const artistMap = new Map();
-      const addArtist = (name, image, role = 'Artist') => {
+      const addArtist = (name, image, role = 'Artist', id = '') => {
         const clean = decodeEntities(String(name || '').trim());
         if (!clean || clean.length < 2 || clean.toLowerCase() === 'unknown artist' || clean.toLowerCase() === 'featured artist') return;
         const key = clean.toLowerCase();
         if (!artistMap.has(key)) {
           artistMap.set(key, {
+            id: String(id || ''),
             name: clean,
             image: (image || '').replace('http://', 'https://') || `https://picsum.photos/seed/${encodeURIComponent(key)}/300/300`,
             role
           });
+        } else if (id && !artistMap.get(key).id) {
+          artistMap.get(key).id = String(id);
         }
       };
 
@@ -5574,7 +5577,7 @@
             list.forEach(a => {
               const imgs = Array.isArray(a.image) ? a.image : [];
               const imgUrl = imgs[imgs.length - 1]?.url || imgs[imgs.length - 1]?.link || (typeof a.image === 'string' ? a.image : '');
-              addArtist(a.name || a.title, imgUrl, a.role || 'Verified Artist');
+              addArtist(a.name || a.title, imgUrl, a.role || 'Verified Artist', a.id || '');
             });
             if (artistMap.size > 0) break;
           }
@@ -5585,11 +5588,102 @@
       (fallbackTracks || []).slice(0, 25).forEach(t => {
         const parts = String(t.artist || '').split(',').map(s => s.trim()).filter(Boolean);
         parts.slice(0, 2).forEach(p => {
-          addArtist(p, t.artwork, 'Top Hits Artist');
+          addArtist(p, t.artwork, 'Top Hits Artist', '');
         });
       });
 
       return Array.from(artistMap.values()).slice(0, 12);
+    }
+
+    // Fetch full Artist Profile, Top Songs & Discography (Albums + Singles) from JioSaavn
+    async function fetchSaavnArtistDetails(artistId, artistName) {
+      let resolvedId = artistId;
+      if (!resolvedId && artistName) {
+        try {
+          const found = await searchSaavnArtists(artistName, []);
+          const withId = found.find(a => a.id);
+          if (withId) resolvedId = withId.id;
+        } catch (_) {}
+      }
+      if (!resolvedId) return null;
+
+      const urls = [
+        `https://saavn.sumit.co/api/artists/${encodeURIComponent(resolvedId)}`,
+        `https://saavn.sumit.co/api/artists?id=${encodeURIComponent(resolvedId)}`
+      ];
+      for (const url of urls) {
+        try {
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 4000);
+          const res = await fetch(url, { signal: ctrl.signal });
+          clearTimeout(timer);
+          if (res.ok) {
+            const json = await res.json();
+            const d = json?.data || json;
+            if (d && (d.name || d.topSongs || d.topAlbums)) {
+              const imgs = Array.isArray(d.image) ? d.image : [];
+              const hiResImg = (imgs[imgs.length - 1]?.url || imgs[imgs.length - 1]?.link || '').replace('http://', 'https://');
+              const topSongs = parseSaavnDirectJson({ data: { results: d.topSongs || [] } });
+              const rawAlbums = [...(d.topAlbums || []), ...(d.singles || [])];
+              const seenAlb = new Set();
+              const discography = [];
+              rawAlbums.forEach(alb => {
+                const albId = String(alb.id || '');
+                const albName = decodeEntities(alb.name || alb.title || '');
+                if (!albName || seenAlb.has(albId || albName.toLowerCase())) return;
+                seenAlb.add(albId || albName.toLowerCase());
+                const aImgs = Array.isArray(alb.image) ? alb.image : [];
+                const aImgUrl = (aImgs[aImgs.length - 1]?.url || aImgs[aImgs.length - 1]?.link || '').replace('http://', 'https://');
+                discography.push({
+                  id: albId,
+                  name: albName,
+                  year: alb.year || '',
+                  type: (alb.type || 'album').toUpperCase(),
+                  image: aImgUrl || hiResImg || `https://picsum.photos/seed/${encodeURIComponent(albName)}/300/300`
+                });
+              });
+              return {
+                id: resolvedId,
+                name: decodeEntities(d.name || artistName || 'Artist'),
+                image: hiResImg,
+                followerCount: Number(d.followerCount || d.fanCount || 0),
+                isVerified: Boolean(d.isVerified !== false),
+                topSongs,
+                discography
+              };
+            }
+          }
+        } catch (_) {}
+      }
+      return null;
+    }
+
+    // Fetch all 320kbps tracks inside a specific Album / Single from Discography
+    async function fetchSaavnAlbumTracks(albumId, fallbackQuery) {
+      if (albumId) {
+        const urls = [
+          `https://saavn.sumit.co/api/albums?id=${encodeURIComponent(albumId)}`,
+          `https://jiosaavn-api-privatecvc2.vercel.app/albums?id=${encodeURIComponent(albumId)}`
+        ];
+        for (const url of urls) {
+          try {
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 4000);
+            const res = await fetch(url, { signal: ctrl.signal });
+            clearTimeout(timer);
+            if (res.ok) {
+              const json = await res.json();
+              const songs = json?.data?.songs || json?.songs || [];
+              const parsed = deduplicateTracks(parseSaavnDirectJson({ data: { results: songs } }));
+              if (parsed.length > 0) return parsed;
+            }
+          } catch (_) {}
+        }
+      }
+      if (fallbackQuery) {
+        return await searchSaavnTracks(fallbackQuery, 40, 1);
+      }
+      return [];
     }
 
     // Engine A: Multi-Mirror 320kbps Full-Length Song Search (Supports Pagination & 40+ Tracks/Page)
@@ -6047,102 +6141,6 @@
       }
     }
 
-    const BALU_FEATURED_ARTISTS = [
-      { name: 'Anirudh Ravichander', role: 'Telugu & Tamil Hits', image: 'https://c.saavncdn.com/994/Fear-Song-From-Devara-Part-1-Telugu-2024-20240519131003-500x500.jpg' },
-      { name: 'Devi Sri Prasad', role: 'Pushpa & Mass Beats', image: 'https://c.saavncdn.com/406/Pushpa-Pushpa-From-Pushpa-2-The-Rule-Telugu-2024-20240501161034-500x500.jpg' },
-      { name: 'Thaman S', role: 'Guntur Kaaram & BGM', image: 'https://c.saavncdn.com/000/Kurchi-Madathapetti-From-Guntur-Kaaram-Telugu-2023-20231230150239-500x500.jpg' },
-      { name: 'Sid Sriram', role: 'Soulful Melodies', image: 'https://c.saavncdn.com/724/Samajavaragamana-Telugu-2019-20190928090629-500x500.jpg' },
-      { name: 'Arijit Singh', role: 'Bollywood & Romantic', image: 'https://c.saavncdn.com/092/ANIMAL-Hindi-2023-20231124191036-500x500.jpg' },
-      { name: 'The Weeknd', role: 'Global Pop & Synth', image: 'https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg' },
-      { name: 'Hesham Abdul Wahab', role: 'Hi Nanna & Kushi', image: 'https://c.saavncdn.com/119/Samayama-From-Hi-Nanna-Telugu-2023-20230916125532-500x500.jpg' },
-      { name: 'Santhosh Narayanan', role: 'Kalki 2898 AD & Dasara', image: 'https://c.saavncdn.com/583/Ta-Takkara-Complex-Song-From-Kalki-2898-Ad-Telugu-2024-20240629124002-500x500.jpg' },
-      { name: 'M. M. Keeravani', role: 'RRR & Epic Classics', image: 'https://c.saavncdn.com/772/Naatu-Naatu-From-Rrr-Telugu-2021-20211110131000-500x500.jpg' },
-      { name: 'Ram Miriyala', role: 'Tillu Square & Indie', image: 'https://c.saavncdn.com/195/Ticket-Eh-Konakunda-From-Tillu-Square-Telugu-2023-20230726171525-500x500.jpg' },
-      { name: 'A. R. Rahman', role: 'Legendary Maestro', image: 'https://c.saavncdn.com/586/Rockstar-Hindi-2011-20221212023139-500x500.jpg' },
-      { name: 'Shreya Ghoshal', role: 'Melody Queen', image: 'https://c.saavncdn.com/307/Sooseki-From-Pushpa-2-The-Rule-Telugu-2024-20240529111014-500x500.jpg' },
-      { name: 'Anurag Kulkarni', role: 'Telugu Chartbusters', image: 'https://c.saavncdn.com/516/HanuMan-Telugu-2024-20240119190903-500x500.jpg' },
-      { name: 'Travis Scott', role: 'Hip-Hop & Trap', image: 'https://c.saavncdn.com/243/UTOPIA-English-2023-20230728085003-500x500.jpg' },
-      { name: 'Alan Walker', role: 'EDM & Electronic', image: 'https://c.saavncdn.com/806/Different-World-English-2018-20181213231919-500x500.jpg' },
-      { name: 'Pritam', role: 'Bollywood Blockbusters', image: 'https://c.saavncdn.com/807/Brahmastra-Original-Motion-Picture-Soundtrack-Hindi-2022-20221006155213-500x500.jpg' },
-      { name: 'S. P. Balasubrahmanyam', role: 'Evergreen Classics', image: 'https://c.saavncdn.com/011/S-P-Balasubrahmanyam-Telugu-Hits-Telugu-2020-20200925121001-500x500.jpg' },
-      { name: 'Yuvan Shankar Raja', role: 'Vibe & Cult Hits', image: 'https://c.saavncdn.com/441/The-Greatest-Of-All-Time-Tamil-2024-20240831134001-500x500.jpg' }
-    ];
-
-    function renderArtistDiscoveryCarousel(containerId, artists) {
-      const car = document.getElementById(containerId);
-      if (!car || !artists || !artists.length) return;
-      car.innerHTML = '';
-      const frag = document.createDocumentFragment();
-      artists.forEach((artist, idx) => {
-        const card = document.createElement('div');
-        card.style.cssText = 'flex:0 0 112px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:#1B1D22;border:1px solid #34363D;cursor:pointer;text-align:center;';
-        card.onclick = () => {
-          switchTab('search', true);
-          openArtistHits(artist.name);
-        };
-        card.innerHTML = `
-          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid #B8F36B;box-shadow:0 4px 12px rgba(0,0,0,0.4);position:relative;flex-shrink:0;">
-            <img src="${artist.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/art${idx}/200/200'" style="width:100%;height:100%;object-fit:cover;" alt="" />
-          </div>
-          <div style="font-size:11.5px;font-weight:800;color:#F5F5F5;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.name)}</div>
-          <div style="font-size:9.5px;font-weight:600;color:#A1A4AE;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.role || '320kbps Hits')}</div>
-          <div style="font-size:9.5px;font-weight:800;color:#101114;background:#B8F36B;padding:2px 8px;border-radius:999px;">▶ Play Hits</div>
-        `;
-        frag.appendChild(card);
-      });
-      car.appendChild(frag);
-    }
-
-    function refreshHomeArtists(showToastMsg = false) {
-      const shuffled = shuffleTracks(BALU_FEATURED_ARTISTS);
-      renderArtistDiscoveryCarousel('homeArtistsCarousel', shuffled);
-      const searchCar = document.getElementById('searchArtistsCarousel');
-      if (searchCar && !searchCar.children.length) {
-        renderSearchArtists(shuffled.slice(0, 12));
-      }
-      if (showToastMsg) {
-        showToast('🎤 Shuffled Artist Discovery lineup!');
-      }
-    }
-
-    function scrollToHomeArtists() {
-      const sec = document.getElementById('homeArtistsSection');
-      if (sec) {
-        refreshHomeArtists(false);
-        sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        showToast('🎤 Tap any artist below to play all their 320kbps hits!');
-      } else {
-        switchTab('search', true);
-        renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS));
-      }
-    }
-
-    // Background mode controller invoked by Android MainActivity (onPause / onResume) & visibilitychange
-    window.setBaluBackgroundState = function(isBg) {
-      state.isAppBackgrounded = Boolean(isBg);
-      document.body.classList.toggle('app-bg-mode', state.isAppBackgrounded);
-      if (!state.isAppBackgrounded) {
-        // Sync UI once cleanly when returning to foreground
-        const cur = audio.currentTime || 0;
-        const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
-        const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
-        const fillEl = document.getElementById('miniProgressFill');
-        if (fillEl) fillEl.style.width = `${pct}%`;
-        const seekEl = document.getElementById('seekSlider');
-        if (seekEl) {
-          seekEl.value = pct;
-          seekEl.style.background = `linear-gradient(90deg, #B8F36B ${pct}%, #34363D ${pct}%)`;
-        }
-        const curLbl = document.getElementById('currentTimeLabel');
-        if (curLbl) curLbl.textContent = formatTime(cur);
-        const durLbl = document.getElementById('durationLabel');
-        if (durLbl) durLbl.textContent = dur > 0 ? formatTime(dur) : 'LIVE';
-        updatePlayIcons();
-        updateActiveTrackHighlight();
-        if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
-      }
-    };
-
     function openHomeRecentCard() {
       if (state.recentTracks && state.recentTracks.length > 0) {
         playFromList(state.recentTracks, 0);
@@ -6165,7 +6163,6 @@
     async function loadHomeFeeds(preservePlayback = false) {
       state.activeCategory = 'all';
       updateHomeJumpBackCards();
-      refreshHomeArtists(false);
       const carouselEl = document.getElementById('homeFullSongsCarousel');
       const teluguCarouselEl = document.getElementById('homeTeluguCarousel');
       const recCarouselEl = document.getElementById('homeRecommendedCarousel');
@@ -6267,17 +6264,17 @@
       try {
         let more = [];
         if (seedTrack) {
-          if (recTitleEl && !state.isAppBackgrounded) {
+          if (recTitleEl) {
             recTitleEl.textContent = `✨ Related to "${seedTrack.title.slice(0, 22)}"`;
           }
-          if (searchRelTitle && !state.isAppBackgrounded) {
+          if (searchRelTitle) {
             searchRelTitle.textContent = `✨ Related Songs Playing Next for "${seedTrack.title.slice(0, 26)}"`;
           }
           more = await fetchRelatedSongsForTrack(seedTrack);
         } else {
           const t1 = SUGGESTION_TOPICS[(suggestionTopicIdx++) % SUGGESTION_TOPICS.length];
           const t2 = SUGGESTION_TOPICS[(suggestionTopicIdx++) % SUGGESTION_TOPICS.length];
-          if (recTitleEl && !state.isAppBackgrounded) {
+          if (recTitleEl) {
             recTitleEl.textContent = `✨ Recommended: ${t1.toUpperCase()}`;
           }
           const [m1, m2] = await Promise.all([
@@ -6288,15 +6285,12 @@
         }
 
         if (more && more.length > 0) {
-          // Only rebuild heavy DOM carousels when the app is in the foreground
-          if (!state.isAppBackgrounded && !document.hidden) {
-            if (recCarouselEl) {
-              renderCarouselCards(recCarouselEl, more.slice(0, 35));
-            }
-            if (searchRelSection && searchRelList && seedTrack) {
-              searchRelSection.style.display = 'block';
-              renderTrackList(searchRelList, more);
-            }
+          if (recCarouselEl) {
+            renderCarouselCards(recCarouselEl, more.slice(0, 35));
+          }
+          if (searchRelSection && searchRelList && seedTrack) {
+            searchRelSection.style.display = 'block';
+            renderTrackList(searchRelList, more);
           }
 
           if (injectNextInQueue && state.currentTrack && (!seedTrack || state.currentTrack.id === seedTrack.id)) {
@@ -6428,8 +6422,6 @@
       const loadMoreWrap = document.getElementById('loadMoreSearchWrap');
       if (loadMoreWrap) loadMoreWrap.style.display = 'block';
 
-      renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12));
-
       // 1. Render pre-loaded 320kbps category songs in 0ms!
       const basePool = getCategoryPlaylist(catKey);
       const qLow = (liveQuery || '').toLowerCase();
@@ -6440,6 +6432,10 @@
 
       statusEl.textContent = `✅ ${label} — Playing 100% Full-Length 320kbps Songs (${prioritized.length} tracks)`;
       renderTrackList(listEl, prioritized);
+      closeArtistProfile();
+      searchSaavnArtists(liveQuery || label, prioritized).then(artists => {
+        if (state.searchReqId === reqId) renderSearchArtists(artists);
+      }).catch(() => {});
 
       if (prioritized.length > 0) {
         playFromList(prioritized, 0);
@@ -6617,16 +6613,10 @@
       updateMediaSession(track);
       syncNativeAndroidNotification(true); // Immediate high-priority push for new song
 
-      // Stagger lyrics & related-song fetches so initial 320kbps audio buffering gets 100% network & CPU priority
-      clearTimeout(state.deferredLyricsTimer);
-      clearTimeout(state.deferredRecsTimer);
-      state.deferredLyricsTimer = setTimeout(() => {
-        if (state.playReqId === reqId) fetchSyncedLyrics(track);
-      }, 700);
+      // Start fetching karaoke lyrics AND true related songs in parallel without blocking playback!
+      fetchSyncedLyrics(track);
       if (track.sourceKey !== 'radio') {
-        state.deferredRecsTimer = setTimeout(() => {
-          if (state.playReqId === reqId) refreshSmartRecommendations(track, true);
-        }, 2200);
+        refreshSmartRecommendations(track, true);
       }
 
       // 2. Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
@@ -6784,8 +6774,6 @@
 
     audio.addEventListener('timeupdate', () => {
       if (state.isSeeking || state.isLoadingTrack) return;
-      // Skip 4Hz DOM style/layout/scroll mutations while user is in another app or screen is off
-      if (state.isAppBackgrounded || document.hidden) return;
       const cur = audio.currentTime || 0;
       const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
@@ -6804,10 +6792,12 @@
 
     audio.addEventListener('loadedmetadata', () => {
       updateMediaPositionState();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('durationchange', () => {
       updateMediaPositionState();
+      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('play', () => {
@@ -6927,6 +6917,13 @@
       state.lastNotifiedTrackId = payload.id;
       state.lastNotifiedPlaying = payload.playing;
 
+      // Direct 0ms JavascriptInterface bridge if available in v3.3.0+ APK, with console fallback
+      if (window.AndroidMediaBridge && typeof window.AndroidMediaBridge.syncMedia === 'function') {
+        try {
+          window.AndroidMediaBridge.syncMedia(json);
+          return;
+        } catch (_) {}
+      }
       console.log('BALU_MEDIA:' + json);
     }
 
@@ -7165,33 +7162,149 @@
       const sec = document.getElementById('searchArtistsSection');
       const car = document.getElementById('searchArtistsCarousel');
       if (!sec || !car) return;
-      const list = (artists && artists.length) ? artists : shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12);
+      if (!artists || !artists.length) {
+        sec.style.display = 'none';
+        car.innerHTML = '';
+        return;
+      }
       sec.style.display = 'block';
       car.innerHTML = '';
-      list.forEach((artist, idx) => {
+      artists.forEach((artist, idx) => {
         const card = document.createElement('div');
-        card.style.cssText = 'flex:0 0 110px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:#1B1D22;border:1px solid #34363D;cursor:pointer;text-align:center;';
-        card.onclick = () => openArtistHits(artist.name);
+        card.style.cssText = 'flex:0 0 112px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:#1B1D22;border:1px solid #34363D;cursor:pointer;text-align:center;transition:transform 0.16s ease, border-color 0.16s ease;';
+        card.onclick = () => openArtistProfile(artist);
         card.innerHTML = `
-          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid #B8F36B;box-shadow:0 4px 12px rgba(0,0,0,0.4);position:relative;flex-shrink:0;">
+          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid #B8F36B;box-shadow:0 4px 12px rgba(0,0,0,0.4);position:relative;">
             <img src="${artist.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/art${idx}/200/200'" style="width:100%;height:100%;object-fit:cover;" alt="" />
           </div>
           <div style="font-size:11.5px;font-weight:800;color:#F5F5F5;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.name)}</div>
-          <div style="font-size:9.5px;font-weight:800;color:#101114;background:#B8F36B;padding:2px 8px;border-radius:999px;">▶ Play Hits</div>
+          <div style="font-size:9.5px;font-weight:700;color:#B8F36B;background:rgba(184,243,107,0.12);padding:2px 7px;border-radius:999px;">👤 Profile & Songs</div>
         `;
         car.appendChild(card);
       });
     }
 
+    function closeArtistProfile() {
+      const panel = document.getElementById('artistProfilePanel');
+      if (panel) panel.style.display = 'none';
+    }
+
+    function playArtistProfileAll(shuffle = false) {
+      const list = state.currentArtistProfileTracks && state.currentArtistProfileTracks.length
+        ? state.currentArtistProfileTracks
+        : (state.lastSearchResults || []);
+      if (!list.length) return;
+      const toPlay = shuffle ? shuffleTracks([...list]) : list;
+      playFromList(toPlay, 0);
+      showToast(shuffle ? '🔀 Shuffling artist discography!' : '▶ Playing all artist hits!');
+    }
+
+    async function openArtistDiscographyAlbum(alb) {
+      if (!alb) return;
+      const statusEl = document.getElementById('searchStatus');
+      const listEl = document.getElementById('searchResultsList');
+      showToast(`💿 Loading album "${alb.name}"...`);
+      if (statusEl) statusEl.textContent = `💿 Loading album "${alb.name}" ${alb.year ? '(' + alb.year + ')' : ''}...`;
+      const tracks = await fetchSaavnAlbumTracks(alb.id, `${alb.name} ${state.currentArtistProfileName || ''}`);
+      if (tracks.length > 0) {
+        state.lastSearchResults = tracks;
+        if (statusEl) statusEl.textContent = `💿 Album: "${alb.name}" ${alb.year ? '(' + alb.year + ')' : ''} — ${tracks.length} Full Songs`;
+        renderTrackList(listEl, tracks);
+        playFromList(tracks, 0);
+      } else {
+        showToast('Could not load album tracks right now');
+      }
+    }
+
+    async function openArtistProfile(artistOrName, autoPlayFirst = false,inlineOnly = false) {
+      const artistObj = typeof artistOrName === 'string'
+        ? { id: '', name: artistOrName, image: `https://picsum.photos/seed/${encodeURIComponent(artistOrName)}/300/300` }
+        : (artistOrName || {});
+      const artistName = (artistObj.name || '').trim();
+      if (!artistName) return;
+
+      state.currentArtistProfileName = artistName;
+      const panel = document.getElementById('artistProfilePanel');
+      const imgEl = document.getElementById('artistProfileImg');
+      const nameEl = document.getElementById('artistProfileName');
+      const subEl = document.getElementById('artistProfileSub');
+      const discWrap = document.getElementById('artistDiscographyWrap');
+      const discCar = document.getElementById('artistDiscographyCarousel');
+      const statusEl = document.getElementById('searchStatus');
+      const listEl = document.getElementById('searchResultsList');
+
+      if (panel) {
+        panel.style.display = 'block';
+        if (imgEl) imgEl.src = artistObj.image || `https://picsum.photos/seed/${encodeURIComponent(artistName)}/300/300`;
+        if (nameEl) nameEl.textContent = artistName;
+        if (subEl) subEl.textContent = 'Loading top songs & discography albums...';
+      }
+      if (discWrap) discWrap.style.display = 'none';
+      if (discCar) discCar.innerHTML = '';
+
+      if (!inlineOnly) {
+        const inp = document.getElementById('searchInput');
+        if (inp) inp.value = artistName;
+        showToast(`🎤 Opening ${artistName} profile & discography...`);
+      }
+
+      const [details, searchedTracks] = await Promise.all([
+        fetchSaavnArtistDetails(artistObj.id, artistName),
+         inlineOnly ? Promise.resolve(state.lastSearchResults || []) : smartSearch(`${artistName} top hits`, state.searchEngine, 1)
+      ]);
+
+      if (details) {
+        if (imgEl && details.image) imgEl.src = details.image;
+        if (nameEl && details.name) nameEl.textContent = details.name;
+        const followersText = details.followerCount > 0
+          ? `${details.followerCount.toLocaleString()} Followers • `
+          : '';
+        const albCount = (details.discography || []).length;
+        if (subEl) {
+          subEl.textContent = `${followersText}${albCount > 0 ? albCount + ' Albums & Singles in Discography • ' : ''}320kbps HD Catalog`;
+        }
+
+        if (discWrap && discCar && details.discography && details.discography.length > 0) {
+          discWrap.style.display = 'block';
+          discCar.innerHTML = '';
+          details.discography.forEach(alb => {
+            const c = document.createElement('div');
+            c.style.cssText = 'flex:0 0 124px;background:#101114;border:1px solid #34363D;border-radius:14px;padding:8px;cursor:pointer;display:flex;flex-direction:column;gap:6px;transition:border-color 0.16s ease;';
+            c.onclick = () => openArtistDiscographyAlbum(alb);
+            c.innerHTML = `
+              <div style="width:100%;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:#1B1D22;position:relative;">
+                <img src="${alb.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/alb/200/200'" style="width:100%;height:100%;object-fit:cover;" alt="" />
+                <span style="position:absolute;bottom:5px;right:5px;background:rgba(16,17,20,0.88);color:#B8F36B;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;border:1px solid rgba(184,243,107,0.3);">${escapeHtml(alb.type)}</span>
+              </div>
+              <div style="font-size:11.5px;font-weight:800;color:#F5F5F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(alb.name)}</div>
+              <div style="font-size:10px;color:#A1A4AE;">${alb.year ? escapeHtml(String(alb.year)) + ' • ' : ''}Tap for songs</div>
+            `;
+            discCar.appendChild(c);
+          });
+        }
+      } else if (subEl) {
+        subEl.textContent = `Top 320kbps Songs & Releases by ${artistName}`;
+      }
+
+      const combinedSongs = deduplicateTracks([
+        ...(details?.topSongs || []),
+        ...(searchedTracks || [])
+      ]);
+      state.currentArtistProfileTracks = combinedSongs;
+
+      if (!inlineOnly && combinedSongs.length > 0) {
+        state.lastSearchResults = combinedSongs;
+        if (statusEl) statusEl.textContent = `🎤 ${artistName} — ${combinedSongs.length} Full-Length 320kbps Songs & Discography`;
+        renderTrackList(listEl, combinedSongs);
+        if (autoPlayFirst) {
+          playFromList(combinedSongs, 0);
+        }
+      }
+    }
+
     async function openArtistHits(artistName) {
       if (!artistName) return;
-      const inp = document.getElementById('searchInput');
-      if (inp) inp.value = artistName;
-      showToast(`🎤 Loading all 320kbps hits by ${artistName}...`);
-      await executeSearch(`${artistName} top hits`);
-      if (state.lastSearchResults && state.lastSearchResults.length > 0) {
-        playFromList(state.lastSearchResults, 0);
-      }
+      await openArtistProfile({ name: artistName }, true, false);
     }
 
     async function executeSearch(query) {
@@ -7201,6 +7314,7 @@
       const statusEl = document.getElementById('searchStatus');
       const listEl = document.getElementById('searchResultsList');
       const loadMoreWrap = document.getElementById('loadMoreSearchWrap');
+      closeArtistProfile();
 
       // Show instant local matches immediately (0ms) while fetching more from cloud!
       const qLow = query.toLowerCase();
@@ -7225,10 +7339,18 @@
         loadMoreWrap.style.display = finalResults.length > 0 ? 'block' : 'none';
       }
 
-      // Fetch and render matching Artists in parallel
+      // Fetch and render matching Artists in parallel, and auto-open Artist Profile & Discography if query matches an artist!
       searchSaavnArtists(query, finalResults).then(artists => {
         if (state.searchReqId === reqId) {
           renderSearchArtists(artists);
+          const cleanQ = query.toLowerCase().replace(/top hits|songs|hits/g, '').trim();
+          const topArtist = artists && artists[0];
+          if (topArtist && cleanQ.length >= 3 && (
+            topArtist.name.toLowerCase().includes(cleanQ) ||
+            cleanQ.includes(topArtist.name.toLowerCase())
+          )) {
+            openArtistProfile(topArtist, false, true);
+          }
         }
       }).catch(() => {});
 
@@ -7925,11 +8047,11 @@
     function drawVisualizer() {
       const sheetOpen = document.getElementById('nowPlayingSheet')?.classList.contains('open');
       const artVisible = document.getElementById('npArtView')?.style.display !== 'none';
-      const shouldAnimate = !state.isAppBackgrounded && !document.hidden && sheetOpen && artVisible && state.isPlaying && !audio.paused;
+      const shouldAnimate = !document.hidden && sheetOpen && artVisible && state.isPlaying && !audio.paused;
 
       if (!shouldAnimate) {
         visualizerRunning = false;
-        if (!state.isAppBackgrounded && sheetOpen && artVisible) renderVisualizerBars(false);
+        if (sheetOpen && artVisible) renderVisualizerBars(false);
         return;
       }
       visualizerRunning = true;
@@ -7938,15 +8060,13 @@
     }
 
     function startVisualizerIfNeeded() {
-      if (!visualizerRunning && !state.isAppBackgrounded && !document.hidden) {
+      if (!visualizerRunning) {
         drawVisualizer();
       }
     }
 
     document.addEventListener('visibilitychange', () => {
-      if (typeof window.setBaluBackgroundState === 'function') {
-        window.setBaluBackgroundState(document.hidden);
-      }
+      if (!document.hidden) startVisualizerIfNeeded();
     });
 
     renderVisualizerBars(false);
@@ -7969,15 +8089,9 @@
       if (tabId === 'library') {
         renderLibrary();
       }
-      if (tabId === 'search') {
-        const searchArtCar = document.getElementById('searchArtistsCarousel');
-        if (searchArtCar && !searchArtCar.children.length) {
-          renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12));
-        }
-        if (!skipAutoLoad && !document.getElementById('searchResultsList').children.length) {
-          renderTrackList(document.getElementById('searchResultsList'), shuffleTracks(getCategoryPlaylist('all')));
-          document.getElementById('searchStatus').textContent = '🔥 Popular Full-Length 320kbps Songs';
-        }
+      if (tabId === 'search' && !skipAutoLoad && !document.getElementById('searchResultsList').children.length) {
+        renderTrackList(document.getElementById('searchResultsList'), shuffleTracks(getCategoryPlaylist('all')));
+        document.getElementById('searchStatus').textContent = '🔥 Popular Full-Length 320kbps Songs';
       }
     }
 
@@ -9108,10 +9222,16 @@ function doGet(e) {
       const safeTitle = title || '🚀 Balu Beats v3.6.0 Update Live!';
       const safeMsg = message || 'New Minimal Charcoal & Lime UI (#101114 / #B8F36B), Jump Back In & Library Grid, Tappable Artists, Custom Playlists (📁+) & Mobile Dock Fix!';
 
-      // 1. Native Android APK Notification Bridge via zero-reflection console message
-      try {
-        console.log('BALU_UPDATE_NOTIF:' + JSON.stringify({ title: safeTitle, message: safeMsg, url }));
-      } catch (_) {}
+      // 1. Native Android APK Notification Bridge (0ms direct call + console fallback)
+      if (window.AndroidMediaBridge && typeof window.AndroidMediaBridge.postUpdateNotification === 'function') {
+        try {
+          window.AndroidMediaBridge.postUpdateNotification(safeTitle, safeMsg, url);
+        } catch (_) {}
+      } else {
+        try {
+          console.log('BALU_UPDATE_NOTIF:' + JSON.stringify({ title: safeTitle, message: safeMsg, url }));
+        } catch (_) {}
+      }
 
       // 2. Web / PWA System Notification if granted
       if ('Notification' in window && Notification.permission === 'granted') {
