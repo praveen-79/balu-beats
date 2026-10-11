@@ -2006,6 +2006,14 @@
       color: var(--accent-green);
     }
 
+    /* Freeze all infinite CSS animations and transitions when app is minimized/backgrounded to prevent audio micro-stutters */
+    body.app-bg-mode *,
+    body.app-bg-mode *::before,
+    body.app-bg-mode *::after {
+      animation-play-state: paused !important;
+      transition: none !important;
+    }
+
   </style>
 </head>
 <body>
@@ -2171,7 +2179,7 @@
               </div>
               <div style="min-width:0;">
                 <div class="lib-home-title">All songs</div>
-                <div class="lib-home-sub">Music on this device</div>
+                <div class="lib-home-sub" id="homeLibSongsSub">Music on this device</div>
               </div>
             </div>
             <div class="lib-home-card" onclick="openQuickCollection('telugu', 'Top Albums & Soundtracks', 'devara kalki pushpa')">
@@ -2185,7 +2193,7 @@
                 <div class="lib-home-sub">Browse by album</div>
               </div>
             </div>
-            <div class="lib-home-card" onclick="openQuickCollection('all', 'Popular Artists', 'anirudh arijit weeknd')">
+            <div class="lib-home-card" onclick="scrollToHomeArtists()">
               <div class="lib-home-icon">
                 <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -2236,6 +2244,15 @@
               </div>
             </div>
             <img id="heroArt" class="hero-art" src="https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg" onerror="this.src='https://picsum.photos/seed/pulsehero/300/300'" alt="Featured" />
+          </div>
+
+          <!-- 0. Artist Discovery Carousel on Home -->
+          <div id="homeArtistsSection" style="margin-bottom:16px;">
+            <div class="section-header" id="homeArtistsHeader" style="margin-bottom:8px;">
+              <h2 class="section-title">🎤 Artist Discovery (Tap to Play Hits)</h2>
+              <button class="section-link" onclick="refreshHomeArtists(true)">Shuffle Artists ↻</button>
+            </div>
+            <div id="homeArtistsCarousel" class="horiz-scroll" style="padding-bottom:6px;"></div>
           </div>
 
           <!-- 1. Featured Full-Length Songs Carousel (320kbps) -->
@@ -2320,9 +2337,10 @@
           <div id="searchStatus" style="font-size:12px;color:var(--text-primary);font-weight:700;margin-bottom:8px;"></div>
 
           <!-- Matching Artists Section in Search -->
-          <div id="searchArtistsSection" style="display:none;margin-bottom:16px;">
+          <div id="searchArtistsSection" style="display:block;margin-bottom:16px;">
             <div class="section-header" style="margin-bottom:8px;">
-              <h2 class="section-title" id="searchArtistsTitle" style="font-size:14px;">🎤 Matching Artists (Tap to Play All Hits)</h2>
+              <h2 class="section-title" id="searchArtistsTitle" style="font-size:14px;">🎤 Popular & Matching Artists (Tap to Play All Hits)</h2>
+              <button class="section-link" onclick="renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12))">Shuffle ↻</button>
             </div>
             <div id="searchArtistsCarousel" style="display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;"></div>
           </div>
@@ -6019,6 +6037,102 @@
       }
     }
 
+    const BALU_FEATURED_ARTISTS = [
+      { name: 'Anirudh Ravichander', role: 'Telugu & Tamil Hits', image: 'https://c.saavncdn.com/994/Fear-Song-From-Devara-Part-1-Telugu-2024-20240519131003-500x500.jpg' },
+      { name: 'Devi Sri Prasad', role: 'Pushpa & Mass Beats', image: 'https://c.saavncdn.com/406/Pushpa-Pushpa-From-Pushpa-2-The-Rule-Telugu-2024-20240501161034-500x500.jpg' },
+      { name: 'Thaman S', role: 'Guntur Kaaram & BGM', image: 'https://c.saavncdn.com/000/Kurchi-Madathapetti-From-Guntur-Kaaram-Telugu-2023-20231230150239-500x500.jpg' },
+      { name: 'Sid Sriram', role: 'Soulful Melodies', image: 'https://c.saavncdn.com/724/Samajavaragamana-Telugu-2019-20190928090629-500x500.jpg' },
+      { name: 'Arijit Singh', role: 'Bollywood & Romantic', image: 'https://c.saavncdn.com/092/ANIMAL-Hindi-2023-20231124191036-500x500.jpg' },
+      { name: 'The Weeknd', role: 'Global Pop & Synth', image: 'https://c.saavncdn.com/396/The-Highlights-English-2021-20240207045714-500x500.jpg' },
+      { name: 'Hesham Abdul Wahab', role: 'Hi Nanna & Kushi', image: 'https://c.saavncdn.com/119/Samayama-From-Hi-Nanna-Telugu-2023-20230916125532-500x500.jpg' },
+      { name: 'Santhosh Narayanan', role: 'Kalki 2898 AD & Dasara', image: 'https://c.saavncdn.com/583/Ta-Takkara-Complex-Song-From-Kalki-2898-Ad-Telugu-2024-20240629124002-500x500.jpg' },
+      { name: 'M. M. Keeravani', role: 'RRR & Epic Classics', image: 'https://c.saavncdn.com/772/Naatu-Naatu-From-Rrr-Telugu-2021-20211110131000-500x500.jpg' },
+      { name: 'Ram Miriyala', role: 'Tillu Square & Indie', image: 'https://c.saavncdn.com/195/Ticket-Eh-Konakunda-From-Tillu-Square-Telugu-2023-20230726171525-500x500.jpg' },
+      { name: 'A. R. Rahman', role: 'Legendary Maestro', image: 'https://c.saavncdn.com/586/Rockstar-Hindi-2011-20221212023139-500x500.jpg' },
+      { name: 'Shreya Ghoshal', role: 'Melody Queen', image: 'https://c.saavncdn.com/307/Sooseki-From-Pushpa-2-The-Rule-Telugu-2024-20240529111014-500x500.jpg' },
+      { name: 'Anurag Kulkarni', role: 'Telugu Chartbusters', image: 'https://c.saavncdn.com/516/HanuMan-Telugu-2024-20240119190903-500x500.jpg' },
+      { name: 'Travis Scott', role: 'Hip-Hop & Trap', image: 'https://c.saavncdn.com/243/UTOPIA-English-2023-20230728085003-500x500.jpg' },
+      { name: 'Alan Walker', role: 'EDM & Electronic', image: 'https://c.saavncdn.com/806/Different-World-English-2018-20181213231919-500x500.jpg' },
+      { name: 'Pritam', role: 'Bollywood Blockbusters', image: 'https://c.saavncdn.com/807/Brahmastra-Original-Motion-Picture-Soundtrack-Hindi-2022-20221006155213-500x500.jpg' },
+      { name: 'S. P. Balasubrahmanyam', role: 'Evergreen Classics', image: 'https://c.saavncdn.com/011/S-P-Balasubrahmanyam-Telugu-Hits-Telugu-2020-20200925121001-500x500.jpg' },
+      { name: 'Yuvan Shankar Raja', role: 'Vibe & Cult Hits', image: 'https://c.saavncdn.com/441/The-Greatest-Of-All-Time-Tamil-2024-20240831134001-500x500.jpg' }
+    ];
+
+    function renderArtistDiscoveryCarousel(containerId, artists) {
+      const car = document.getElementById(containerId);
+      if (!car || !artists || !artists.length) return;
+      car.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      artists.forEach((artist, idx) => {
+        const card = document.createElement('div');
+        card.style.cssText = 'flex:0 0 112px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:#1B1D22;border:1px solid #34363D;cursor:pointer;text-align:center;';
+        card.onclick = () => {
+          switchTab('search', true);
+          openArtistHits(artist.name);
+        };
+        card.innerHTML = `
+          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid #B8F36B;box-shadow:0 4px 12px rgba(0,0,0,0.4);position:relative;flex-shrink:0;">
+            <img src="${artist.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/art${idx}/200/200'" style="width:100%;height:100%;object-fit:cover;" alt="" />
+          </div>
+          <div style="font-size:11.5px;font-weight:800;color:#F5F5F5;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.name)}</div>
+          <div style="font-size:9.5px;font-weight:600;color:#A1A4AE;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.role || '320kbps Hits')}</div>
+          <div style="font-size:9.5px;font-weight:800;color:#101114;background:#B8F36B;padding:2px 8px;border-radius:999px;">▶ Play Hits</div>
+        `;
+        frag.appendChild(card);
+      });
+      car.appendChild(frag);
+    }
+
+    function refreshHomeArtists(showToastMsg = false) {
+      const shuffled = shuffleTracks(BALU_FEATURED_ARTISTS);
+      renderArtistDiscoveryCarousel('homeArtistsCarousel', shuffled);
+      const searchCar = document.getElementById('searchArtistsCarousel');
+      if (searchCar && !searchCar.children.length) {
+        renderSearchArtists(shuffled.slice(0, 12));
+      }
+      if (showToastMsg) {
+        showToast('🎤 Shuffled Artist Discovery lineup!');
+      }
+    }
+
+    function scrollToHomeArtists() {
+      const sec = document.getElementById('homeArtistsSection');
+      if (sec) {
+        refreshHomeArtists(false);
+        sec.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        showToast('🎤 Tap any artist below to play all their 320kbps hits!');
+      } else {
+        switchTab('search', true);
+        renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS));
+      }
+    }
+
+    // Background mode controller invoked by Android MainActivity (onPause / onResume) & visibilitychange
+    window.setBaluBackgroundState = function(isBg) {
+      state.isAppBackgrounded = Boolean(isBg);
+      document.body.classList.toggle('app-bg-mode', state.isAppBackgrounded);
+      if (!state.isAppBackgrounded) {
+        // Sync UI once cleanly when returning to foreground
+        const cur = audio.currentTime || 0;
+        const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
+        const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
+        const fillEl = document.getElementById('miniProgressFill');
+        if (fillEl) fillEl.style.width = `${pct}%`;
+        const seekEl = document.getElementById('seekSlider');
+        if (seekEl) {
+          seekEl.value = pct;
+          seekEl.style.background = `linear-gradient(90deg, #B8F36B ${pct}%, #34363D ${pct}%)`;
+        }
+        const curLbl = document.getElementById('currentTimeLabel');
+        if (curLbl) curLbl.textContent = formatTime(cur);
+        const durLbl = document.getElementById('durationLabel');
+        if (durLbl) durLbl.textContent = dur > 0 ? formatTime(dur) : 'LIVE';
+        updatePlayIcons();
+        updateActiveTrackHighlight();
+        if (typeof startVisualizerIfNeeded === 'function') startVisualizerIfNeeded();
+      }
+    };
+
     function openHomeRecentCard() {
       if (state.recentTracks && state.recentTracks.length > 0) {
         playFromList(state.recentTracks, 0);
@@ -6041,6 +6155,7 @@
     async function loadHomeFeeds(preservePlayback = false) {
       state.activeCategory = 'all';
       updateHomeJumpBackCards();
+      refreshHomeArtists(false);
       const carouselEl = document.getElementById('homeFullSongsCarousel');
       const teluguCarouselEl = document.getElementById('homeTeluguCarousel');
       const recCarouselEl = document.getElementById('homeRecommendedCarousel');
@@ -6142,17 +6257,17 @@
       try {
         let more = [];
         if (seedTrack) {
-          if (recTitleEl) {
+          if (recTitleEl && !state.isAppBackgrounded) {
             recTitleEl.textContent = `✨ Related to "${seedTrack.title.slice(0, 22)}"`;
           }
-          if (searchRelTitle) {
+          if (searchRelTitle && !state.isAppBackgrounded) {
             searchRelTitle.textContent = `✨ Related Songs Playing Next for "${seedTrack.title.slice(0, 26)}"`;
           }
           more = await fetchRelatedSongsForTrack(seedTrack);
         } else {
           const t1 = SUGGESTION_TOPICS[(suggestionTopicIdx++) % SUGGESTION_TOPICS.length];
           const t2 = SUGGESTION_TOPICS[(suggestionTopicIdx++) % SUGGESTION_TOPICS.length];
-          if (recTitleEl) {
+          if (recTitleEl && !state.isAppBackgrounded) {
             recTitleEl.textContent = `✨ Recommended: ${t1.toUpperCase()}`;
           }
           const [m1, m2] = await Promise.all([
@@ -6163,12 +6278,15 @@
         }
 
         if (more && more.length > 0) {
-          if (recCarouselEl) {
-            renderCarouselCards(recCarouselEl, more.slice(0, 35));
-          }
-          if (searchRelSection && searchRelList && seedTrack) {
-            searchRelSection.style.display = 'block';
-            renderTrackList(searchRelList, more);
+          // Only rebuild heavy DOM carousels when the app is in the foreground
+          if (!state.isAppBackgrounded && !document.hidden) {
+            if (recCarouselEl) {
+              renderCarouselCards(recCarouselEl, more.slice(0, 35));
+            }
+            if (searchRelSection && searchRelList && seedTrack) {
+              searchRelSection.style.display = 'block';
+              renderTrackList(searchRelList, more);
+            }
           }
 
           if (injectNextInQueue && state.currentTrack && (!seedTrack || state.currentTrack.id === seedTrack.id)) {
@@ -6299,6 +6417,8 @@
       const listEl = document.getElementById('searchResultsList');
       const loadMoreWrap = document.getElementById('loadMoreSearchWrap');
       if (loadMoreWrap) loadMoreWrap.style.display = 'block';
+
+      renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12));
 
       // 1. Render pre-loaded 320kbps category songs in 0ms!
       const basePool = getCategoryPlaylist(catKey);
@@ -6487,10 +6607,16 @@
       updateMediaSession(track);
       syncNativeAndroidNotification(true); // Immediate high-priority push for new song
 
-      // Start fetching karaoke lyrics AND true related songs in parallel without blocking playback!
-      fetchSyncedLyrics(track);
+      // Stagger lyrics & related-song fetches so initial 320kbps audio buffering gets 100% network & CPU priority
+      clearTimeout(state.deferredLyricsTimer);
+      clearTimeout(state.deferredRecsTimer);
+      state.deferredLyricsTimer = setTimeout(() => {
+        if (state.playReqId === reqId) fetchSyncedLyrics(track);
+      }, 700);
       if (track.sourceKey !== 'radio') {
-        refreshSmartRecommendations(track, true);
+        state.deferredRecsTimer = setTimeout(() => {
+          if (state.playReqId === reqId) refreshSmartRecommendations(track, true);
+        }, 2200);
       }
 
       // 2. Automatic Full-Song Resolver: If a track came from Apple/Spotify preview, upgrade to Full 320kbps!
@@ -6648,6 +6774,8 @@
 
     audio.addEventListener('timeupdate', () => {
       if (state.isSeeking || state.isLoadingTrack) return;
+      // Skip 4Hz DOM style/layout/scroll mutations while user is in another app or screen is off
+      if (state.isAppBackgrounded || document.hidden) return;
       const cur = audio.currentTime || 0;
       const dur = (audio.duration && isFinite(audio.duration)) ? audio.duration : (state.currentTrack?.duration || 0);
       const pct = dur > 0 ? Math.min(100, (cur / dur) * 100) : 0;
@@ -6666,12 +6794,10 @@
 
     audio.addEventListener('loadedmetadata', () => {
       updateMediaPositionState();
-      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('durationchange', () => {
       updateMediaPositionState();
-      syncNativeAndroidNotification(false);
     });
 
     audio.addEventListener('play', () => {
@@ -7036,23 +7162,19 @@
       const sec = document.getElementById('searchArtistsSection');
       const car = document.getElementById('searchArtistsCarousel');
       if (!sec || !car) return;
-      if (!artists || !artists.length) {
-        sec.style.display = 'none';
-        car.innerHTML = '';
-        return;
-      }
+      const list = (artists && artists.length) ? artists : shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12);
       sec.style.display = 'block';
       car.innerHTML = '';
-      artists.forEach((artist, idx) => {
+      list.forEach((artist, idx) => {
         const card = document.createElement('div');
-        card.style.cssText = 'flex:0 0 108px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:#1B1D22;border:1px solid #34363D;cursor:pointer;text-align:center;transition:transform 0.16s ease, border-color 0.16s ease;';
+        card.style.cssText = 'flex:0 0 110px;display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 8px;border-radius:16px;background:#1B1D22;border:1px solid #34363D;cursor:pointer;text-align:center;';
         card.onclick = () => openArtistHits(artist.name);
         card.innerHTML = `
-          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid #B8F36B;box-shadow:0 4px 12px rgba(0,0,0,0.4);position:relative;">
+          <div style="width:68px;height:68px;border-radius:50%;overflow:hidden;border:2px solid #B8F36B;box-shadow:0 4px 12px rgba(0,0,0,0.4);position:relative;flex-shrink:0;">
             <img src="${artist.image}" loading="lazy" onerror="this.src='https://picsum.photos/seed/art${idx}/200/200'" style="width:100%;height:100%;object-fit:cover;" alt="" />
           </div>
           <div style="font-size:11.5px;font-weight:800;color:#F5F5F5;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(artist.name)}</div>
-          <div style="font-size:9.5px;font-weight:700;color:#B8F36B;background:rgba(184,243,107,0.12);padding:2px 7px;border-radius:999px;">▶ Play Hits</div>
+          <div style="font-size:9.5px;font-weight:800;color:#101114;background:#B8F36B;padding:2px 8px;border-radius:999px;">▶ Play Hits</div>
         `;
         car.appendChild(card);
       });
@@ -7800,11 +7922,11 @@
     function drawVisualizer() {
       const sheetOpen = document.getElementById('nowPlayingSheet')?.classList.contains('open');
       const artVisible = document.getElementById('npArtView')?.style.display !== 'none';
-      const shouldAnimate = !document.hidden && sheetOpen && artVisible && state.isPlaying && !audio.paused;
+      const shouldAnimate = !state.isAppBackgrounded && !document.hidden && sheetOpen && artVisible && state.isPlaying && !audio.paused;
 
       if (!shouldAnimate) {
         visualizerRunning = false;
-        if (sheetOpen && artVisible) renderVisualizerBars(false);
+        if (!state.isAppBackgrounded && sheetOpen && artVisible) renderVisualizerBars(false);
         return;
       }
       visualizerRunning = true;
@@ -7813,13 +7935,15 @@
     }
 
     function startVisualizerIfNeeded() {
-      if (!visualizerRunning) {
+      if (!visualizerRunning && !state.isAppBackgrounded && !document.hidden) {
         drawVisualizer();
       }
     }
 
     document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) startVisualizerIfNeeded();
+      if (typeof window.setBaluBackgroundState === 'function') {
+        window.setBaluBackgroundState(document.hidden);
+      }
     });
 
     renderVisualizerBars(false);
@@ -7842,9 +7966,15 @@
       if (tabId === 'library') {
         renderLibrary();
       }
-      if (tabId === 'search' && !skipAutoLoad && !document.getElementById('searchResultsList').children.length) {
-        renderTrackList(document.getElementById('searchResultsList'), shuffleTracks(getCategoryPlaylist('all')));
-        document.getElementById('searchStatus').textContent = '🔥 Popular Full-Length 320kbps Songs';
+      if (tabId === 'search') {
+        const searchArtCar = document.getElementById('searchArtistsCarousel');
+        if (searchArtCar && !searchArtCar.children.length) {
+          renderSearchArtists(shuffleTracks(BALU_FEATURED_ARTISTS).slice(0, 12));
+        }
+        if (!skipAutoLoad && !document.getElementById('searchResultsList').children.length) {
+          renderTrackList(document.getElementById('searchResultsList'), shuffleTracks(getCategoryPlaylist('all')));
+          document.getElementById('searchStatus').textContent = '🔥 Popular Full-Length 320kbps Songs';
+        }
       }
     }
 

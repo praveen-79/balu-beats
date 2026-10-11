@@ -96,7 +96,7 @@ jobs:
           <?xml version="1.0" encoding="utf-8"?>
           <manifest xmlns:android="http://schemas.android.com/apk/res/android"
               package="com.balubeats.music"
-              android:versionCode="16"
+              android:versionCode="17"
               android:versionName="3.6.0">
 
               <uses-sdk android:minSdkVersion="23" android:targetSdkVersion="34" />
@@ -155,6 +155,7 @@ jobs:
           import android.graphics.LinearGradient;
           import android.graphics.Paint;
           import android.graphics.Shader;
+          import android.media.AudioAttributes;
           import android.media.MediaMetadata;
           import android.media.session.MediaSession;
           import android.media.session.PlaybackState;
@@ -307,7 +308,12 @@ jobs:
                       }
                   }
 
-                  refreshNotification(trackChanged || playStateChanged);
+                  if (trackChanged || playStateChanged || !isForegroundStarted) {
+                      refreshNotification(true);
+                  } else if (mainHandler != null) {
+                      // Position-only update: update MediaSession state without re-posting NotificationManager.notify()
+                      mainHandler.post(() -> updateMediaSessionStateNow());
+                  }
               }
 
               private void acquireLocks() {
@@ -357,6 +363,13 @@ jobs:
                   if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                       mediaSession = new MediaSession(this, "BaluBeatsProMediaSession");
                       mediaSession.setFlags(MediaSession.FLAG_HANDLES_MEDIA_BUTTONS | MediaSession.FLAG_HANDLES_TRANSPORT_CONTROLS);
+                      try {
+                          AudioAttributes attrs = new AudioAttributes.Builder()
+                              .setUsage(AudioAttributes.USAGE_MEDIA)
+                              .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                              .build();
+                          mediaSession.setPlaybackToLocal(attrs);
+                      } catch (Exception ignored) {}
                       mediaSession.setCallback(new MediaSession.Callback() {
                           @Override
                           public void onPlay() {
@@ -386,8 +399,10 @@ jobs:
                           public void onSeekTo(long pos) {
                               currentPosition = pos;
                               final double sec = pos / 1000.0;
-                              MainActivity.evalJs("if(typeof audio!=='undefined'){audio.currentTime=" + sec + ";if(typeof syncLyricsScroll==='function')syncLyricsScroll(" + sec + ");if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification(true);}");
-                              refreshNotification(false);
+                              MainActivity.evalJs("if(typeof audio!=='undefined'){audio.currentTime=" + sec + ";if(typeof syncLyricsScroll==='function')syncLyricsScroll(" + sec + ");if(typeof syncNativeAndroidNotification==='function')syncNativeAndroidNotification(false);}");
+                              if (mainHandler != null) {
+                                  mainHandler.post(() -> updateMediaSessionStateNow());
+                              }
                           }
                       });
                       mediaSession.setActive(true);
@@ -533,10 +548,10 @@ jobs:
                          .setContentIntent(contentPi)
                          .setDeleteIntent(stopPi)
                          .setVisibility(Notification.VISIBILITY_PUBLIC)
-                         .setPriority(Notification.PRIORITY_MAX)
+                         .setPriority(Notification.PRIORITY_LOW)
                          .setCategory(Notification.CATEGORY_TRANSPORT)
                          .setColorized(true)
-                         .setColor(Color.parseColor("#1ED760"))
+                         .setColor(Color.parseColor("#B8F36B"))
                          .setOnlyAlertOnce(true)
                          .setOngoing(isPlaying);
 
@@ -773,6 +788,11 @@ jobs:
 
                   webView = new BackgroundWebView(this);
                   webView.setBackgroundColor(Color.parseColor("#101114"));
+                  webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                      // Prevent Android OS from lowering WebView audio renderer priority when user switches to other apps
+                      webView.setRendererPriorityPolicy(WebView.RENDERER_PRIORITY_IMPORTANT, false);
+                  }
                   WebSettings settings = webView.getSettings();
                   settings.setJavaScriptEnabled(true);
                   settings.setDomStorageEnabled(true);
@@ -934,6 +954,7 @@ jobs:
                   super.onPause();
                   if (webView != null) {
                       webView.resumeTimers();
+                      evalJs("if(typeof setBaluBackgroundState==='function')setBaluBackgroundState(true);");
                   }
               }
 
@@ -942,6 +963,7 @@ jobs:
                   super.onStop();
                   if (webView != null) {
                       webView.resumeTimers();
+                      evalJs("if(typeof setBaluBackgroundState==='function')setBaluBackgroundState(true);");
                   }
               }
 
@@ -950,6 +972,7 @@ jobs:
                   super.onResume();
                   if (webView != null) {
                       webView.resumeTimers();
+                      evalJs("if(typeof setBaluBackgroundState==='function')setBaluBackgroundState(false);");
                   }
               }
 
