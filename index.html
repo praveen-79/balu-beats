@@ -58,8 +58,13 @@
 
     /* Desktop Showcase Wrapper (allows toggling between Phone Frame and Full Screen) */
     .workspace-shell {
+      width: 100%;
       width: 100vw;
+      height: 100%;
+      height: 100vh;
       height: 100dvh;
+      height: var(--app-height, 100dvh);
+      max-height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -149,6 +154,8 @@
       position: relative;
       width: 100%;
       height: 100%;
+      max-height: 100%;
+      min-height: 0;
       background:
         radial-gradient(ellipse at 82% 4%, rgba(235, 238, 245, 0.22) 0%, rgba(155, 160, 172, 0.09) 34%, transparent 64%),
         radial-gradient(circle at 15% 38%, rgba(85, 89, 100, 0.15) 0%, transparent 55%),
@@ -173,6 +180,7 @@
     @media (min-width: 768px) {
       .workspace-shell.phone-mode .phone-frame {
         width: 420px;
+        height: min(860px, calc(100vh - 64px));
         height: min(860px, calc(100dvh - 64px));
         border-radius: 42px;
         border: 8px solid #1b1c20;
@@ -184,6 +192,7 @@
 
       .workspace-shell.fullscreen-mode .phone-frame {
         width: min(1160px, 96vw);
+        height: calc(100vh - 64px);
         height: calc(100dvh - 64px);
         border-radius: 24px;
         border: 1px solid var(--border-highlight);
@@ -196,10 +205,42 @@
         display: none;
       }
       .phone-frame {
+        width: 100%;
         width: 100vw;
+        height: 100%;
+        height: 100vh;
         height: 100dvh;
+        height: var(--app-height, 100dvh);
+        max-height: 100%;
         border: none;
         border-radius: 0;
+      }
+      .main-view {
+        min-height: 0;
+        padding-bottom: calc(164px + env(safe-area-inset-bottom, 0px)) !important;
+      }
+      .mini-player {
+        position: fixed !important;
+        left: 12px !important;
+        right: 12px !important;
+        bottom: calc(68px + env(safe-area-inset-bottom, 0px)) !important;
+        z-index: 35 !important;
+      }
+      .bottom-nav {
+        position: fixed !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        height: calc(62px + env(safe-area-inset-bottom, 0px)) !important;
+        padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+        z-index: 35 !important;
+      }
+      .now-playing-sheet {
+        position: fixed !important;
+        inset: 0 !important;
+        height: 100% !important;
+        height: var(--app-height, 100dvh) !important;
+        z-index: 50 !important;
       }
     }
 
@@ -2375,8 +2416,9 @@
                 <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                   <h3 id="accountDisplayName" style="font-size:17px;font-weight:900;margin:0;color:#fff;">Balu Beats Member</h3>
                   <span style="font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(255,255,255,0.12);color:#ffffff;border:1px solid rgba(255,255,255,0.28);">PRO 320kbps</span>
+                  <span id="accountOwnerRoleBadge" style="display:none;font-size:10px;font-weight:900;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.22);color:#1ed760;border:1px solid rgba(30,215,96,0.5);">👑 OWNER ADMIN</span>
                 </div>
-                <div id="accountHandleText" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-top:2px;">@being_rebel__7</div>
+                <div id="accountHandleText" style="font-size:12px;color:#e5e7eb;font-weight:700;margin-top:2px;">@balu_listener</div>
                 <div id="accountEmailText" style="font-size:11.5px;color:var(--text-secondary);margin-top:1px;">Logged in • Full HD Streaming Active</div>
               </div>
             </div>
@@ -2423,14 +2465,14 @@
             </div>
           </div>
 
-          <!-- WhatsApp Group Testing & Live Users Analytics -->
-          <div class="connect-card">
+          <!-- WhatsApp Group Testing & Live Users Analytics (OWNER ONLY: being_rebel_7 / balu) -->
+          <div class="connect-card" id="ownerLiveTrackingCard" style="display:none;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
               <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
                 <span>👑</span> WhatsApp Group Testing & Live Users
               </h3>
               <span id="telemetryStatusBadge" style="font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.4);">
-                🟢 Live Tracking Active
+                🟢 Owner Live Tracking
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
@@ -2478,14 +2520,14 @@
           <div class="connect-card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;">
               <h3 style="margin:0;display:flex;align-items:center;gap:6px;font-size:15px;color:#fff;">
-                <span>🚀</span> Native APK Update & Notification Center
+                <span>🚀</span> Native APK Update Center
               </h3>
               <span id="appVersionBadge" style="font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;background:rgba(30,215,96,0.18);color:#1ed760;border:1px solid rgba(30,215,96,0.45);">
                 v3.5.0 • Build 15 (LIVE)
               </span>
             </div>
             <p style="font-size:12px;color:var(--text-secondary);margin-bottom:12px;line-height:1.45;">
-              Official Native Android APK release & live push notification center for <code>Balu_Beats.apk</code>:
+              Official Native Android APK release for <code>Balu_Beats.apk</code>:
             </p>
 
             <!-- Published Live v3.5 Update Status Box (Visible by default in Account section) -->
@@ -2519,13 +2561,13 @@
               </a>
             </div>
 
-            <!-- Publish Update Notification to All Users & Native APK -->
-            <div style="padding:12px;border-radius:15px;margin-bottom:12px;background:rgba(0,0,0,0.38);border:1px solid rgba(255,255,255,0.18);">
+            <!-- Publish Update Notification to All Users & Native APK (OWNER ONLY: being_rebel_7 / balu) -->
+            <div id="ownerPushNotifPanel" style="display:none;padding:12px;border-radius:15px;margin-bottom:12px;background:rgba(0,0,0,0.38);border:1px solid rgba(30,215,96,0.35);">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                 <span style="font-size:12.5px;font-weight:900;color:#ffffff;display:flex;align-items:center;gap:5px;">
-                  🔔 Publish Update Notification (Push to All Users)
+                  👑 Owner Push Notification Publisher (All Users)
                 </span>
-                <span style="font-size:10px;font-weight:800;color:#1ed760;">● Live Push Ready</span>
+                <span style="font-size:10px;font-weight:800;color:#1ed760;">● Owner Verified</span>
               </div>
               <p style="font-size:11px;color:var(--text-secondary);margin-bottom:8px;line-height:1.4;">
                 Send an instant update notification banner & native Android status-bar alert to all users on the APK and Web App:
@@ -2814,7 +2856,7 @@
           <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
             <input type="checkbox" checked style="accent-color:#1ed760;" /> Keep me signed in
           </label>
-          <span style="color:#1ed760;cursor:pointer;font-weight:700;" onclick="fillDemoCredentials()">Use Creator Demo</span>
+          <span style="color:#9ca3bd;cursor:pointer;font-weight:600;" onclick="switchAuthMode('signup')">New here? Sign Up →</span>
         </div>
         <button type="submit" class="auth-submit-btn">🚀 Log In to Balu Beats</button>
       </form>
@@ -7784,6 +7826,18 @@
     // 8. BALU BEATS CREDENTIALS ENGINE (SIGN UP, LOG IN, PROFILE & SESSION)
     // =========================================================================
 
+    function isOwnerIdentity(val) {
+      const clean = (val || '').trim().toLowerCase().replace(/^@+/, '');
+      return clean === 'being_rebel_7' || clean === 'being_rebel__7' || clean === 'balu@balubeats.app';
+    }
+
+    function isOwnerSession(user = getActiveUserSession()) {
+      if (!user || user.isGuest) return false;
+      const idMatch = isOwnerIdentity(user.username) || isOwnerIdentity(user.email) || isOwnerIdentity(user.loginId);
+      const passMatch = (user.password || '').trim() === 'balu';
+      return idMatch && passMatch && user.isOwnerVerified === true;
+    }
+
     function getRegisteredUsers() {
       try {
         const raw = localStorage.getItem('bb_users_db');
@@ -7791,11 +7845,12 @@
         if (!Array.isArray(list) || list.length === 0) {
           return [{
             name: 'Balu • Praveen',
-            username: '@being_rebel__7',
-            email: 'balu@balubeats.app',
+            username: '@being_rebel_7',
+            email: 'being_rebel_7',
             password: 'balu',
             vibe: 'telugu',
-            joinedAt: 'Creator VIP'
+            joinedAt: 'Creator VIP',
+            isOwnerVerified: true
           }];
         }
         return list;
@@ -7882,14 +7937,6 @@
       msg.className = 'auth-msg ' + type;
     }
 
-    function fillDemoCredentials() {
-      const idInp = document.getElementById('loginIdentifier');
-      const pwInp = document.getElementById('loginPassword');
-      if (idInp) idInp.value = '@being_rebel__7';
-      if (pwInp) pwInp.value = 'balu';
-      showAuthFeedback('Creator Demo credentials filled! Tap Log In below.', 'success');
-    }
-
     function handleBaluSignup(e) {
       e.preventDefault();
       const name = (document.getElementById('signupName')?.value || '').trim();
@@ -7904,14 +7951,21 @@
       }
       if (!username.startsWith('@')) username = '@' + username;
 
+      if ((isOwnerIdentity(username) || isOwnerIdentity(email)) && password !== 'balu') {
+        showAuthFeedback('Username @being_rebel_7 is reserved for the App Owner. Please use Log In if you are the owner.', 'error');
+        return;
+      }
+
+      const isOwner = (isOwnerIdentity(username) || isOwnerIdentity(email)) && password === 'balu';
       const users = getRegisteredUsers();
       const newUser = {
-        name,
-        username,
+        name: isOwner ? 'Balu • Praveen (Owner)' : name,
+        username: isOwner ? '@being_rebel_7' : username,
         email,
         password,
         vibe,
-        joinedAt: new Date().toLocaleDateString()
+        joinedAt: isOwner ? 'App Owner' : new Date().toLocaleDateString(),
+        isOwnerVerified: isOwner
       };
       const existingIdx = users.findIndex(u =>
         u.email.toLowerCase() === email.toLowerCase() ||
@@ -7930,7 +7984,7 @@
         const chipBtn = document.querySelector(`.chip[data-cat="${vibe}"]`);
         loadQuickCategory(vibe, chipBtn);
       }
-      showToast(`🎉 Account created! Welcome, ${name}!`);
+      showToast(isOwner ? '👑 Owner Account Verified! Live Tracking & Push Controls Unlocked.' : `🎉 Account created! Welcome, ${name}!`);
     }
 
     function handleBaluLogin(e) {
@@ -7942,22 +7996,54 @@
         return;
       }
 
+      // Strict Owner Account Check (being_rebel_7 / @being_rebel__7 with password 'balu')
+      if (isOwnerIdentity(ident)) {
+        if (pass !== 'balu') {
+          showAuthFeedback('Incorrect Owner password for @being_rebel_7.', 'error');
+          return;
+        }
+        const ownerUser = {
+          name: 'Balu • Praveen (Owner)',
+          username: '@being_rebel_7',
+          email: 'being_rebel_7',
+          loginId: ident,
+          password: 'balu',
+          vibe: 'telugu',
+          joinedAt: 'App Owner',
+          isOwnerVerified: true
+        };
+        const users = getRegisteredUsers();
+        const oIdx = users.findIndex(u => isOwnerIdentity(u.username) || isOwnerIdentity(u.email));
+        if (oIdx >= 0) users[oIdx] = ownerUser;
+        else users.unshift(ownerUser);
+        saveRegisteredUsers(users);
+        setActiveUserSession(ownerUser);
+        recordUserLoginTelemetry(ownerUser, 'OWNER_LOGIN');
+        closeAuthOverlay();
+        refreshDeveloperTelemetry(false);
+        showToast('👑 Welcome Owner (@being_rebel_7)! Live Tracking & Push Notifications Unlocked.');
+        return;
+      }
+
       const users = getRegisteredUsers();
       const cleanIdent = ident.toLowerCase();
       const cleanWithAt = cleanIdent.startsWith('@') ? cleanIdent : '@' + cleanIdent;
 
       const found = users.find(u =>
-        u.email.toLowerCase() === cleanIdent ||
-        u.username.toLowerCase() === cleanIdent ||
-        u.username.toLowerCase() === cleanWithAt ||
-        u.name.toLowerCase() === cleanIdent
+        !isOwnerIdentity(u.username) && (
+          u.email.toLowerCase() === cleanIdent ||
+          u.username.toLowerCase() === cleanIdent ||
+          u.username.toLowerCase() === cleanWithAt ||
+          u.name.toLowerCase() === cleanIdent
+        )
       );
 
       if (found) {
-        if (found.password !== pass && pass !== 'balu') {
+        if (found.password !== pass) {
           showAuthFeedback('Incorrect password for this account. Try again or tap Sign Up.', 'error');
           return;
         }
+        found.isOwnerVerified = false;
         setActiveUserSession(found);
         recordUserLoginTelemetry(found, 'LOGIN');
         closeAuthOverlay();
@@ -7975,7 +8061,8 @@
         email: ident,
         password: pass,
         vibe: 'telugu',
-        joinedAt: new Date().toLocaleDateString()
+        joinedAt: new Date().toLocaleDateString(),
+        isOwnerVerified: false
       };
       users.push(autoUser);
       saveRegisteredUsers(users);
@@ -7992,7 +8079,8 @@
         email: 'Guest Session • Full 320kbps Access',
         password: '',
         vibe: 'telugu',
-        isGuest: true
+        isGuest: true,
+        isOwnerVerified: false
       };
       setActiveUserSession(guestUser);
       recordUserLoginTelemetry(guestUser, 'GUEST');
@@ -8002,6 +8090,7 @@
 
     function logoutBaluUser() {
       setActiveUserSession(null);
+      closeDeveloperAdminModal();
       openAuthOverlay('login');
       showToast('Signed out. Log in or create an account below.');
     }
@@ -8009,14 +8098,20 @@
     function saveProfileEdits() {
       const cur = getActiveUserSession() || {
         name: 'Balu Beats Member',
-        username: '@being_rebel__7',
+        username: '@balu_listener',
         email: 'member@balubeats.app',
-        password: 'balu',
-        vibe: 'telugu'
+        password: '',
+        vibe: 'telugu',
+        isOwnerVerified: false
       };
       const newName = (document.getElementById('profileEditName')?.value || '').trim();
       let newHandle = (document.getElementById('profileEditHandle')?.value || '').trim();
       const newPass = (document.getElementById('profileEditPass')?.value || '').trim();
+
+      if (newHandle && isOwnerIdentity(newHandle) && !isOwnerSession(cur) && newPass !== 'balu') {
+        showToast('🔒 Username @being_rebel_7 is reserved for the App Owner.');
+        return;
+      }
 
       if (newName) cur.name = newName;
       if (newHandle) {
@@ -8025,6 +8120,7 @@
       }
       if (newPass) cur.password = newPass;
       cur.isGuest = false;
+      cur.isOwnerVerified = isOwnerIdentity(cur.username) && cur.password === 'balu';
 
       const users = getRegisteredUsers();
       const idx = users.findIndex(u => u.username === cur.username || u.email === cur.email);
@@ -8034,11 +8130,12 @@
       setActiveUserSession(cur);
       recordUserLoginTelemetry(cur, 'PROFILE_UPDATE');
       if (document.getElementById('profileEditPass')) document.getElementById('profileEditPass').value = '';
-      showToast('✅ Profile & credentials updated!');
+      showToast(cur.isOwnerVerified ? '👑 Owner Profile Verified! Admin Controls Unlocked.' : '✅ Profile & credentials updated!');
     }
 
     function renderUserAccountUI() {
       const user = getActiveUserSession();
+      const isOwner = isOwnerSession(user);
       const headerBtn = document.getElementById('headerUserBtn');
       const greetingEl = document.getElementById('greetingText');
       const avatarEl = document.getElementById('accountAvatarCircle');
@@ -8049,27 +8146,42 @@
       const vibeStat = document.getElementById('accountVibeStat');
       const editName = document.getElementById('profileEditName');
       const editHandle = document.getElementById('profileEditHandle');
+      const ownerTrackingCard = document.getElementById('ownerLiveTrackingCard');
+      const ownerPushPanel = document.getElementById('ownerPushNotifPanel');
+      const ownerRoleBadge = document.getElementById('accountOwnerRoleBadge');
+
+      if (ownerTrackingCard) ownerTrackingCard.style.display = isOwner ? 'block' : 'none';
+      if (ownerPushPanel) ownerPushPanel.style.display = isOwner ? 'block' : 'none';
+      if (ownerRoleBadge) ownerRoleBadge.style.display = isOwner ? 'inline-flex' : 'none';
+      if (!isOwner) {
+        const adminModal = document.getElementById('developerAdminModal');
+        if (adminModal) adminModal.classList.remove('open');
+      }
 
       if (likedStat) likedStat.textContent = String(state.likedTracks?.length || 0);
       if (vibeStat) vibeStat.textContent = (state.activeCategory || user?.vibe || 'telugu').toUpperCase();
 
       if (!user) {
         if (headerBtn) headerBtn.innerHTML = '🔑 Log In';
-        renderDeveloperAnalyticsUI();
+        if (nameEl) nameEl.textContent = 'Guest Listener';
+        if (handleEl) handleEl.textContent = '@balu_guest';
+        if (emailEl) emailEl.textContent = 'Log in to save your profile • 320kbps HD';
         return;
       }
 
       const shortName = (user.name || 'User').split(' ')[0];
       const initials = (user.name || 'BB').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-      if (headerBtn) headerBtn.innerHTML = `👤 ${escapeHtml(shortName)}`;
+      if (headerBtn) headerBtn.innerHTML = isOwner ? `👑 ${escapeHtml(shortName)}` : `👤 ${escapeHtml(shortName)}`;
       if (greetingEl) greetingEl.textContent = `Hi ${shortName} • IG: @being_rebel__7`;
       if (avatarEl) avatarEl.textContent = initials || 'BB';
       if (nameEl) nameEl.textContent = user.name || 'Balu Beats Member';
-      if (handleEl) handleEl.textContent = user.username || '@being_rebel__7';
-      if (emailEl) emailEl.textContent = user.email || 'Logged in • 320kbps HD';
-      if (editName && !editName.value) editName.value = user.name || '';
-      if (editHandle && !editHandle.value) editHandle.value = user.username || '';
-      renderDeveloperAnalyticsUI();
+      if (handleEl) handleEl.textContent = user.username || '@balu_listener';
+      if (emailEl) emailEl.textContent = isOwner ? 'Owner Admin • Live Tracking & Push Unlocked' : (user.email || 'Logged in • 320kbps HD');
+      if (editName) editName.value = user.name || '';
+      if (editHandle) editHandle.value = user.username || '';
+      if (isOwner) {
+        renderDeveloperAnalyticsUI();
+      }
     }
 
     // =========================================================================
@@ -8193,14 +8305,20 @@
           body: JSON.stringify(record)
         }).catch(() => {});
 
-        // Update live stats UI
-        renderDeveloperAnalyticsUI();
+        // Update live stats UI only if Owner is logged in
+        if (isOwnerSession()) {
+          renderDeveloperAnalyticsUI();
+        }
       } catch (err) {
         console.warn('[BaluBeats Telemetry]', err);
       }
     }
 
     async function refreshDeveloperTelemetry(showFeedback = false) {
+      if (!isOwnerSession()) {
+        developerTelemetryData = [];
+        return;
+      }
       const badge = document.getElementById('telemetryStatusBadge');
       if (showFeedback && badge) {
         badge.textContent = '🔄 Syncing...';
@@ -8574,6 +8692,10 @@ function doGet(e) {
     }
 
     function openDeveloperAdminModal(initialTab = 'users') {
+      if (!isOwnerSession()) {
+        showToast('🔒 Owner access required. Log in as being_rebel_7.');
+        return;
+      }
       const modal = document.getElementById('developerAdminModal');
       if (!modal) return;
       modal.classList.add('open');
@@ -8590,6 +8712,7 @@ function doGet(e) {
     }
 
     function copyCloudTelemetryUrl() {
+      if (!isOwnerSession()) return;
       const url = 'https://ntfy.sh/balubeats_telemetry_being_rebel_7';
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url).then(() => {
@@ -8603,6 +8726,7 @@ function doGet(e) {
     }
 
     async function sendTestPingFromApp() {
+      if (!isOwnerSession()) return;
       const box = document.getElementById('cloudTestStatusBox');
       if (box) {
         box.style.display = 'block';
@@ -8655,7 +8779,7 @@ function doGet(e) {
       if (!box) return;
 
       let currentVersion = 'v3.5.0';
-      const apkDownloadUrl = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.2&t=${Date.now()}`;
+      const apkDownloadUrl = `https://github.com/praveen-79/balu-beats/releases/download/v1.0.0/Balu_Beats.apk?v=3.5.4&t=${Date.now()}`;
       box.style.display = 'block';
       box.style.background = 'rgba(255, 255, 255, 0.08)';
       box.style.border = '1px solid rgba(255, 255, 255, 0.28)';
@@ -8759,6 +8883,10 @@ function doGet(e) {
     }
 
     function triggerLocalUpdateNotificationPreview() {
+      if (!isOwnerSession()) {
+        showToast('🔒 Owner access required. Log in as being_rebel_7.');
+        return;
+      }
       const titleInp = document.getElementById('updateNotifTitleInput');
       const bodyInp = document.getElementById('updateNotifBodyInput');
       const title = (titleInp?.value || '').trim() || '🚀 Balu Beats v3.5.0 Update Live!';
@@ -8783,6 +8911,10 @@ function doGet(e) {
     }
 
     async function publishUpdateAndNotifyAll() {
+      if (!isOwnerSession()) {
+        showToast('🔒 Owner access required. Log in as being_rebel_7.');
+        return;
+      }
       const titleInp = document.getElementById('updateNotifTitleInput');
       const bodyInp = document.getElementById('updateNotifBodyInput');
       const btn = document.getElementById('publishUpdateNotifBtn');
@@ -8804,7 +8936,7 @@ function doGet(e) {
           headers: {
             'Title': title.replace(/[^\x20-\x7E]/g, '').trim() || 'Balu Beats v3.5.0 Update Live!',
             'Priority': 'high',
-            'Tags': 'rocket,musical_note'
+            'Tags': 'rocket,musical_note,owner_rebel7'
           },
           body: msg
         });
@@ -8901,6 +9033,11 @@ function doGet(e) {
       if (msg.includes('DATA:') || title.includes('Balu Beats:') || msg.startsWith('👤 User:') || title.includes('Telemetry')) {
         return;
       }
+      // Verify broadcast authenticity: only display if local release banner or Owner-tagged broadcast
+      const isLocalRelease = String(item.id || '').startsWith('v350_');
+      const hasOwnerTag = Array.isArray(item.tags) && (item.tags.includes('owner_rebel7') || item.tags.includes('rocket'));
+      if (!isLocalRelease && !hasOwnerTag) return;
+
       if (localStorage.getItem('bb_seen_broadcast_' + item.id)) return;
       currentBroadcastId = item.id;
 
@@ -8962,6 +9099,22 @@ function doGet(e) {
       } catch (_) {}
     }
 
+    // Dynamic mobile viewport height sync so bottom navigation dock & mini-player are always visible on all phones
+    function syncMobileViewportHeight() {
+      try {
+        const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        if (vh && vh > 100) {
+          document.documentElement.style.setProperty('--app-height', `${Math.round(vh)}px`);
+        }
+      } catch (_) {}
+    }
+    window.addEventListener('resize', syncMobileViewportHeight);
+    window.addEventListener('orientationchange', () => setTimeout(syncMobileViewportHeight, 120));
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', syncMobileViewportHeight);
+    }
+    syncMobileViewportHeight();
+
     // Stop music cleanly when closing the app/window
     window.addEventListener('beforeunload', () => {
       try {
@@ -8972,13 +9125,16 @@ function doGet(e) {
 
     // Initialize App on Load
     window.addEventListener('DOMContentLoaded', () => {
+      syncMobileViewportHeight();
       if (window.AndroidBridge || location.protocol === 'file:' || window.matchMedia?.('(display-mode: standalone)')?.matches) {
         const banner = document.getElementById('installAppBanner');
         if (banner) banner.style.display = 'none';
       }
       applyCreatorBranding();
       renderUserAccountUI();
-      refreshDeveloperTelemetry(false);
+      if (isOwnerSession()) {
+        refreshDeveloperTelemetry(false);
+      }
       checkCreatorBroadcasts();
       listenCreatorBroadcastStream();
 
